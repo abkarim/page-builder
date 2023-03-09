@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { invoke } from '@tauri-apps/api/tauri';
 
 import SideBar from '../components/Sidebar';
 import Block from '../components/Block';
@@ -9,24 +10,19 @@ const Blocks = () => {
   const [blocks, setBlocks] = useState([]);
 
   useEffect(() => {
-    setBlocks([
-      {
-        id: 1,
-        description: 'button',
-      },
-      {
-        id: 2,
-        description: 'heading',
-      },
-    ]);
+    invoke('get_blocks')
+      .then((res) => setBlocks(JSON.parse(res)))
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
 
   console.log({ blocks });
 
   return (
     <div className="grid grid-cols-2 gap-2">
-      {blocks.map((block) => {
-        return <Block key={block.id} description={block.description} />;
+      {blocks.map((block, id) => {
+        return <Block key={id} description={block.name} />;
       })}
     </div>
   );
