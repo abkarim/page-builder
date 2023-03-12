@@ -1,10 +1,15 @@
 import PropType from 'prop-types';
 
 export default function Block({ image, description, ...props }) {
+  const dragStart = (e) => {
+    e.dataTransfer.setData('html', '<button>hi</button>');
+  };
+
   return (
     <div
       className="bg-white p-2 rounded-sm cursor-grab select-none"
-      draggable={true}
+      draggable
+      onDragStart={dragStart}
       {...props}
     >
       <img src={image} />
