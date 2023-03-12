@@ -17,8 +17,6 @@ const Blocks = () => {
       });
   }, []);
 
-  console.log({ blocks });
-
   return (
     <div className="grid grid-cols-2 gap-2">
       {blocks.map((block, id) => {
@@ -27,6 +25,23 @@ const Blocks = () => {
     </div>
   );
 };
+
+function PageCanvas() {
+  const dragOver = (e) => {
+    e.preventDefault();
+    console.log('over');
+  };
+
+  const drop = (e) => {
+    console.log('drop');
+  };
+
+  return (
+    <div onDragOver={dragOver} onDrop={drop} className="p-2">
+      drag zone here
+    </div>
+  );
+}
 
 export default function NewPage() {
   const [pageData, setPageData] = useState({
@@ -47,6 +62,7 @@ export default function NewPage() {
       <section className="w-full ml-1">
         <PageHeader pageTitle={pageData.meta.title} />
         <div className="border border-t-0 border-black">
+          <PageCanvas />
           <AddNewBlock />
         </div>
       </section>
