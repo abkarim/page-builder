@@ -5,6 +5,10 @@
 
 use std::fs;
 
+fn is_file_exists(path: &str) -> bool {
+    fs::metadata(path).is_ok()
+}
+
 #[tauri::command]
 fn get_blocks() -> String {
     let paths = fs::read_dir("./../blocks").unwrap();
@@ -30,22 +34,15 @@ fn get_blocks() -> String {
 }
 
 #[tauri::command]
-fn save_new_page(filename: &str, content: &str) -> bool {
-    return true;
-}
-
-#[tauri::command]
-fn update_page(filename: &str, content: &str) -> bool {
+fn save_page(filename: &str, content: &str) -> bool {
+    println!("Filename: {}", filename);
+    println!("Content: {}", content);
     return true;
 }
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![
-            get_blocks,
-            save_new_page,
-            update_page
-        ])
+        .invoke_handler(tauri::generate_handler![get_blocks, save_page,])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
