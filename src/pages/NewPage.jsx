@@ -20,25 +20,32 @@ const Blocks = () => {
   return (
     <div className="grid grid-cols-2 gap-2">
       {blocks.map((block, id) => {
-        return <Block key={id} description={block.name} />;
+        return <Block key={id} block={block} />;
       })}
     </div>
   );
 };
 
 function PageCanvas() {
+  const [pageData, setPageData] = useState('');
+
   const dragOver = (e) => {
     e.preventDefault();
-    console.log('over');
+    e.dataTransfer.dropEffect = 'copy';
   };
 
   const drop = (e) => {
-    console.log('drop');
+    setPageData((prev) => prev + e.dataTransfer.getData('html'));
   };
 
   return (
-    <div onDragOver={dragOver} onDrop={drop} className="p-2">
-      drag zone here
+    <div
+      onDragOver={dragOver}
+      onDrop={drop}
+      className="border border-t-0 border-black"
+    >
+      <div dangerouslySetInnerHTML={{ __html: pageData }} />
+      <AddNewBlock />
     </div>
   );
 }
@@ -61,10 +68,7 @@ export default function NewPage() {
 
       <section className="w-full ml-1">
         <PageHeader pageTitle={pageData.meta.title} />
-        <div className="border border-t-0 border-black">
-          <PageCanvas />
-          <AddNewBlock />
-        </div>
+        <PageCanvas />
       </section>
     </main>
   );
