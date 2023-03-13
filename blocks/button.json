@@ -1,8 +1,8 @@
 {
-    "type": "button",
-    "name": "button",
-    "acceptStyle": "*",
-    "defaultText": "Click me",
-    "defaultStyle": {},
-    "element": "<button type='button' style={$STYLE$}>{$TEXT$}</button>"
+  "type": "button",
+  "name": "button",
+  "acceptStyle": "*",
+  "defaultText": "Click me",
+  "defaultStyle": {},
+  "element": "<button type='button' style={$STYLE$}>{$TEXT$}</button>"
 }
