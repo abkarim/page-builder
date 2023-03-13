@@ -1,8 +1,11 @@
 import PropType from 'prop-types';
 
-export default function Block({ image, description, ...props }) {
+export default function Block({ image, block, ...props }) {
   const dragStart = (e) => {
-    e.dataTransfer.setData('html', '<button>hi</button>');
+    e.dataTransfer.setData(
+      'html',
+      block.element.replace('{$TEXT$}', block.defaultText)
+    );
   };
 
   return (
@@ -13,12 +16,12 @@ export default function Block({ image, description, ...props }) {
       {...props}
     >
       <img src={image} />
-      <p className="font-bold text-base">{description}</p>
+      <p className="font-bold text-base">{block.name}</p>
     </div>
   );
 }
 
 Block.propTypes = {
   image: PropType.string,
-  description: PropType.string,
+  block: PropType.object,
 };
