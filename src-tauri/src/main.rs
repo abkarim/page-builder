@@ -34,10 +34,8 @@ fn get_blocks() -> String {
 }
 
 #[tauri::command]
-fn save_page(filename: &str, content: &str) -> bool {
-    println!("Filename: {}", filename);
-    println!("Content: {}", content);
-    return true;
+fn save_page(filename: &str, content: &str) {
+    fs::write(filename, content).expect("unable to write file");
 }
 
 fn main() {
