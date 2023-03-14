@@ -48,6 +48,11 @@ export default function NewPage() {
     setPageContent((prev) => prev + e.dataTransfer.getData('html'));
   };
 
+  const generateHeaderData = () => {
+    let data = `<title>${pageData.meta.title}</title>`;
+    return data;
+  };
+
   const saveData = async () => {
     const filePath = await save({
       filters: [
@@ -64,6 +69,7 @@ export default function NewPage() {
       await invoke('save_page', {
         filename: filePath,
         content: pageContent,
+        headerContent: generateHeaderData(),
       });
     } catch (error) {
       console.log(error);
