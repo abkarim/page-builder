@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
 import { save } from '@tauri-apps/api/dialog';
 import PropType from 'prop-types';
@@ -36,6 +36,7 @@ export default function NewPage() {
     sidebar: {
       title: 'Blocks',
     },
+    iframeHeight: 0,
   });
   const [pageContent, setPageContent] = useState('');
 
@@ -48,10 +49,10 @@ export default function NewPage() {
     setPageContent((prev) => prev + e.dataTransfer.getData('html'));
   };
 
-  const generateHeaderData = () => {
+  const generateHeaderData = useCallback(() => {
     let data = `<title>${pageData.meta.title}</title>`;
     return data;
-  };
+  }, [pageData]);
 
   const saveData = async () => {
     const filePath = await save({
@@ -87,11 +88,23 @@ export default function NewPage() {
         <div
           onDragOver={dragOver}
           onDrop={drop}
-          className="border border-t-0 border-black"
+          className="border border-t-0 border-black h-full"
         >
-          <div
-            dangerouslySetInnerHTML={{ __html: pageContent }}
-            className="ignore"
+          <iframe
+            srcDoc={pageContent}
+            height={pageData.iframeHeight}
+            className="w-full"
+            onLoad={(e) =>
+              setPageData((prev) => {
+                return {
+                  ...prev,
+                  iframeHeight:
+                    e.target.contentWindow.document.body.scrollHeight +
+                    50 +
+                    'px',
+                };
+              })
+            }
           />
           <AddNewBlock />
         </div>
