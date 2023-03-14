@@ -3,7 +3,7 @@
     windows_subsystem = "windows"
 )]
 
-use std::fs;
+use std::{fs, string};
 
 fn is_file_exists(path: &str) -> bool {
     fs::metadata(path).is_ok()
@@ -34,8 +34,30 @@ fn get_blocks() -> String {
 }
 
 #[tauri::command]
-fn save_page(filename: &str, content: &str) {
-    fs::write(filename, content).expect("unable to write file");
+fn save_page(filename: &str, header_content: &str, content: &str) {
+    let header: &str = "<!DOCTYPE html>
+    <html lang=\"en\">
+    <head>
+      <meta charset=\"UTF-8\" />
+      <link rel=\"icon\" type=\"image/svg+xml\" href=\"/vite.svg\" />
+      <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />
+    ";
+
+    let header_last: &str = "  </head>
+    <body>";
+    let footer: &str = "</body>
+
+</html>";
+
+    let mut final_data: String = String::from("");
+
+    final_data.push_str(header);
+    final_data.push_str(header_content);
+    final_data.push_str(header_last);
+    final_data.push_str(content);
+    final_data.push_str(footer);
+
+    fs::write(filename, final_data).expect("unable to write file");
 }
 
 fn main() {
