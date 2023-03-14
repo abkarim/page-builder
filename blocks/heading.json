@@ -1,0 +1,8 @@
+{
+  "type": "heading",
+  "name": "Heading",
+  "acceptStyle": "*",
+  "defaultText": "Heading Text Here",
+  "defaultStyle": {},
+  "element": "<h1 style={$STYLE$}>{$TEXT$}</h1>"
+}

@@ -1,0 +1,8 @@
+{
+  "type": "html",
+  "name": "horizontal row",
+  "acceptStyle": "*",
+  "defaultText": "",
+  "defaultStyle": {},
+  "element": "<hr />"
+}
