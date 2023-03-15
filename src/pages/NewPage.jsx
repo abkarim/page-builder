@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
 import { save } from '@tauri-apps/api/dialog';
 import PropType from 'prop-types';
@@ -35,10 +35,23 @@ export default function NewPage() {
     },
     sidebar: {
       title: 'Blocks',
+      forcefullyOpen: false,
     },
     iframeHeight: 0,
   });
   const [pageContent, setPageContent] = useState('');
+
+  const newBlock = (e) => {
+    setPageData((prev) => {
+      return { ...prev, sidebar: { ...prev.sidebar, forcefullyOpen: true } };
+    });
+
+    setTimeout(() => {
+      setPageData((prev) => {
+        return { ...prev, sidebar: { ...prev.sidebar, forcefullyOpen: false } };
+      });
+    }, 200);
+  };
 
   const dragOver = (e) => {
     e.preventDefault();
@@ -79,7 +92,10 @@ export default function NewPage() {
 
   return (
     <main className="flex justify-between">
-      <SideBar title={pageData.sidebar.title}>
+      <SideBar
+        title={pageData.sidebar.title}
+        openSidebarForcefully={pageData.sidebar.forcefullyOpen}
+      >
         <Blocks setPageContent={setPageContent} />
       </SideBar>
 
@@ -106,7 +122,7 @@ export default function NewPage() {
               })
             }
           />
-          <AddNewBlock />
+          <AddNewBlock onClick={newBlock} />
         </div>
       </section>
     </main>

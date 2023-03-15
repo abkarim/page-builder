@@ -1,12 +1,23 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-export default function SideBar({ title, children, ...props }) {
+export default function SideBar({
+  title,
+  openSidebarForcefully,
+  children,
+  ...props
+}) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const toggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
   };
+
+  useEffect(() => {
+    if (openSidebarForcefully) setIsSidebarOpen(true);
+  }, [openSidebarForcefully]);
+
+  console.log({ openSidebarForcefully });
 
   return (
     <aside {...props} className={`relative`}>
@@ -41,5 +52,6 @@ export default function SideBar({ title, children, ...props }) {
 SideBar.propTypes = {
   children: PropTypes.element,
   header: PropTypes.element,
+  openSidebarForcefully: PropTypes.bool,
   title: PropTypes.string,
 };
