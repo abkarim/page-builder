@@ -3,6 +3,9 @@ import { invoke } from '@tauri-apps/api/tauri';
 import { save } from '@tauri-apps/api/dialog';
 import PropType from 'prop-types';
 
+import getResetCSS from '../util/getResetCss';
+import getHTMLstructure from '../util/getHTMLstructure';
+
 import SideBar from '../components/Sidebar';
 import Block from '../components/Block';
 import PageHeader from '../components/PageHeader';
@@ -33,6 +36,7 @@ export default function NewPage() {
     meta: {
       title: 'New Page',
     },
+    styles: getResetCSS(),
     sidebar: {
       title: 'Blocks',
       forcefullyOpen: false,
@@ -64,8 +68,13 @@ export default function NewPage() {
 
   const generateHeaderData = useCallback(() => {
     let data = `<title>${pageData.meta.title}</title>`;
+    data += `<style>${pageData.styles}</style>`;
     return data;
-  }, [pageData]);
+  }, [pageData.meta, pageData.styles]);
+
+  const generateHTML = useCallback(() => {
+    return `${getHTMLstructure(generateHeaderData(), pageContent)}`;
+  }, [pageContent]);
 
   const saveData = async () => {
     const filePath = await save({
@@ -82,8 +91,7 @@ export default function NewPage() {
     try {
       await invoke('save_page', {
         filename: filePath,
-        content: pageContent,
-        headerContent: generateHeaderData(),
+        content: generateHTML(),
       });
     } catch (error) {
       console.log(error);
@@ -107,7 +115,7 @@ export default function NewPage() {
           className="border border-t-0 border-black h-full"
         >
           <iframe
-            srcDoc={pageContent}
+            srcDoc={generateHTML()}
             height={pageData.iframeHeight}
             className="w-full"
             onLoad={(e) =>
