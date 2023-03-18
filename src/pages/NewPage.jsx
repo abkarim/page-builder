@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
 import { save } from '@tauri-apps/api/dialog';
 import PropType from 'prop-types';
@@ -31,6 +31,10 @@ const Blocks = ({ setPageContent }) => {
   );
 };
 
+const StylesEditor = () => {
+  return <div className="grid grid-cols-2 gap-2">HiHi</div>;
+};
+
 export default function NewPage() {
   const [pageData, setPageData] = useState({
     meta: {
@@ -45,6 +49,22 @@ export default function NewPage() {
   });
   const [pageContent, setPageContent] = useState('');
 
+  const iframe = useRef(null);
+
+  useEffect(() => {
+    function receiveMessage(e) {
+      if (e.source !== iframe.current.contentWindow) return;
+
+      if (e.data.event !== 'drop') return;
+
+      setPageContent((prev) => prev + e.data.data);
+    }
+
+    window.addEventListener('message', receiveMessage, false);
+
+    return () => window.removeEventListener('message', receiveMessage, false);
+  }, []);
+
   const newBlock = (e) => {
     setPageData((prev) => {
       return { ...prev, sidebar: { ...prev.sidebar, forcefullyOpen: true } };
@@ -57,14 +77,14 @@ export default function NewPage() {
     }, 200);
   };
 
-  const dragOver = (e) => {
+  function dragOver(e) {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'copy';
-  };
+  }
 
-  const drop = (e) => {
+  function drop(e) {
     setPageContent((prev) => prev + e.dataTransfer.getData('html'));
-  };
+  }
 
   const generateHeaderData = useCallback(() => {
     let data = `<title>${pageData.meta.title}</title>`;
@@ -104,7 +124,10 @@ export default function NewPage() {
         title={pageData.sidebar.title}
         openSidebarForcefully={pageData.sidebar.forcefullyOpen}
       >
-        <Blocks setPageContent={setPageContent} />
+        {pageData.sidebar.title === 'Blocks' && (
+          <Blocks setPageContent={setPageContent} />
+        )}
+        {pageData.sidebar.title === 'Styles' && <StylesEditor />}
       </SideBar>
 
       <section className="w-full ml-1">
@@ -112,11 +135,16 @@ export default function NewPage() {
         <div
           onDragOver={dragOver}
           onDrop={drop}
-          className="border border-t-0 border-black h-full"
+          className="border border-t-0 border-black"
         >
           <iframe
+            ref={iframe}
             srcDoc={generateHTML()}
             height={pageData.iframeHeight}
+            onDragOver={dragOver}
+            onDrop={drop}
+            // eslint-disable-next-line react/no-unknown-property
+            allow-scripts="true"
             className="w-full"
             onLoad={(e) =>
               setPageData((prev) => {
