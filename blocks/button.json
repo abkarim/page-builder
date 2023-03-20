@@ -4,5 +4,5 @@
   "acceptStyle": "*",
   "defaultText": "Click me",
   "defaultStyle": {},
-  "element": "<button type='button' style={$STYLE$}>{$TEXT$}</button>"
+  "element": "<button type='button' page-builder-element='true'>{$TEXT$}</button>"
 }

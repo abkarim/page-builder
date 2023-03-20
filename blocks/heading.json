@@ -4,5 +4,5 @@
   "acceptStyle": "*",
   "defaultText": "Heading Text Here",
   "defaultStyle": {},
-  "element": "<h1 style={$STYLE$}>{$TEXT$}</h1>"
+  "element": "<h1 page-builder-element='true'>{$TEXT$}</h1>"
 }

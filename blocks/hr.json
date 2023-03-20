@@ -1,8 +1,8 @@
 {
   "type": "html",
   "name": "horizontal row",
-  "acceptStyle": "*",
+  "acceptStyle": ["spacing"],
   "defaultText": "",
   "defaultStyle": {},
-  "element": "<hr />"
+  "element": "<hr page-builder-element='true' />"
 }
