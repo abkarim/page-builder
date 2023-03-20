@@ -3,11 +3,12 @@
     windows_subsystem = "windows"
 )]
 
-use std::{fs, string};
+use std::fs;
+// use regex::Regex;
 
-fn is_file_exists(path: &str) -> bool {
-    fs::metadata(path).is_ok()
-}
+// fn is_file_exists(path: &str) -> bool {
+//     fs::metadata(path).is_ok()
+// }
 
 #[tauri::command]
 fn get_blocks() -> String {
@@ -17,7 +18,17 @@ fn get_blocks() -> String {
 
     let mut currently_reading = 0;
     for path in paths {
-        let contents = fs::read_to_string(path.unwrap().path()).expect("Failed to read file");
+        let mut contents = fs::read_to_string(path.unwrap().path()).expect("Failed to read file");
+
+        // Add default text
+
+        // Add default style
+
+        // Add attribute
+        contents = contents.replace(
+            "page-builder-element='true'",
+            "page-builder-element='true' draggable='true' ondragstart='dragStart(event)' class='demo'",
+        );
 
         if currently_reading > 0 {
             content.push_str(",");
