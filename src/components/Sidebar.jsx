@@ -17,8 +17,6 @@ export default function SideBar({
     if (openSidebarForcefully) setIsSidebarOpen(true);
   }, [openSidebarForcefully]);
 
-  console.log({ openSidebarForcefully });
-
   return (
     <aside {...props} className={`relative`}>
       <section

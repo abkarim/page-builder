@@ -10,8 +10,9 @@ import SideBar from '../components/Sidebar';
 import Block from '../components/Block';
 import PageHeader from '../components/PageHeader';
 import AddNewBlock from '../components/AddNewBlock';
+import formatHTML from '../util/formatHTML';
 
-const Blocks = ({ setPageContent }) => {
+const Blocks = ({ addElement }) => {
   const [blocks, setBlocks] = useState([]);
 
   useEffect(() => {
@@ -25,7 +26,7 @@ const Blocks = ({ setPageContent }) => {
   return (
     <div className="grid grid-cols-2 gap-2">
       {blocks.map((block, id) => {
-        return <Block key={id} block={block} setPageContent={setPageContent} />;
+        return <Block key={id} block={block} addElement={addElement} />;
       })}
     </div>
   );
@@ -48,16 +49,17 @@ export default function NewPage() {
     iframeHeight: 0,
   });
   const [pageContent, setPageContent] = useState('');
-
   const iframe = useRef(null);
+
+  const addElement = (element) => {
+    setPageContent((prev) => prev + element);
+  };
 
   useEffect(() => {
     function receiveMessage(e) {
-      if (e.source !== iframe.current.contentWindow) return;
-
-      if (e.data.event !== 'drop') return;
-
-      setPageContent((prev) => prev + e.data.data);
+      const { data, event } = e.data;
+      if (e.source !== iframe.current.contentWindow || event !== 'drop') return;
+      setPageContent(data);
     }
 
     window.addEventListener('message', receiveMessage, false);
@@ -65,7 +67,7 @@ export default function NewPage() {
     return () => window.removeEventListener('message', receiveMessage, false);
   }, []);
 
-  const newBlock = (e) => {
+  const newBlock = () => {
     setPageData((prev) => {
       return { ...prev, sidebar: { ...prev.sidebar, forcefullyOpen: true } };
     });
@@ -83,7 +85,7 @@ export default function NewPage() {
   }
 
   function drop(e) {
-    setPageContent((prev) => prev + e.dataTransfer.getData('html'));
+    addElement(e.dataTransfer.getData('html'));
   }
 
   const generateHeaderData = useCallback(() => {
@@ -111,7 +113,7 @@ export default function NewPage() {
     try {
       await invoke('save_page', {
         filename: filePath,
-        content: generateHTML(),
+        content: formatHTML(generateHTML()),
       });
     } catch (error) {
       console.log(error);
@@ -124,10 +126,11 @@ export default function NewPage() {
         title={pageData.sidebar.title}
         openSidebarForcefully={pageData.sidebar.forcefullyOpen}
       >
-        {pageData.sidebar.title === 'Blocks' && (
-          <Blocks setPageContent={setPageContent} />
+        {pageData.sidebar.title === 'Blocks' ? (
+          <Blocks addElement={addElement} />
+        ) : (
+          pageData.sidebar.title === 'Styles' && <StylesEditor />
         )}
-        {pageData.sidebar.title === 'Styles' && <StylesEditor />}
       </SideBar>
 
       <section className="w-full ml-1">
@@ -166,5 +169,5 @@ export default function NewPage() {
 }
 
 Blocks.propTypes = {
-  setPageContent: PropType.func,
+  addElement: PropType.func,
 };
