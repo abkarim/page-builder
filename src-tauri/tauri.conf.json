@@ -41,7 +41,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "xyz.triksy.page-builder",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
