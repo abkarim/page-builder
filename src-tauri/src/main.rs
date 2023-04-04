@@ -21,13 +21,14 @@ fn get_blocks() -> String {
         let mut contents = fs::read_to_string(path.unwrap().path()).expect("Failed to read file");
 
         // Add default text
+        // contents = contents.replace("{$TEXT$}", &contents);
 
         // Add default style
 
         // Add attribute
         contents = contents.replace(
             "page-builder-element='true'",
-            "page-builder-element='true' draggable='true' ondragstart='dragStart(event)' class='demo'",
+            "page-builder-element='true' draggable='true' ondragstart='dragStart(event)' onClick='handleStyle(event)' class=''",
         );
 
         if currently_reading > 0 {
