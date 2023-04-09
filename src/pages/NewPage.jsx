@@ -23,6 +23,7 @@ import Size from '../components/stylesEditor/Size';
 import Transform from '../components/stylesEditor/Transform';
 import getAcceptedStyle from '../util/getAcceptedStyle';
 import prepareCSS from '../util/prepareCSS';
+import sleep from '../util/sleep';
 
 const Blocks = ({ addElement }) => {
   const [blocks, setBlocks] = useState([]);
@@ -83,8 +84,6 @@ const StylesEditor = ({
       }
     });
 
-    console.log({ newStyle });
-
     setStyles({ ...styles, [`${elementClassName}`]: newStyle });
   }, [style, elementClassName]);
   return (
@@ -132,7 +131,7 @@ export default function NewPage() {
   });
 
   useEffect(() => {
-    function receiveMessage(e) {
+    async function receiveMessage(e) {
       const { data, event } = e.data;
       if (e.source !== iframe.current.contentWindow) return;
 
@@ -143,6 +142,25 @@ export default function NewPage() {
 
       // Add style
       if (event === 'style') {
+        //? This function is for mounting and unmounting styles component
+        // ! Bug
+        // Component values doesn't change on element change
+        setPageData((prev) => {
+          return {
+            ...prev,
+            sidebar: {
+              ...prev.sidebar,
+              /**
+               * empty page title to remove previous styles component
+               * re render required to change value
+               */
+              title: '',
+            },
+          };
+        });
+
+        await sleep(0.1);
+
         setPageData((prev) => {
           return {
             ...prev,

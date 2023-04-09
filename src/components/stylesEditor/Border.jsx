@@ -5,9 +5,7 @@ import CheckBoxInput from '../input/Checkbox';
 import NumberInput from '../input/Number';
 import UnitInput from '../input/Unit';
 
-import getUnitAndValue from '../../util/getUnitAndValue';
-
-export default function Border({ prevData, setStyle, elementClassName }) {
+export default function Border({ prevData, setStyle }) {
   const [isVisible, setIsVisible] = useState(true);
   const [data, setData] = useState({
     top: {
@@ -43,10 +41,7 @@ export default function Border({ prevData, setStyle, elementClassName }) {
         return { ...pre, ...prev };
       });
     }
-    console.log('mounted');
   }, []);
-
-  console.log({ elementClassName, prevData, data });
 
   // * Updates value in main data
   useEffect(() => {
@@ -180,5 +175,4 @@ export default function Border({ prevData, setStyle, elementClassName }) {
 Border.propTypes = {
   prevData: PropType.object,
   setStyle: PropType.func,
-  elementClassName: PropType.string,
 };
