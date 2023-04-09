@@ -1,9 +1,23 @@
+import getResetCSS from './getResetCss';
+
+const resetCss = getResetCSS();
+const defaultStyles = '';
+
 export default function getHTMLstructure(headerData, body) {
   return `<!DOCTYPE html>
   <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+      ${resetCss}
+    </style>
+
+    <style>
+      ${defaultStyles}
+    </style>
+
     ${headerData}
 
     <style class="page-builder-dev-element">
@@ -92,6 +106,22 @@ export default function getHTMLstructure(headerData, body) {
         e.dataTransfer.dropEffect = "move";
         e.dataTransfer.setData("type", "move");
         draggingElement = e.target;
+        
+        if(e.dataTransfer.getData("type") === "move") {    
+        }
+
+      }
+
+      function handleStyle(e) {
+        // Don't listen for event
+        // Applicable for button, anchor etc
+        e.preventDefault();
+        
+        const data = {event: 'style'};
+        const [targetClass] = e.target.className.match(/page-builder-identifier-[0-9A-z]+/gm);
+        const id = e.target.getAttribute('page-builder-element-id')
+        data.data = {targetClass, id};
+        window.parent.postMessage(data);
       }
     
     </script>
