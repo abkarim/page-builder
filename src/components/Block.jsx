@@ -4,13 +4,21 @@ import getUniqueClassName from '../util/getUniqueClassName';
 
 export default function Block({ image, block, addElement, ...props }) {
   const getFinalHTML = useCallback(() => {
+    // TODO Replace next statement with rust
     let element = block.element.replace('{$TEXT$}', block.defaultText);
-    let prevClass = element.match(/class=['"](?<data>[A-z0-9-\s]+)['"]/)[
-      'groups'
-    ].data;
+
+    let prevClass = element.match(/class=['"](?<data>[A-z0-9-\s]+)['"]/);
+
+    if (prevClass !== null) {
+      prevClass = prevClass['groups'].data;
+    } else {
+      prevClass = '';
+    }
+
     prevClass = `${prevClass} ${getUniqueClassName()}`;
     element = element.replace(
-      /class=['"][A-z0-9-\s]+['"]/,
+      // This regex selects class="" or class='anything'
+      /class=['"]([A-z0-9-\s]+)?['"]/,
       `class="${prevClass}"`
     );
     return element;
@@ -22,6 +30,7 @@ export default function Block({ image, block, addElement, ...props }) {
       e.dataTransfer.setData('html', data);
       e.dataTransfer.setData('type', 'copy');
       window.draggingData = data;
+      console.log({ data });
     },
     [getFinalHTML]
   );
