@@ -1,12 +1,23 @@
 import PropType from 'prop-types';
+import InputText from './input/Text';
 
-export default function PageHeader({ pageTitle, onSave, ...props }) {
+export default function PageHeader({
+  pageTitle,
+  setPageTitle,
+  onSave,
+  ...props
+}) {
   return (
     <header
       className="bg-[#e5e5e5] pl-1.5 border-b-2 border-black flex justify-between items-center"
       {...props}
     >
-      <h6 title="page title">{pageTitle}</h6>
+      <InputText
+        value={pageTitle}
+        onInput={(e) => {
+          setPageTitle(e.target.value);
+        }}
+      />
       <button
         type="button"
         onClick={onSave}
@@ -20,5 +31,6 @@ export default function PageHeader({ pageTitle, onSave, ...props }) {
 
 PageHeader.propTypes = {
   pageTitle: PropType.string,
+  setPageTitle: PropType.func,
   onSave: PropType.func,
 };
