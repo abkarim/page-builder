@@ -1,8 +1,9 @@
 {
+  "id": 3,
   "type": "html",
   "name": "horizontal row",
   "acceptStyle": ["spacing"],
   "defaultText": "",
   "defaultStyle": {},
-  "element": "<hr page-builder-element='true' />"
+  "element": "<hr page-builder-element='true' page-builder-element-id='3' />"
 }

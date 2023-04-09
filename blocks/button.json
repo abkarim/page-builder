@@ -1,8 +1,9 @@
 {
+  "id": 2,
   "type": "button",
   "name": "button",
   "acceptStyle": "*",
   "defaultText": "Click me",
   "defaultStyle": {},
-  "element": "<button type='button' page-builder-element='true'>{$TEXT$}</button>"
+  "element": "<button type='button' page-builder-element='true' page-builder-element-id='2'>{$TEXT$}</button>"
 }

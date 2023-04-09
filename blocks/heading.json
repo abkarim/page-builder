@@ -1,8 +1,11 @@
 {
+  "id": 1,
   "type": "heading",
   "name": "Heading",
   "acceptStyle": "*",
-  "defaultText": "Heading Text Here",
+  "defaultText": "Heading Title here",
   "defaultStyle": {},
-  "element": "<h1 page-builder-element='true'>{$TEXT$}</h1>"
+  "element": "<h1 page-builder-element='true' page-builder-element-id='1' >{$TEXT$}</h1>",
+  "tagChangeable": true,
+  "tagList": ["h1", "h2", "h3", "h4", "h5", "h6"]
 }
