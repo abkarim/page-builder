@@ -3,25 +3,14 @@ import { invoke } from '@tauri-apps/api/tauri';
 import { save } from '@tauri-apps/api/dialog';
 import PropType from 'prop-types';
 
-import getResetCSS from '../util/getResetCss';
-import getHTMLstructure from '../util/getHTMLstructure';
-
 import SideBar from '../components/Sidebar';
 import Block from '../components/Block';
 import PageHeader from '../components/PageHeader';
 import AddNewBlock from '../components/AddNewBlock';
-import formatHTML from '../util/formatHTML';
+import StylesEditor from '../components/StylesEditor';
 
-import Border from '../components/stylesEditor/Border';
-import Color from '../components/stylesEditor/Color';
-import Font from '../components/stylesEditor/Font';
-import Margin from '../components/stylesEditor/Margin';
-import Padding from '../components/stylesEditor/Padding';
-import Position from '../components/stylesEditor/Position';
-import Shadow from '../components/stylesEditor/Shadow';
-import Size from '../components/stylesEditor/Size';
-import Transform from '../components/stylesEditor/Transform';
-import getAcceptedStyle from '../util/getAcceptedStyle';
+import getHTMLstructure from '../util/getHTMLstructure';
+import formatHTML from '../util/formatHTML';
 import prepareCSS from '../util/prepareCSS';
 import sleep from '../util/sleep';
 
@@ -42,64 +31,6 @@ const Blocks = ({ addElement }) => {
         return <Block key={id} block={block} addElement={addElement} />;
       })}
     </div>
-  );
-};
-
-const StylesEditor = ({
-  elementClassName,
-  elementsBlockId,
-  styles,
-  setStyles,
-}) => {
-  /**
-   * TODO
-   * get applicable styles by block id
-   * create styles abd append to data
-   * changeable tag
-   */
-
-  const acceptedStyles = getAcceptedStyle(elementsBlockId);
-
-  const [style, setStyle] = useState({});
-  const loaded = useRef(false);
-
-  //* Prepare style on load
-  useEffect(() => {
-    if (styles.hasOwnProperty(elementClassName)) {
-      let targetStyle = { ...style, ...styles[elementClassName] };
-      setStyle({ ...targetStyle });
-    }
-    loaded.current = true;
-  }, [elementClassName]);
-
-  // Update final element
-  useEffect(() => {
-    // * Prepare final style for this element
-    const newStyle = style;
-    const keys = Object.keys(style);
-    newStyle.final = '';
-    keys.forEach((key) => {
-      if (style[key].final) {
-        newStyle.final += style[key].final;
-      }
-    });
-
-    setStyles({ ...styles, [`${elementClassName}`]: newStyle });
-  }, [style, elementClassName]);
-  return (
-    loaded.current === true && (
-      <div>
-        <Border prevData={style} setStyle={setStyle} />
-        <Color prevDataObj={{}} />
-        <Font prevDataObj={{}} />
-        <Margin prevDataObj={{}} />
-        <Padding prevDataObj={{}} />
-        <Position prevDataObj={{}} />
-        <Shadow prevDataObj={{}} />
-        <Size prevDataObj={{}} />
-        <Transform prevDataObj={{}} />
-      </div>
-    )
   );
 };
 
@@ -262,18 +193,20 @@ export default function NewPage() {
         title={pageData.sidebar.title}
         openSidebarForcefully={pageData.sidebar.forcefullyOpen}
       >
-        {pageData.sidebar.title === 'Blocks' ? (
-          <Blocks addElement={addElement} />
-        ) : (
-          pageData.sidebar.title === 'Styles' && (
-            <StylesEditor
-              elementClassName={pageData.currentlySelectedElementClassName}
-              elementsBlockId={pageData.currentlySelectedElementsBlockId}
-              styles={pageData.styles}
-              setStyles={setStyles}
-            />
-          )
-        )}
+        <>
+          {pageData.sidebar.title === 'Blocks' ? (
+            <Blocks addElement={addElement} />
+          ) : (
+            pageData.sidebar.title === 'Styles' && (
+              <StylesEditor
+                elementClassName={pageData.currentlySelectedElementClassName}
+                elementsBlockId={pageData.currentlySelectedElementsBlockId}
+                styles={pageData.styles}
+                setStyles={setStyles}
+              />
+            )
+          )}
+        </>
       </SideBar>
 
       <section className="w-full ml-1">
@@ -317,11 +250,4 @@ export default function NewPage() {
 
 Blocks.propTypes = {
   addElement: PropType.func,
-};
-
-StylesEditor.propTypes = {
-  elementClassName: PropType.string,
-  elementsBlockId: PropType.number,
-  styles: PropType.object,
-  setStyles: PropType.func,
 };
