@@ -1,33 +1,40 @@
+/* eslint-disable no-prototype-builtins */
 import { useCallback, useEffect, useState } from 'react';
 import PropType from 'prop-types';
 
 import CheckBoxInput from '../input/Checkbox';
 import NumberInput from '../input/Number';
 import UnitInput from '../input/Unit';
+import ColorInput from '../input/Color';
+import StyleEditor from '../StyleEditor';
 
 export default function Border({ prevData, setStyle }) {
-  const [isVisible, setIsVisible] = useState(true);
   const [data, setData] = useState({
     top: {
       value: 0,
-      unit: 'vw',
+      unit: 'px',
+      color: '#bbbbbb',
     },
     bottom: {
       value: 0,
-      unit: '%',
+      unit: 'px',
+      color: '#bbbbbb',
     },
     left: {
       value: 0,
-      unit: 'rem',
+      unit: 'px',
+      color: '#bbbbbb',
     },
     right: {
       value: 0,
-      unit: 'ch',
+      unit: 'px',
+      color: '#bbbbbb',
     },
     combined: {
       value: 0,
       unit: 'px',
-      enabled: false,
+      color: '#bbbbbb',
+      enabled: true,
     },
   });
 
@@ -47,7 +54,14 @@ export default function Border({ prevData, setStyle }) {
   useEffect(() => {
     // Prepare final value
     const finalData = data;
-    finalData.final = 'border: 2px solid red;';
+    finalData.final = `border: ${data.combined.value}${data.combined.unit} solid ${data.combined.color};`;
+
+    if (!data.combined.enabled) {
+      finalData.final = `border-left: ${data.left.value}${data.left.unit} solid ${data.left.color};`;
+      finalData.final += `border-right: ${data.right.value}${data.right.unit} solid ${data.right.color};`;
+      finalData.final += `border-top: ${data.top.value}${data.top.unit} solid ${data.top.color};`;
+      finalData.final += `border-bottom: ${data.bottom.value}${data.bottom.unit} solid ${data.bottom.color};`;
+    }
 
     setStyle((prev) => {
       return { ...prev, border: finalData };
@@ -62,11 +76,6 @@ export default function Border({ prevData, setStyle }) {
       };
     });
   };
-
-  const toggleIsVisible = () => {
-    setIsVisible((prev) => !prev);
-  };
-
   const updateValue = useCallback((target, value) => {
     setData((prev) => {
       return {
@@ -85,90 +94,59 @@ export default function Border({ prevData, setStyle }) {
     });
   });
 
-  return (
-    <>
-      <div
-        title="toggle visibility"
-        className="flex justify-between items-center cursor-pointer"
-        onClick={toggleIsVisible}
-      >
-        <h2 className="text-lg">Border</h2>
-        <div className="bg-white rounded-full p-1 flex justify-center items-center w-5 h-5 font-bold select-none">
-          <span
-            className={`inline-block ${
-              isVisible ? '-rotate-90' : '!rotate-180'
-            } `}
-          >
-            &#10094;
-          </span>
-        </div>
+  const updateColor = useCallback((target, color) => {
+    setData((prev) => {
+      return {
+        ...prev,
+        [target]: { ...prev[target], color },
+      };
+    });
+  });
+
+  // eslint-disable-next-line react/prop-types
+  const Input = ({ target }) => {
+    return (
+      <div className="flex">
+        <NumberInput
+          value={Number(data[target].value)}
+          onInput={(e) => updateValue(target, e.target.value)}
+        />
+        <UnitInput
+          value={data[target].unit}
+          onChange={(e) => updateUnit(target, e.target.value)}
+        />
+        <ColorInput
+          value={data[target].color}
+          onChange={(e) => updateColor(target, e.target.value)}
+        />
       </div>
-      {isVisible && (
-        <section>
-          <div className="cursor-pointer">
-            <span onClick={toggleCombined}>Combined</span>
-            <CheckBoxInput
-              defaultChecked={data.combined.enabled}
-              onClick={toggleCombined}
-            />
-          </div>
-          {data.combined.enabled && (
-            <div className="flex">
-              <NumberInput />
-              <UnitInput />
-            </div>
-          )}
-          {!data.combined.enabled && (
-            <div>
-              <label>Top</label>
-              <div className="flex">
-                <NumberInput
-                  value={Number(data.top.value)}
-                  onInput={(e) => updateValue('top', e.target.value)}
-                />
-                <UnitInput
-                  value={data.top.unit}
-                  onChange={(e) => updateUnit('top', e.target.value)}
-                />
-              </div>
-              <label>Bottom</label>
-              <div className="flex">
-                <NumberInput
-                  value={Number(data.bottom.value)}
-                  onInput={(e) => updateValue('bottom', e.target.value)}
-                />
-                <UnitInput
-                  value={data.bottom.unit}
-                  onChange={(e) => updateUnit('bottom', e.target.value)}
-                />
-              </div>
-              <label>Left</label>
-              <div className="flex">
-                <NumberInput
-                  value={Number(data.left.value)}
-                  onInput={(e) => updateValue('left', e.target.value)}
-                />
-                <UnitInput
-                  value={data.left.unit}
-                  onChange={(e) => updateUnit('left', e.target.value)}
-                />
-              </div>
-              <label>Right</label>
-              <div className="flex">
-                <NumberInput
-                  value={Number(data.right.value)}
-                  onInput={(e) => updateValue('right', e.target.value)}
-                />
-                <UnitInput
-                  value={data.right.unit}
-                  onChange={(e) => updateUnit('right', e.target.value)}
-                />
-              </div>
-            </div>
-          )}
-        </section>
+    );
+  };
+
+  return (
+    <StyleEditor title="Border">
+      <div className="cursor-pointer">
+        <span onClick={toggleCombined}>Combined</span>
+        <CheckBoxInput
+          checked={data.combined.enabled}
+          onClick={toggleCombined}
+        />
+      </div>
+      {data.combined.enabled ? (
+        <Input target="combined" />
+      ) : (
+        <div>
+          <label>Top</label>
+          <Input target="top" />
+          <label>Bottom</label>
+          <Input target="bottom" />
+          <label>Left</label>
+          <Input target="left" />
+          <label>Right</label>
+          <Input target="right" />
+        </div>
       )}
-    </>
+    </StyleEditor>
   );
 }
 
