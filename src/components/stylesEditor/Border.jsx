@@ -6,7 +6,7 @@ import CheckBoxInput from '../input/Checkbox';
 import NumberInput from '../input/Number';
 import UnitInput from '../input/Unit';
 import ColorInput from '../input/Color';
-import StyleEditor from '../StyleEditor';
+import Wrapper from './Wrapper';
 
 export default function Border({ prevData, setStyle }) {
   const [data, setData] = useState({
@@ -124,7 +124,7 @@ export default function Border({ prevData, setStyle }) {
   };
 
   return (
-    <StyleEditor title="Border">
+    <Wrapper title="Border">
       <div className="cursor-pointer">
         <span onClick={toggleCombined}>Combined</span>
         <CheckBoxInput
@@ -146,7 +146,7 @@ export default function Border({ prevData, setStyle }) {
           <Input target="right" />
         </div>
       )}
-    </StyleEditor>
+    </Wrapper>
   );
 }
 
