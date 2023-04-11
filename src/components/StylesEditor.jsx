@@ -54,16 +54,16 @@ export default function StylesEditor({
   }, [style, elementClassName]);
   return (
     loaded.current === true && (
-      <div>
+      <div className="space-y-3">
         <Border prevData={style} setStyle={setStyle} />
-        <Color prevDataObj={{}} />
-        <Font prevDataObj={{}} />
-        <Margin prevDataObj={{}} />
-        <Padding prevDataObj={{}} />
-        <Position prevDataObj={{}} />
-        <Shadow prevDataObj={{}} />
-        <Size prevDataObj={{}} />
-        <Transform prevDataObj={{}} />
+        <Color prevData={style} setStyle={setStyle} />
+        <Font prevData={style} setStyle={setStyle} />
+        <Margin prevData={style} setStyle={setStyle} />
+        <Padding prevData={style} setStyle={setStyle} />
+        <Position prevData={style} setStyle={setStyle} />
+        <Shadow prevData={style} setStyle={setStyle} />
+        <Size prevData={style} setStyle={setStyle} />
+        <Transform prevData={style} setStyle={setStyle} />
       </div>
     )
   );
