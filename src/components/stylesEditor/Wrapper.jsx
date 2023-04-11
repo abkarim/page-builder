@@ -15,7 +15,7 @@ export default function Wrapper({ title, children, ...props }) {
         className="flex justify-between items-center cursor-pointer"
         onClick={toggleIsVisible}
       >
-        <h2 className="text-lg">{title}</h2>
+        <h2 className="text-xl">{title}</h2>
         <div className="bg-white rounded-full p-1 flex justify-center items-center w-5 h-5 font-bold select-none">
           <span
             className={`inline-block ${
