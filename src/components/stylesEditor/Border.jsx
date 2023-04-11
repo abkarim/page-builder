@@ -13,27 +13,27 @@ export default function Border({ prevData, setStyle }) {
     top: {
       value: 0,
       unit: 'px',
-      color: '#bbbbbb',
+      color: '#000000',
     },
     bottom: {
       value: 0,
       unit: 'px',
-      color: '#bbbbbb',
+      color: '#000000',
     },
     left: {
       value: 0,
       unit: 'px',
-      color: '#bbbbbb',
+      color: '#000000',
     },
     right: {
       value: 0,
       unit: 'px',
-      color: '#bbbbbb',
+      color: '#000000',
     },
     combined: {
       value: 0,
       unit: 'px',
-      color: '#bbbbbb',
+      color: '#000000',
       enabled: true,
     },
   });
@@ -125,27 +125,29 @@ export default function Border({ prevData, setStyle }) {
 
   return (
     <Wrapper title="Border">
-      <div className="cursor-pointer">
-        <span onClick={toggleCombined}>Combined</span>
-        <CheckBoxInput
-          checked={data.combined.enabled}
-          onClick={toggleCombined}
-        />
-      </div>
-      {data.combined.enabled ? (
-        <Input target="combined" />
-      ) : (
-        <div>
-          <label>Top</label>
-          <Input target="top" />
-          <label>Bottom</label>
-          <Input target="bottom" />
-          <label>Left</label>
-          <Input target="left" />
-          <label>Right</label>
-          <Input target="right" />
+      <>
+        <div className="cursor-pointer">
+          <span onClick={toggleCombined}>Combined</span>
+          <CheckBoxInput
+            checked={data.combined.enabled}
+            onClick={toggleCombined}
+          />
         </div>
-      )}
+        {data.combined.enabled ? (
+          <Input target="combined" />
+        ) : (
+          <div>
+            <label>Top</label>
+            <Input target="top" />
+            <label>Bottom</label>
+            <Input target="bottom" />
+            <label>Left</label>
+            <Input target="left" />
+            <label>Right</label>
+            <Input target="right" />
+          </div>
+        )}
+      </>
     </Wrapper>
   );
 }
