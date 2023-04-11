@@ -20,7 +20,7 @@ export default function SideBar({
   return (
     <aside {...props} className={`relative`}>
       <section
-        className={`bg-[#e5e5e5] overflow-hidden ${
+        className={`bg-[#e5e5e5] overflow-y-scroll ${
           isSidebarOpen ? 'w-72' : 'w-0'
         } transition-width duration-500 ease h-screen`}
       >
