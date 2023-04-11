@@ -228,7 +228,7 @@ export default function NewPage() {
             onDrop={drop}
             // eslint-disable-next-line react/no-unknown-property
             allow-scripts="true"
-            className="w-full"
+            className="w-full h-full"
             onLoad={(e) =>
               setPageData((prev) => {
                 return {
