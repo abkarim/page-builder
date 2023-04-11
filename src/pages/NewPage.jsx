@@ -188,7 +188,7 @@ export default function NewPage() {
   };
 
   return (
-    <main className="flex justify-between">
+    <main className="flex justify-between h-screen overflow-hidden">
       <SideBar
         title={pageData.sidebar.title}
         openSidebarForcefully={pageData.sidebar.forcefullyOpen}
@@ -209,7 +209,7 @@ export default function NewPage() {
         </>
       </SideBar>
 
-      <section className="w-full ml-1">
+      <section className="w-full ">
         <PageHeader
           pageTitle={pageData.meta.title}
           setPageTitle={updatePageTitle}
@@ -218,7 +218,7 @@ export default function NewPage() {
         <div
           onDragOver={dragOver}
           onDrop={drop}
-          className="border border-t-0 border-black"
+          className="h-full overflow-y-scroll"
         >
           <iframe
             ref={iframe}
