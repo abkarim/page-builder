@@ -2,7 +2,7 @@ import { useState } from 'react';
 import PropType from 'prop-types';
 
 export default function Wrapper({ title, children, ...props }) {
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
 
   const toggleIsVisible = () => {
     setIsVisible((prev) => !prev);
