@@ -10,23 +10,23 @@ import Wrapper from './Wrapper';
 export default function Margin({ prevData, setStyle }) {
   const [data, setData] = useState({
     top: {
-      value: 0,
+      value: '',
       unit: 'px',
     },
     bottom: {
-      value: 0,
+      value: '',
       unit: 'px',
     },
     left: {
-      value: 0,
+      value: '',
       unit: 'px',
     },
     right: {
-      value: 0,
+      value: '',
       unit: 'px',
     },
     combined: {
-      value: 0,
+      value: '',
       unit: 'px',
       enabled: true,
     },
@@ -48,13 +48,23 @@ export default function Margin({ prevData, setStyle }) {
   useEffect(() => {
     // Prepare final value
     const finalData = data;
-    finalData.final = `margin: ${data.combined.value}${data.combined.unit};`;
 
     if (!data.combined.enabled) {
-      finalData.final = `margin-left: ${data.left.value}${data.left.unit};`;
-      finalData.final += `margin-right: ${data.right.value}${data.right.unit};`;
-      finalData.final += `margin-top: ${data.top.value}${data.top.unit};`;
-      finalData.final += `margin-bottom: ${data.bottom.value}${data.bottom.unit};`;
+      finalData.final = '';
+      if (data.left.value != '') {
+        finalData.final = `margin-left: ${data.left.value}${data.left.unit};`;
+      }
+      if (data.right.value != '') {
+        finalData.final += `margin-right: ${data.right.value}${data.right.unit};`;
+      }
+      if (data.top.value != '') {
+        finalData.final += `margin-top: ${data.top.value}${data.top.unit};`;
+      }
+      if (data.bottom.value != '') {
+        finalData.final += `margin-bottom: ${data.bottom.value}${data.bottom.unit};`;
+      }
+    } else if (data.combined.value != '') {
+      finalData.final = `margin: ${data.combined.value}${data.combined.unit};`;
     }
 
     setStyle((prev) => {
