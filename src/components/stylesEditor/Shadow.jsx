@@ -10,7 +10,7 @@ import CheckBoxInput from '../input/Checkbox';
 
 export default function Shadow({ prevData, setStyle }) {
   const [data, setData] = useState({
-    color: '#000000',
+    color: '',
     offsetX: {
       value: 0,
       unit: 'px',
