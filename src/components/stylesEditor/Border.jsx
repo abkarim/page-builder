@@ -11,27 +11,27 @@ import Wrapper from './Wrapper';
 export default function Border({ prevData, setStyle }) {
   const [data, setData] = useState({
     top: {
-      value: 0,
+      value: '',
       unit: 'px',
       color: '#000000',
     },
     bottom: {
-      value: 0,
+      value: '',
       unit: 'px',
       color: '#000000',
     },
     left: {
-      value: 0,
+      value: '',
       unit: 'px',
       color: '#000000',
     },
     right: {
-      value: 0,
+      value: '',
       unit: 'px',
       color: '#000000',
     },
     combined: {
-      value: 0,
+      value: '',
       unit: 'px',
       color: '#000000',
       enabled: true,
@@ -54,13 +54,26 @@ export default function Border({ prevData, setStyle }) {
   useEffect(() => {
     // Prepare final value
     const finalData = data;
-    finalData.final = `border: ${data.combined.value}${data.combined.unit} solid ${data.combined.color};`;
 
     if (!data.combined.enabled) {
-      finalData.final = `border-left: ${data.left.value}${data.left.unit} solid ${data.left.color};`;
-      finalData.final += `border-right: ${data.right.value}${data.right.unit} solid ${data.right.color};`;
-      finalData.final += `border-top: ${data.top.value}${data.top.unit} solid ${data.top.color};`;
-      finalData.final += `border-bottom: ${data.bottom.value}${data.bottom.unit} solid ${data.bottom.color};`;
+      finalData.final = '';
+      if (data.left.value !== '') {
+        finalData.final = `border-left: ${data.left.value}${data.left.unit} solid ${data.left.color};`;
+      }
+
+      if (data.right.value !== '') {
+        finalData.final += `border-right: ${data.right.value}${data.right.unit} solid ${data.right.color};`;
+      }
+
+      if (data.top.value !== '') {
+        finalData.final += `border-top: ${data.top.value}${data.top.unit} solid ${data.top.color};`;
+      }
+
+      if (data.bottom.value !== '') {
+        finalData.final += `border-bottom: ${data.bottom.value}${data.bottom.unit} solid ${data.bottom.color};`;
+      }
+    } else if (data.combined.value !== '') {
+      finalData.final = `border: ${data.combined.value}${data.combined.unit} solid ${data.combined.color};`;
     }
 
     setStyle((prev) => {
