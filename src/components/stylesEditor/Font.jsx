@@ -11,12 +11,12 @@ import FontWeight from '../input/FontWeight';
 
 export default function Font({ prevData, setStyle }) {
   const [data, setData] = useState({
-    style: 'normal',
+    style: '',
     size: {
       value: '',
-      unit: 'px',
+      unit: 'rem',
     },
-    weight: 'normal',
+    weight: '',
     family: '',
   });
 
@@ -39,9 +39,18 @@ export default function Font({ prevData, setStyle }) {
     if (data.size.value != '') {
       finalData.final = `font-size: ${data.size.value}${data.size.unit};`;
     }
-    finalData.final += `font-family: ${data.family};`;
-    finalData.final += `font-style: ${data.style};`;
-    finalData.final += `font-weight: ${data.weight};`;
+
+    if (data.family != '') {
+      finalData.final += `font-family: ${data.family};`;
+    }
+
+    if (data.style != '') {
+      finalData.final += `font-style: ${data.style};`;
+    }
+
+    if (data.weight != '') {
+      finalData.final += `font-weight: ${data.weight};`;
+    }
 
     setStyle((prev) => {
       return { ...prev, font: finalData };
