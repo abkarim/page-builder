@@ -12,23 +12,23 @@ export default function Position({ prevData, setStyle }) {
   const [data, setData] = useState({
     position: '',
     top: {
-      value: 0,
+      value: '',
       unit: 'px',
     },
     bottom: {
-      value: 0,
+      value: '',
       unit: 'px',
     },
     left: {
-      value: 0,
+      value: '',
       unit: 'px',
     },
     right: {
-      value: 0,
+      value: '',
       unit: 'px',
     },
     combined: {
-      value: 0,
+      value: '',
       unit: 'px',
       enabled: true,
     },
@@ -56,11 +56,18 @@ export default function Position({ prevData, setStyle }) {
       finalData.final = `position: ${data.position};`;
 
       if (!data.combined.enabled) {
-        finalData.final += `left: ${data.left.value}${data.left.unit};`;
-        finalData.final += `right: ${data.right.value}${data.right.unit};`;
-        finalData.final += `top: ${data.top.value}${data.top.unit};`;
-        finalData.final += `bottom: ${data.bottom.value}${data.bottom.unit};`;
-      } else {
+        if (data.left.value != '')
+          finalData.final += `left: ${data.left.value}${data.left.unit};`;
+
+        if (data.right.value != '')
+          finalData.final += `right: ${data.right.value}${data.right.unit};`;
+
+        if (data.top.value != '')
+          finalData.final += `top: ${data.top.value}${data.top.unit};`;
+
+        if (data.bottom.value != '')
+          finalData.final += `bottom: ${data.bottom.value}${data.bottom.unit};`;
+      } else if (data.combined.value != '') {
         finalData.final += `inset: ${data.combined.value}${data.combined.unit};`;
       }
 
