@@ -10,8 +10,6 @@ export default function CustomCSS({ prevData, setStyle }) {
     final: '',
   });
 
-  console.log({ data });
-
   // * Prepare data from prevData
   useEffect(() => {
     //! prevData contains full style objects like color, outline, border
