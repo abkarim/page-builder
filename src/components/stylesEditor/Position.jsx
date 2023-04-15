@@ -124,7 +124,7 @@ export default function Position({ prevData, setStyle }) {
 
   return (
     <Wrapper title="Position">
-      <>
+      <div className="space-y-1">
         <div>
           <label>position</label>
           <PositionInput
@@ -160,7 +160,7 @@ export default function Position({ prevData, setStyle }) {
             onInput={(e) => updateData('zIndex', e.target.value)}
           />
         </div>
-      </>
+      </div>
     </Wrapper>
   );
 }
