@@ -10,6 +10,7 @@ import Position from './stylesEditor/Position';
 import Shadow from './stylesEditor/Shadow';
 import Size from './stylesEditor/Size';
 import Transform from './stylesEditor/Transform';
+import CustomCSS from './stylesEditor/CustomCSS';
 
 export default function StylesEditor({
   elementClassName,
@@ -52,6 +53,7 @@ export default function StylesEditor({
 
     setStyles({ ...styles, [`${elementClassName}`]: newStyle });
   }, [style, elementClassName]);
+
   return (
     loaded.current === true && (
       <div className="space-y-3">
@@ -63,7 +65,8 @@ export default function StylesEditor({
         <Position prevData={style} setStyle={setStyle} />
         <Shadow prevData={style} setStyle={setStyle} />
         <Size prevData={style} setStyle={setStyle} />
-        <Transform prevData={style} setStyle={setStyle} />
+        {/* <Transform prevData={style} setStyle={setStyle} /> */}
+        <CustomCSS prevData={style} setStyle={setStyle} />
       </div>
     )
   );
