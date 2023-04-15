@@ -50,14 +50,22 @@ export default function Size({ prevData, setStyle }) {
   useEffect(() => {
     // Prepare final value
     const finalData = data;
-    finalData.final = `width: ${data.width.value}${data.width.unit};`;
-    finalData.final += `min-width: ${data.minWidth.value}${data.minWidth.unit};`;
+    if (data.width.value != '')
+      finalData.final = `width: ${data.width.value}${data.width.unit};`;
+
+    if (data.minWidth.value != '')
+      finalData.final += `min-width: ${data.minWidth.value}${data.minWidth.unit};`;
+
     if (data.maxWidth.value != '') {
       finalData.final += `max-width: ${data.maxWidth.value}${data.maxWidth.unit};`;
     }
 
-    finalData.final += `height: ${data.height.value}${data.height.unit};`;
-    finalData.final += `min-height: ${data.minHeight.value}${data.minHeight.unit};`;
+    if (data.height.value != '')
+      finalData.final += `height: ${data.height.value}${data.height.unit};`;
+
+    if (data.minHeight.value != '')
+      finalData.final += `min-height: ${data.minHeight.value}${data.minHeight.unit};`;
+
     if (data.maxHeight.value != '') {
       finalData.final += `max-height: ${data.maxHeight.value}${data.maxHeight.unit};`;
     }
