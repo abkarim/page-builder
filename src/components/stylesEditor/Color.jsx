@@ -7,8 +7,8 @@ import Wrapper from './Wrapper';
 
 export default function Color({ prevData, setStyle }) {
   const [data, setData] = useState({
-    color: '#000000',
-    backgroundColor: '#FFFFFF',
+    color: '',
+    backgroundColor: '',
   });
 
   // * Prepare data from prevData
@@ -27,8 +27,13 @@ export default function Color({ prevData, setStyle }) {
   useEffect(() => {
     // Prepare final value
     const finalData = data;
-    finalData.final = `color: ${data.color};`;
-    finalData.final += `background-color: ${data.backgroundColor};`;
+    if (data.color) {
+      finalData.final = `color: ${data.color};`;
+    }
+
+    if (data.backgroundColor) {
+      finalData.final += `background-color: ${data.backgroundColor};`;
+    }
 
     setStyle((prev) => {
       return { ...prev, color: finalData };
