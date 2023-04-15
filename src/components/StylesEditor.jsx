@@ -11,6 +11,9 @@ import Shadow from './stylesEditor/Shadow';
 import Size from './stylesEditor/Size';
 import Transform from './stylesEditor/Transform';
 import CustomCSS from './stylesEditor/CustomCSS';
+import Align from './stylesEditor/Align';
+import ChangeTag from './elementEditor/ChangeTag';
+import ChangeText from './elementEditor/ChangeText';
 
 export default function StylesEditor({
   elementClassName,
@@ -57,6 +60,7 @@ export default function StylesEditor({
   return (
     loaded.current === true && (
       <div className="space-y-3">
+        <Align prevData={style} setStyle={setStyle} />
         <Border prevData={style} setStyle={setStyle} />
         <Color prevData={style} setStyle={setStyle} />
         <Font prevData={style} setStyle={setStyle} />
@@ -66,6 +70,8 @@ export default function StylesEditor({
         <Shadow prevData={style} setStyle={setStyle} />
         <Size prevData={style} setStyle={setStyle} />
         {/* <Transform prevData={style} setStyle={setStyle} /> */}
+        <ChangeTag element={elementClassName} />
+        <ChangeText element={elementClassName} />
         <CustomCSS prevData={style} setStyle={setStyle} />
       </div>
     )
