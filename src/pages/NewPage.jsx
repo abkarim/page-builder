@@ -7,12 +7,12 @@ import SideBar from '../components/Sidebar';
 import Block from '../components/Block';
 import PageHeader from '../components/PageHeader';
 import AddNewBlock from '../components/AddNewBlock';
-import StylesEditor from '../components/StylesEditor';
 
 import getHTMLstructure from '../util/getHTMLstructure';
 import formatHTML from '../util/formatHTML';
 import prepareCSS from '../util/prepareCSS';
 import sleep from '../util/sleep';
+import Editors from '../components/Editors';
 
 const Blocks = ({ addElement }) => {
   const [blocks, setBlocks] = useState([]);
@@ -103,11 +103,15 @@ export default function NewPage() {
                * Set page title to Styles
                * to open styles editor
                */
-              title: 'Styles',
+              title: 'Editor',
               forcefullyOpen: true,
             },
           };
         });
+      }
+
+      if (event === 'update') {
+        setPageContent(data);
       }
     }
 
@@ -155,9 +159,8 @@ export default function NewPage() {
   });
 
   const generateHeaderData = useCallback(() => {
-    let data = `<title>${pageData.meta.title}</title>`;
-    data += `<style>${prepareCSS(pageData.styles)}</style>`;
-    return data;
+    return `<title>${pageData.meta.title}</title>
+    <style>${prepareCSS(pageData.styles)}</style>`;
   }, [pageData.meta, pageData.styles]);
 
   const generateHTML = useCallback(() => {
@@ -197,12 +200,13 @@ export default function NewPage() {
           {pageData.sidebar.title === 'Blocks' ? (
             <Blocks addElement={addElement} />
           ) : (
-            pageData.sidebar.title === 'Styles' && (
-              <StylesEditor
+            pageData.sidebar.title === 'Editor' && (
+              <Editors
                 elementClassName={pageData.currentlySelectedElementClassName}
                 elementsBlockId={pageData.currentlySelectedElementsBlockId}
                 styles={pageData.styles}
                 setStyles={setStyles}
+                iframe={iframe.current}
               />
             )
           )}
