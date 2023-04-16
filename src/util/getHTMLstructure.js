@@ -39,6 +39,12 @@ export default function getHTMLstructure(headerData, body) {
       let before = false;
       let draggingElement = null;
 
+      function update() {
+        const data = {event: 'update'};
+        data.data = document.body.innerHTML.toString().trim();
+        window.parent.postMessage(data);
+      }
+
       function createElementFromHTML(html) {
         const element = document.createElement('div');
         element.innerHTML = html;
