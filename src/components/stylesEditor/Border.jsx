@@ -36,6 +36,10 @@ export default function Border({ prevData, setStyle }) {
       color: '#000000',
       enabled: true,
     },
+    radius: {
+      value: '',
+      unit: 'px',
+    },
   });
 
   // * Prepare data from prevData
@@ -75,6 +79,9 @@ export default function Border({ prevData, setStyle }) {
     } else if (data.combined.value !== '') {
       finalData.final = `border: ${data.combined.value}${data.combined.unit} solid ${data.combined.color};`;
     }
+
+    if (data.radius.value !== '')
+      finalData.final += `border-radius: ${data.radius.value}${data.radius.unit};`;
 
     setStyle((prev) => {
       return { ...prev, border: finalData };
@@ -160,6 +167,17 @@ export default function Border({ prevData, setStyle }) {
             <Input target="right" />
           </div>
         )}
+        <label>Radius</label>
+        <div className="flex mt-1">
+          <NumberInput
+            value={Number(data.radius.value)}
+            onInput={(e) => updateValue('radius', e.target.value)}
+          />
+          <UnitInput
+            value={data.radius.unit}
+            onChange={(e) => updateUnit('radius', e.target.value)}
+          />
+        </div>
       </>
     </Wrapper>
   );
