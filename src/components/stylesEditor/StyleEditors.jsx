@@ -48,8 +48,6 @@ export default function StyleEditors({
     setStyles({ ...styles, [`${elementClassName}`]: newStyle });
   }, [style, elementClassName]);
 
-  console.log({ acceptedStyles });
-
   return (
     loaded.current === true && (
       <div className="space-y-3">
