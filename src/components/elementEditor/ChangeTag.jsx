@@ -17,7 +17,7 @@ export default function ChangeTag({ element, elementBlockId, iframe }) {
     for (const attr of ele.attributes) {
       newElement.setAttribute(attr.name, attr.value);
     }
-    newElement.textContent = ele.textContent;
+    newElement.innerHTML = ele.innerHTML;
     ele.replaceWith(newElement);
     iframe.contentWindow.update();
   };
