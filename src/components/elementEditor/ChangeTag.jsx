@@ -12,8 +12,13 @@ export default function ChangeTag({ element, elementBlockId, iframe }) {
 
   const updateValue = (value) => {
     setValue(value);
-    // TODO change tag name in DOM
-    // iframe.contentDocument.querySelector('.' + element).textContent = value;
+    const newElement = iframe.contentDocument.createElement(value);
+    // Copy over any attributes from the original element to the new element
+    for (const attr of ele.attributes) {
+      newElement.setAttribute(attr.name, attr.value);
+    }
+    newElement.textContent = ele.textContent;
+    ele.replaceWith(newElement);
     iframe.contentWindow.update();
   };
 

@@ -12,15 +12,15 @@ export default function ElementEditors({
 
   return (
     <div className="space-y-3">
+      {acceptedEdit.includes('text') && (
+        <ChangeText element={elementClassName} iframe={iframe} />
+      )}
       {acceptedEdit.includes('tag') && (
         <ChangeTag
           element={elementClassName}
           elementBlockId={elementsBlockId}
           iframe={iframe}
         />
-      )}
-      {acceptedEdit.includes('text') && (
-        <ChangeText element={elementClassName} iframe={iframe} />
       )}
       {acceptedEdit.length === 0 && <h1>Sorry, no option available</h1>}
     </div>
