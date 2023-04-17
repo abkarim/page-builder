@@ -21,17 +21,6 @@ export default function getHTMLstructure(headerData, body) {
     ${headerData}
 
     <style class="page-builder-dev-element">
-    
-      .siblings-of-currently-dragging-item[page-builder-element="true"]{
-        outline: 2px solid red;
-        outline-offset: 5px;
-      }
-
-      // [page-builder-element="true"]{
-      //   outline: 2px solid red;
-      //   outline-offset: 5px;
-      // }
-
     </style>
 
     <script class="page-builder-dev-element">
@@ -131,6 +120,7 @@ export default function getHTMLstructure(headerData, body) {
       }
     
     </script>
+
 
   </head>
     

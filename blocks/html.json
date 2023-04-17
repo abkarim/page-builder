@@ -1,0 +1,8 @@
+{
+  "id": 4,
+  "name": "HTML",
+  "acceptStyle": ["*"],
+  "acceptEdit": ["HTMLContent", "tag"],
+  "element": "<div page-builder-element='true' page-builder-element-id='4'>HTML HERE</div>",
+  "tagList": ["div", "section"]
+}
