@@ -32,8 +32,8 @@ export default function ChangeTag({ element, elementBlockId, iframe }) {
   );
 }
 
-ChangeTag.propsType = {
-  element: PropType.object,
+ChangeTag.propTypes = {
+  element: PropType.string,
   elementBlockId: PropType.number,
   iframe: PropType.any,
 };

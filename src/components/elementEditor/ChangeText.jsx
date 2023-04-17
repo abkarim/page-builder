@@ -1,3 +1,4 @@
+import PropType from 'prop-types';
 import { useState } from 'react';
 import InputText from '../input/Text';
 
@@ -18,3 +19,8 @@ export default function ChangeText({ element, iframe }) {
     </div>
   );
 }
+
+ChangeText.propTypes = {
+  element: PropType.string,
+  iframe: PropType.any,
+};
