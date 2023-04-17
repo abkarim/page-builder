@@ -1,0 +1,7 @@
+{
+  "id": 5,
+  "name": "image",
+  "acceptStyle": ["*"],
+  "acceptEdit": ["src", "alt"],
+  "element": "<img alt='' src='src/assets/img/default.jpg' page-builder-element='true' page-builder-element-id='5' />"
+}
