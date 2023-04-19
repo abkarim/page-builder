@@ -12,12 +12,14 @@ import Size from './Size';
 import Transform from './Transform';
 import CustomCSS from './CustomCSS';
 import Align from './Align';
+import ColumnLayout from './ColumnLayout';
 
 export default function StyleEditors({
   elementClassName,
   elementsBlockId,
   styles,
   setStyles,
+  iframe,
 }) {
   const acceptedStyles = getAcceptedStyle(elementsBlockId);
 
@@ -51,6 +53,14 @@ export default function StyleEditors({
   return (
     loaded.current === true && (
       <div className="space-y-3">
+        {acceptedStyles.includes('columnLayout') && (
+          <ColumnLayout
+            prevData={style}
+            setStyle={setStyle}
+            iframe={iframe}
+            element={elementClassName}
+          />
+        )}
         {(acceptedStyles.includes('*') || acceptedStyles.includes('text')) && (
           <Align prevData={style} setStyle={setStyle} />
         )}
@@ -97,4 +107,5 @@ StyleEditors.propTypes = {
   elementsBlockId: PropType.number,
   styles: PropType.object,
   setStyles: PropType.func,
+  iframe: PropType.any,
 };

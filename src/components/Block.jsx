@@ -16,6 +16,11 @@ export default function Block({ image, block, addElement, ...props }) {
     }
 
     prevClass = `${prevClass} ${getUniqueClassName()}`;
+
+    if (block.className) {
+      prevClass = `${prevClass} ${block.className}`;
+    }
+
     element = element.replace(
       // This regex selects class="" or class='anything'
       /class=['"]([A-z0-9-\s]+)?['"]/,

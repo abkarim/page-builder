@@ -3,5 +3,5 @@
   "name": "image",
   "acceptStyle": ["*"],
   "acceptEdit": ["src", "alt"],
-  "element": "<img alt='' src='src/assets/img/default.jpg' page-builder-element='true' page-builder-element-id='5' />"
+  "element": "<img alt='' src='https://web-dev.imgix.net/image/admin/fZo7BJGec2MNRt6cWpeh.jpg' page-builder-element='true' page-builder-element-id='5' />"
 }

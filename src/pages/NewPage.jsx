@@ -47,12 +47,26 @@ export default function NewPage() {
     iframeHeight: 0,
     currentlySelectedElementClassName: '',
     currentlySelectedElementsBlockId: null,
+    replaceableElement: null,
   });
   const [pageContent, setPageContent] = useState('');
   const iframe = useRef(null);
 
   const addElement = (element) => {
-    setPageContent((prev) => prev + element);
+    if (pageData.replaceableElement !== null) {
+      const newElement =
+        iframe.current.contentWindow.createElementFromHTML(element);
+      const oldElement = iframe.current.contentDocument.querySelector(`
+      .${pageData.replaceableElement}:not([page-builder-element="true"])
+      `);
+      oldElement.replaceWith(newElement);
+      iframe.current.contentWindow.update();
+      setPageData((prev) => {
+        return { ...prev, replaceableElement: null };
+      });
+    } else {
+      setPageContent((prev) => prev + element);
+    }
   };
 
   const updatePageTitle = useCallback((value) => {
@@ -113,6 +127,44 @@ export default function NewPage() {
       if (event === 'update') {
         setPageContent(data);
       }
+
+      if (event === 'replacePlaceholderElement') {
+        // ! Bug
+        setPageData((prev) => {
+          return {
+            ...prev,
+            sidebar: {
+              ...prev.sidebar,
+              title: '',
+            },
+          };
+        });
+
+        await sleep(0.1);
+
+        /**
+         * Get placeholder identifier
+         * Opens Block section
+         * Get block
+         * Replace the element in iframe with the element
+         * clear identifier
+         */
+        setPageData((prev) => {
+          return {
+            ...prev,
+            sidebar: {
+              ...prev.sidebar,
+              /**
+               * Set page title to Styles
+               * to open styles editor
+               */
+              title: 'Blocks',
+              forcefullyOpen: true,
+            },
+            replaceableElement: data,
+          };
+        });
+      }
     }
 
     window.addEventListener('message', receiveMessage, false);
@@ -168,6 +220,8 @@ export default function NewPage() {
   }, [pageContent, pageData.meta, pageData.styles]);
 
   const saveData = async () => {
+    let data = iframe.current.contentWindow.getFinalData();
+
     // TODO replace with rust
     const filePath = await save({
       filters: [
@@ -183,7 +237,7 @@ export default function NewPage() {
     try {
       await invoke('save_page', {
         filename: filePath,
-        content: formatHTML(generateHTML()),
+        content: formatHTML(`<!DOCTYPE html>\n${data}`),
       });
     } catch (error) {
       console.log(error);
@@ -222,7 +276,7 @@ export default function NewPage() {
         <div
           onDragOver={dragOver}
           onDrop={drop}
-          className="h-full overflow-y-scroll"
+          className="h-full overflow-y-scroll px-2"
         >
           <iframe
             ref={iframe}

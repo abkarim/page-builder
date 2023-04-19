@@ -1,7 +1,8 @@
+import getDefaultStyles from './getDefaultStyles';
 import getResetCSS from './getResetCss';
 
 const resetCss = getResetCSS();
-const defaultStyles = '';
+const defaultStyles = getDefaultStyles();
 
 export default function getHTMLstructure(headerData, body) {
   return `<!DOCTYPE html>
@@ -18,10 +19,22 @@ export default function getHTMLstructure(headerData, body) {
       ${defaultStyles}
     </style>
 
-    ${headerData}
-
     <style class="page-builder-dev-element">
+      [page-builder-element="true"]:hover{
+        border: 2px solid blue;
+      }
+
+      [replaceable="true"] {
+        padding: 10px;
+        background: yellow;
+        color:black;
+        cursor:pointer;
+        margin: 5px;
+      }
+
     </style>
+
+    ${headerData}
 
     <script class="page-builder-dev-element">
       let target = null;
@@ -30,7 +43,10 @@ export default function getHTMLstructure(headerData, body) {
 
       function update() {
         const data = {event: 'update'};
-        data.data = document.body.innerHTML.toString().trim();
+        const copyDoc = document.body.cloneNode(true);
+        const script = copyDoc.querySelectorAll('script');
+        if(script) script.forEach(e => e.remove())
+        data.data = copyDoc.innerHTML.toString().trim();
         window.parent.postMessage(data);
       }
 
@@ -111,21 +127,53 @@ export default function getHTMLstructure(headerData, body) {
         // Don't listen for event
         // Applicable for button, anchor etc
         e.preventDefault();
+        e.stopPropagation();
         
         const data = {event: 'style'};
-        const [targetClass] = e.target.className.match(/page-builder-identifier-[0-9A-z]+/gm);
-        const id = e.target.getAttribute('page-builder-element-id')
+        const [targetClass] = e.currentTarget.className.match(/page-builder-identifier-[0-9A-z]+/);
+        const id = e.currentTarget.getAttribute('page-builder-element-id')
         data.data = {targetClass, id};
         window.parent.postMessage(data);
       }
-    
-    </script>
+      
+      function replacePlaceHolderElement(e) {
+        e.stopPropagation();
+        const data = {event: 'replacePlaceholderElement'};
+        data.data = e.target.className;
+        window.parent.postMessage(data);
+      }
 
+      function addEvent() {
+        const elements = [...document.querySelectorAll("[replaceable='true']")];
+        elements.forEach(el => el.addEventListener('click', replacePlaceHolderElement))
+      }
 
-  </head>
+      function getFinalData() {
+        const docCopy = document.cloneNode(true);
+        const devElements = [...docCopy.querySelectorAll(".page-builder-dev-element, [replaceable='true']")];
+        devElements.forEach(el => el.remove());
+
+        const elements = [...docCopy.querySelectorAll("[page-builder-element='true']")];
+        
+        const attributesToRemove = ['page-builder-element', 'onclick', 'draggable', 'ondragstart', 'page-builder-element-id'];
+
+        elements.forEach(el => {
+          attributesToRemove.forEach(attribute => {
+            el.removeAttribute(attribute);
+          });
+        })
+        return docCopy.documentElement.outerHTML.toString()
+      }
     
-    <body>
+      </script>
+      
+      
+      </head>
+      
+   
+      <body>
       ${body}
+      <script class="page-builder-dev-element">addEvent()</script>
     </body>
 
   </html>`;

@@ -20,11 +20,6 @@ fn get_blocks() -> String {
     for path in paths {
         let mut contents = fs::read_to_string(path.unwrap().path()).expect("Failed to read file");
 
-        // Add default text
-        // contents = contents.replace("{$TEXT$}", &contents);
-
-        // Add default style
-
         // Add attribute
         contents = contents.replace(
             "page-builder-element='true'",
