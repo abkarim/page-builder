@@ -3,22 +3,32 @@
     windows_subsystem = "windows"
 )]
 
-use std::fs;
-// use regex::Regex;
+use std::fs::{self, ReadDir};
+use std::path::PathBuf;
 
-// fn is_file_exists(path: &str) -> bool {
-//     fs::metadata(path).is_ok()
-// }
+#[cfg(dev)]
+const BLOCKS_DIR_PATH: &str = "./../blocks";
+#[cfg(not(dev))]
+const BLOCKS_DIR_PATH: &str = "./_up_/blocks";
 
 #[tauri::command]
 fn get_blocks() -> String {
-    let paths = fs::read_dir("./../blocks").unwrap();
+    let blocks_dir_path: PathBuf = PathBuf::from(&BLOCKS_DIR_PATH);
 
-    let mut content = String::from("[");
+    let paths: ReadDir = match fs::read_dir(&blocks_dir_path) {
+        Ok(paths) => paths,
+        Err(err) => {
+            eprintln!("Failed to open blocks directory: {}", err);
+            return String::from("[]");
+        }
+    };
 
-    let mut currently_reading = 0;
+    let mut content: String = String::from("[");
+
+    let mut currently_reading: i32 = 0;
     for path in paths {
-        let mut contents = fs::read_to_string(path.unwrap().path()).expect("Failed to read file");
+        let mut contents: String =
+            fs::read_to_string(path.unwrap().path()).expect("Failed to read file");
 
         // Add attribute
         contents = contents.replace(
