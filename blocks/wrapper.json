@@ -1,0 +1,19 @@
+{
+  "id": 7,
+  "name": "Wrapper",
+  "acceptStyle": [
+    "*",
+    "layout"
+  ],
+  "acceptEdit": [
+    "tag"
+  ],
+  "element": "<div page-builder-element='true' page-builder-element-id='6'><div replaceable='true' class='jfkghbhkjdhgfh'>+</div></div>",
+  "tagList": [
+    "div",
+    "section",
+    "header",
+    "footer",
+    "nav"
+  ]
+}
