@@ -3,6 +3,8 @@ import { invoke } from '@tauri-apps/api/tauri';
 import { save } from '@tauri-apps/api/dialog';
 import PropType from 'prop-types';
 
+import PageEditor from '../components/PageEditor';
+
 import SideBar from '../components/Sidebar';
 import Block from '../components/Block';
 import PageHeader from '../components/PageHeader';
@@ -41,7 +43,7 @@ export default function NewPage() {
     },
     styles: {},
     sidebar: {
-      title: 'Blocks',
+      title: 'Page',
       forcefullyOpen: false,
     },
     iframeHeight: 0,
@@ -74,6 +76,12 @@ export default function NewPage() {
       return { ...prev, meta: { ...prev.meta, title: value } };
     });
   });
+
+  const navigate = (title = 'Page') => {
+    setPageData((prev) => {
+      return { ...prev, sidebar: { ...prev.sidebar, title } };
+    });
+  };
 
   useEffect(() => {
     async function receiveMessage(e) {
@@ -246,25 +254,28 @@ export default function NewPage() {
 
   return (
     <main className="flex justify-between h-screen overflow-hidden">
-      <SideBar
-        title={pageData.sidebar.title}
-        openSidebarForcefully={pageData.sidebar.forcefullyOpen}
-      >
-        <>
-          {pageData.sidebar.title === 'Blocks' ? (
+      <SideBar title={pageData.sidebar.title} navigate={navigate}>
+        <div>
+          {pageData.sidebar.title === 'Blocks' && (
             <Blocks addElement={addElement} />
-          ) : (
-            pageData.sidebar.title === 'Editor' && (
-              <Editors
-                elementClassName={pageData.currentlySelectedElementClassName}
-                elementsBlockId={pageData.currentlySelectedElementsBlockId}
-                styles={pageData.styles}
-                setStyles={setStyles}
-                iframe={iframe.current}
-              />
-            )
           )}
-        </>
+          {pageData.sidebar.title === 'Page' && (
+            <PageEditor
+              iframe={iframe.current}
+              styles={pageData.styles}
+              navigate={navigate}
+            />
+          )}
+          {pageData.sidebar.title === 'Editor' && (
+            <Editors
+              elementClassName={pageData.currentlySelectedElementClassName}
+              elementsBlockId={pageData.currentlySelectedElementsBlockId}
+              styles={pageData.styles}
+              setStyles={setStyles}
+              iframe={iframe.current}
+            />
+          )}
+        </div>
       </SideBar>
 
       <section className="w-full ">
