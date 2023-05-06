@@ -13,6 +13,7 @@ import Transform from './Transform';
 import CustomCSS from './CustomCSS';
 import Align from './Align';
 import ColumnLayout from './ColumnLayout';
+import Layout from './Layout';
 
 export default function StyleEditors({
   elementClassName,
@@ -95,6 +96,9 @@ export default function StyleEditors({
         {(acceptedStyles.includes('*') ||
           acceptedStyles.includes('transform')) && (
           <Transform prevData={style} setStyle={setStyle} />
+        )}
+        {acceptedStyles.includes('layout') && (
+          <Layout prevData={style} setStyle={setStyle} />
         )}
         <CustomCSS prevData={style} setStyle={setStyle} />
       </div>

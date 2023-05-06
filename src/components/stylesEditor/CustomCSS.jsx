@@ -2,7 +2,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import PropType from 'prop-types';
 
-import Wrapper from './Wrapper';
 import TextareaInput from '../input/Textarea';
 
 export default function CustomCSS({ prevData, setStyle }) {
@@ -42,15 +41,14 @@ export default function CustomCSS({ prevData, setStyle }) {
   });
 
   return (
-    <Wrapper title="Custom CSS">
-      <div>
-        <TextareaInput
-          value={data.final}
-          placeholder="color:#000;"
-          onChange={(e) => updateValue('final', e.target.value)}
-        />
-      </div>
-    </Wrapper>
+    <div>
+      <h4>Custom CSS</h4>
+      <TextareaInput
+        value={data.final}
+        placeholder="color:#000;"
+        onChange={(e) => updateValue('final', e.target.value)}
+      />
+    </div>
   );
 }
 
