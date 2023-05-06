@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "page-builder",
-    "version": "0.1.0"
+    "version": "0.1.1"
   },
   "tauri": {
     "allowlist": {
@@ -25,6 +25,17 @@
         "open": true,
         "save": true
       },
+      "window": {
+        "all": false,
+        "close": true,
+        "hide": true,
+        "show": true,
+        "maximize": true,
+        "minimize": true,
+        "unmaximize": true,
+        "unminimize": true,
+        "startDragging": true
+      },
       "fs": {
         "all": true,
         "copyFile": true,
@@ -35,7 +46,9 @@
         "removeDir": true,
         "removeFile": true,
         "renameFile": true,
-        "scope": ["*"],
+        "scope": [
+          "*"
+        ],
         "writeFile": true
       }
     },
@@ -63,7 +76,10 @@
         "providerShortName": null,
         "signingIdentity": null
       },
-      "resources": ["./../blocks", "./../components"],
+      "resources": [
+        "./../blocks",
+        "./../components"
+      ],
       "shortDescription": "",
       "targets": "all",
       "windows": {
