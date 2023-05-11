@@ -12,7 +12,7 @@ env:
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
@@ -27,6 +27,4 @@ jobs:
         cache: yarn
         
     - run: yarn 
-#     - run: yarn global add @tauri-apps/cli@latest
-    - run: yarn tauri info
     - run: yarn tauri build
