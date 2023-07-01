@@ -11,7 +11,7 @@
     "css:build": "yarn tailwindcss -i ./input.css -o ./src/App.css --watch --minify"
   },
   "dependencies": {
-    "@tauri-apps/api": "^1.2.0",
+    "@tauri-apps/api": "^1.4.0",
     "pretty": "^2.0.0",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
@@ -27,6 +27,6 @@
     "eslint-plugin-react": "latest",
     "prettier": "2.8.4",
     "tailwindcss": "^3.2.7",
-    "vite": "^4.1.5"
+    "vite": "^4.3.9"
   }
 }
