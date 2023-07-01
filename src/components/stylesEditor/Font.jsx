@@ -2,12 +2,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import PropType from 'prop-types';
 
-import Wrapper from './Wrapper';
-import NumberInput from '../input/Number';
-import UnitInput from '../input/Unit';
-import FontFamily from '../input/FontFamily';
-import FontStyle from '../input/FontStyle';
-import FontWeight from '../input/FontWeight';
+import Wrapper from '@/components/stylesEditor/Wrapper';
+import NumberInput from '@/components/input/Number';
+import UnitInput from '@/components/input/Unit';
+import FontFamily from '@/components/input/FontFamily';
+import FontStyle from '@/components/input/FontStyle';
+import FontWeight from '@/components/input/FontWeight';
 
 export default function Font({ prevData, setStyle }) {
   const [data, setData] = useState({

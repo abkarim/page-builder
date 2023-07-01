@@ -2,8 +2,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import PropType from 'prop-types';
 
-import ColorInput from '../input/Color';
-import Wrapper from './Wrapper';
+import ColorInput from '@/components/input/Color';
+import Wrapper from '@/components/stylesEditor/Wrapper';
 
 export default function Color({ prevData, setStyle }) {
   const [data, setData] = useState({

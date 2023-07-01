@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import PropType from 'prop-types';
 
-import CustomCSS from './stylesEditor/CustomCSS';
+import CustomCSS from '@/components/stylesEditor/CustomCSS';
 
 export default function PageEditor({ setStyles, iframe, navigate }) {
   const [style, setStyle] = useState({});

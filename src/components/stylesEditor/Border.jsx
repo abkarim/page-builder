@@ -2,11 +2,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import PropType from 'prop-types';
 
-import CheckBoxInput from '../input/Checkbox';
-import NumberInput from '../input/Number';
-import UnitInput from '../input/Unit';
-import ColorInput from '../input/Color';
-import Wrapper from './Wrapper';
+import CheckBoxInput from '@/components/input/Checkbox';
+import NumberInput from '@/components/input/Number';
+import UnitInput from '@/components/input/Unit';
+import ColorInput from '@/components/input/Color';
+import Wrapper from '@/components/stylesEditor/Wrapper';
 
 export default function Border({ prevData, setStyle }) {
   const [data, setData] = useState({

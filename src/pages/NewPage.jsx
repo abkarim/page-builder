@@ -3,18 +3,18 @@ import { invoke } from '@tauri-apps/api/tauri';
 import { save } from '@tauri-apps/api/dialog';
 import PropType from 'prop-types';
 
-import PageEditor from '../components/PageEditor';
+import PageEditor from '@/components/PageEditor';
 
-import SideBar from '../components/Sidebar';
-import Block from '../components/Block';
-import PageHeader from '../components/PageHeader';
-import AddNewBlock from '../components/AddNewBlock';
+import SideBar from '@/components/Sidebar';
+import Block from '@/components/Block';
+import PageHeader from '@/components/PageHeader';
+import AddNewBlock from '@/components/AddNewBlock';
 
-import getHTMLstructure from '../util/getHTMLstructure';
-import formatHTML from '../util/formatHTML';
-import prepareCSS from '../util/prepareCSS';
-import sleep from '../util/sleep';
-import Editors from '../components/Editors';
+import getHTMLstructure from '@/util/getHTMLstructure';
+import formatHTML from '@/util/formatHTML';
+import prepareCSS from '@/util/prepareCSS';
+import sleep from '@/util/sleep';
+import Editors from '@/components/Editors';
 
 const Blocks = ({ addElement }) => {
   const [blocks, setBlocks] = useState([]);

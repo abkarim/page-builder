@@ -2,11 +2,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import PropType from 'prop-types';
 
-import NumberInput from '../input/Number';
-import ColorInput from '../input/Color';
-import UnitInput from '../input/Unit';
-import Wrapper from './Wrapper';
-import CheckBoxInput from '../input/Checkbox';
+import NumberInput from '@/components/input/Number';
+import ColorInput from '@/components/input/Color';
+import UnitInput from '@/components/input/Unit';
+import Wrapper from '@/components/stylesEditor/Wrapper';
+import CheckBoxInput from '@/components/input/Checkbox';
 
 export default function Shadow({ prevData, setStyle }) {
   const [data, setData] = useState({

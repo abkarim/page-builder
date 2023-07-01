@@ -2,11 +2,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import PropType from 'prop-types';
 
-import NumberInput from '../input/Number';
-import UnitInput from '../input/Unit';
-import Wrapper from './Wrapper';
-import SelectInput from '../input/Select';
-import getUniqueClassName from '../../util/getUniqueClassName';
+import NumberInput from '@/components/input/Number';
+import UnitInput from '@/components/input/Unit';
+import Wrapper from '@/components/stylesEditor/Wrapper';
+import SelectInput from '@/components/input/Select';
+import getUniqueClassName from '@/util/getUniqueClassName';
 
 export default function ColumnLayout({ prevData, setStyle, iframe, element }) {
   const [data, setData] = useState({

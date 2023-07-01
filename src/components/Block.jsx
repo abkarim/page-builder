@@ -1,6 +1,6 @@
 import PropType from 'prop-types';
 import { useCallback } from 'react';
-import getUniqueClassName from '../util/getUniqueClassName';
+import getUniqueClassName from '@/util/getUniqueClassName';
 
 export default function Block({ image, block, addElement, ...props }) {
   const getFinalHTML = useCallback(() => {

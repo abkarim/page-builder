@@ -2,12 +2,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import PropType from 'prop-types';
 
-import Wrapper from './Wrapper';
+import Wrapper from '@/components/stylesEditor/Wrapper';
 
-import leftImg from '../../assets/img/align/left.png';
-import rightImg from '../../assets/img/align/right.png';
-import centeredImg from '../../assets/img/align/centered.png';
-import justifiedImg from '../../assets/img/align/justified.png';
+import leftImg from '@/assets/img/align/left.png';
+import rightImg from '@/assets/img/align/right.png';
+import centeredImg from '@/assets/img/align/centered.png';
+import justifiedImg from '@/assets/img/align/justified.png';
 
 export default function Align({ prevData, setStyle }) {
   const [data, setData] = useState({

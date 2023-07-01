@@ -1,19 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
 import PropType from 'prop-types';
-import getAcceptedStyle from '../../util/getAcceptedStyle';
-import Border from './Border';
-import Color from './Color';
-import Font from './Font';
-import Margin from './Margin';
-import Padding from './Padding';
-import Position from './Position';
-import Shadow from './Shadow';
-import Size from './Size';
-import Transform from './Transform';
-import CustomCSS from './CustomCSS';
-import Align from './Align';
-import ColumnLayout from './ColumnLayout';
-import Layout from './Layout';
+import getAcceptedStyle from '@/util/getAcceptedStyle';
+import Border from '@/components/stylesEditor/Border';
+import Color from '@/components/stylesEditor/Color';
+import Font from '@/components/stylesEditor/Font';
+import Margin from '@/components/stylesEditor/Margin';
+import Padding from '@/components/stylesEditor/Padding';
+import Position from '@/components/stylesEditor/Position';
+import Shadow from '@/components/stylesEditor/Shadow';
+import Size from '@/components/stylesEditor/Size';
+import Transform from '@/components/stylesEditor/Transform';
+import CustomCSS from '@/components/stylesEditor/CustomCSS';
+import Align from '@/components/stylesEditor/Align';
+import ColumnLayout from '@/components/stylesEditor/ColumnLayout';
+import Layout from '@/components/stylesEditor/Layout';
 
 export default function StyleEditors({
   elementClassName,

@@ -1,5 +1,5 @@
 import PropType from 'prop-types';
-import InputText from './input/Text';
+import InputText from '@/components/input/Text';
 
 export default function PageHeader({
   pageTitle,

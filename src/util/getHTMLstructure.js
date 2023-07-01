@@ -1,5 +1,5 @@
-import getDefaultStyles from './getDefaultStyles';
-import getResetCSS from './getResetCss';
+import getDefaultStyles from '@/util/getDefaultStyles';
+import getResetCSS from '@/util/getResetCSS';
 
 const resetCss = getResetCSS();
 const defaultStyles = getDefaultStyles();

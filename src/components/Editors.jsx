@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import ElementEditors from './elementEditor/ElementEditors';
-import StyleEditors from './stylesEditor/StyleEditors';
+import ElementEditors from '@/components/elementEditor/ElementEditors';
+import StyleEditors from '@/components/stylesEditor/StyleEditors';
 
 export default function Editors({ ...props }) {
   const [editor, setEditor] = useState('style');

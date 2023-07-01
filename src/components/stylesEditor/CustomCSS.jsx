@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import PropType from 'prop-types';
 
-import TextareaInput from '../input/Textarea';
+import TextareaInput from '@/components/input/Textarea';
 
 export default function CustomCSS({ prevData, setStyle }) {
   const [data, setData] = useState({

@@ -2,9 +2,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import PropType from 'prop-types';
 
-import NumberInput from '../input/Number';
-import UnitInput from '../input/Unit';
-import Wrapper from './Wrapper';
+import NumberInput from '@/components/input/Number';
+import UnitInput from '@/components/input/Unit';
+import Wrapper from '@/components/stylesEditor/Wrapper';
 
 export default function Size({ prevData, setStyle }) {
   const [data, setData] = useState({

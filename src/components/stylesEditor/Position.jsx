@@ -2,11 +2,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import PropType from 'prop-types';
 
-import CheckBoxInput from '../input/Checkbox';
-import NumberInput from '../input/Number';
-import UnitInput from '../input/Unit';
-import Wrapper from './Wrapper';
-import PositionInput from '../input/Position';
+import CheckBoxInput from '@/components/input/Checkbox';
+import NumberInput from '@/components/input/Number';
+import UnitInput from '@/components/input/Unit';
+import Wrapper from '@/components/stylesEditor/Wrapper';
+import PositionInput from '@/components/input/Position';
 
 export default function Position({ prevData, setStyle }) {
   const [data, setData] = useState({
