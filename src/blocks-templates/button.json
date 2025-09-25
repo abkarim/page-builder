@@ -1,0 +1,12 @@
+{
+  "id": 2,
+  "name": "button",
+  "acceptStyle": [
+    "*"
+  ],
+  "acceptEdit": [
+    "text"
+  ],
+  "defaultText": "Click me",
+  "element": "<button type='button' role='button' page-builder-element='true' page-builder-element-id='2'>{$TEXT$}</button>"
+}

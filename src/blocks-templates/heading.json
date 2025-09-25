@@ -1,0 +1,21 @@
+{
+  "id": 1,
+  "name": "Heading",
+  "acceptStyle": [
+    "*"
+  ],
+  "acceptEdit": [
+    "text",
+    "tag"
+  ],
+  "defaultText": "Heading Title here",
+  "element": "<h2 page-builder-element='true' page-builder-element-id='1' >{$TEXT$}</h2>",
+  "tagList": [
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6"
+  ]
+}
