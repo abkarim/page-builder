@@ -12,9 +12,11 @@
   "app": {
     "windows": [
       {
-        "title": "pagebuilder",
+        "title": "Page Builder",
         "width": 800,
-        "height": 600
+        "height": 600,
+        "resizable": true,
+        "fullscreen": true
       }
     ],
     "security": {
@@ -23,6 +25,13 @@
   },
   "bundle": {
     "active": true,
+    "category": "DeveloperTool",
+    "shortDescription": "Drag and Drop page builder",
+    "longDescription": "Create interactive page using drag and drop page builder",
+    "resources": [
+      "./../block-templates",
+      "./../component-templates"
+    ],
     "targets": "all",
     "icon": [
       "icons/32x32.png",
