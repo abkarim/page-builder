@@ -97,7 +97,17 @@ fn get_components() -> String {
  * Create project
  */
 #[tauri::command]
-fn create_project(name: &str) {}
+fn create_project(name: &str) -> &str {
+    return name;
+}
+
+/**
+ * Get project
+ */
+#[tauri::command]
+fn get_project(uuid: &str) -> &str {
+    return uuid;
+}
 
 /**
  * Get projects
@@ -122,7 +132,8 @@ pub fn run() {
             get_blocks,
             get_components,
             create_project,
-            get_projects
+            get_project,
+            get_projects,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
