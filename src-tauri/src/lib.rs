@@ -94,6 +94,18 @@ fn get_components() -> String {
 }
 
 /**
+ * Create project
+ */
+#[tauri::command]
+fn create_project(name: &str) {}
+
+/**
+ * Get projects
+ */
+#[tauri::command]
+fn get_projects() {}
+
+/**
  * Save contents in a file
  */
 #[tauri::command]
@@ -108,7 +120,9 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             save_page,
             get_blocks,
-            get_components
+            get_components,
+            create_project,
+            get_projects
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
