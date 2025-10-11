@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router";
+import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import Index from "./screens/Index";
 import ProjectIndex from "./screens/project/Index";

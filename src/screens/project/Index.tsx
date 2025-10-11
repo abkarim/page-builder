@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router";
+import { Route, Routes } from "react-router-dom";
 import Create from "./Create";
 import List from "./List";
 import View from "./View";

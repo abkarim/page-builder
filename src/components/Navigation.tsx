@@ -9,7 +9,7 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { User, UserPlus } from "lucide-react";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 export default function Navigation(): React.JSX.Element {
     const navigate = useNavigate();
