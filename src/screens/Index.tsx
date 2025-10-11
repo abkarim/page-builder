@@ -1,15 +1,33 @@
-import { PlusIcon } from "lucide-react";
+import Navigation from "@/components/Navigation";
+import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Outlet } from "react-router";
 
 export default function (): React.JSX.Element {
+    const { open } = useSidebar();
     return (
-        <section>
-            <div className="space-y-2">
-                <h4>Projects</h4>
-                <button className="flex flex-col gap-2 justify-center items-center p-2 rounded-sm text-[var(--color-primary-foreground)] bg-[var(--foreground)]">
-                    <PlusIcon size={52} />
-                    <p>Create new project</p>
-                </button>
-            </div>
+        <section className="flex min-h-screen">
+            <Navigation />
+
+            <section className="pl-2">
+                <header>
+                    <Tooltip>
+                        <TooltipTrigger>
+                            <SidebarTrigger />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>{open ? "Close" : "Open"} menu</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </header>
+                <div className="mt-2">
+                    <Outlet />
+                </div>
+            </section>
         </section>
     );
 }
