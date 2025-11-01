@@ -57,10 +57,10 @@ export default function (): React.JSX.Element {
     }, [location]);
 
     return (
-        <section className="flex min-h-screen">
+        <section className="flex min-h-screen w-full">
             <Navigation />
 
-            <section className="pl-2">
+            <section className="px-2 w-full">
                 <header className="flex items-center justify-start gap-2">
                     <Tooltip>
                         <TooltipTrigger>
