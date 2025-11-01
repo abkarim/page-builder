@@ -1,5 +1,6 @@
 use std::fs::{self, ReadDir};
-use std::path::PathBuf;
+use std::io;
+use std::path::{Path, PathBuf};
 
 #[cfg(dev)]
 const BLOCKS_DIR_PATH: &str = "./../block-templates";
@@ -97,8 +98,21 @@ fn get_components() -> String {
  * Create project
  */
 #[tauri::command]
-fn create_project(name: &str) -> &str {
-    return name;
+fn create_project(name: &str, directory: &str) -> (bool, String) {
+    let path = Path::new(directory).join(name);
+
+    if path.exists() {
+        return (false, "Project already exists".to_string());
+    }
+
+    match fs::create_dir(path) {
+        Ok(_) => (true, "Project created successfully".to_string()),
+        Err(err) => {
+            let msg = format!("Failed to create project folder: {}", err);
+            eprintln!("{}", msg);
+            (false, msg)
+        }
+    }
 }
 
 /**
@@ -123,9 +137,27 @@ fn save_page(filename: &str, content: &str) {
     fs::write(filename, content).expect("unable to write file");
 }
 
+fn is_directory_empty<P: AsRef<Path>>(directory_path: P) -> io::Result<bool> {
+    let mut entries = fs::read_dir(directory_path)?;
+    Ok(entries.next().is_none())
+}
+
+/**
+ * Checks is a directory is empty or not
+ */
+#[tauri::command]
+fn check_if_directory_empty(path: &str) -> Result<bool, String> {
+    match is_directory_empty(path) {
+        Ok(is_empty) => Ok(is_empty),
+        Err(err) => Err(format!("Failed to check directory: {}", err)),
+    }
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             save_page,
@@ -134,6 +166,7 @@ pub fn run() {
             create_project,
             get_project,
             get_projects,
+            check_if_directory_empty
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
