@@ -5,18 +5,54 @@ import {
     TooltipContent,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
     Breadcrumb,
     BreadcrumbItem,
     BreadcrumbLink,
     BreadcrumbList,
-    BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { useEffect, useState } from "react";
+
+type Breadcrumb = {
+    location: string;
+    name: string;
+};
 
 export default function (): React.JSX.Element {
     const { open } = useSidebar();
+    const navigate = useNavigate();
+    const [breadcrumbs, setBreadcrumbs] = useState<Breadcrumb[]>([]);
+    const location = useLocation();
+
+    useEffect(() => {
+        const data = location.pathname.split("/");
+
+        setBreadcrumbs(() => {
+            const bc: Breadcrumb[] = [];
+            data.forEach((path, index) => {
+                const prevLoc = bc[index - 1]?.location;
+                switch (path) {
+                    case "":
+                        bc.push({
+                            name: "Home",
+                            location: "/",
+                        });
+                        break;
+
+                    default:
+                        bc.push({
+                            name: path.charAt(0).toUpperCase() + path.slice(1),
+                            location: `${prevLoc}${
+                                prevLoc !== "/" ? "/" : ""
+                            }${path}`,
+                        });
+                }
+            });
+            return bc;
+        });
+    }, [location]);
 
     return (
         <section className="flex min-h-screen">
@@ -34,19 +70,23 @@ export default function (): React.JSX.Element {
                     </Tooltip>
                     <Breadcrumb>
                         <BreadcrumbList>
-                            <BreadcrumbItem>
-                                <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                <BreadcrumbLink href="/components">
-                                    Components
-                                </BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
-                            </BreadcrumbItem>
+                            {breadcrumbs.map((bc, index) => (
+                                <>
+                                    <BreadcrumbItem>
+                                        <BreadcrumbLink
+                                            className="cursor-pointer"
+                                            onClick={() =>
+                                                navigate(bc.location)
+                                            }
+                                        >
+                                            {bc.name}
+                                        </BreadcrumbLink>
+                                    </BreadcrumbItem>
+                                    {breadcrumbs.length - 1 > index && (
+                                        <BreadcrumbSeparator />
+                                    )}
+                                </>
+                            ))}
                         </BreadcrumbList>
                     </Breadcrumb>
                 </header>
