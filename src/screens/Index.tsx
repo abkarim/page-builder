@@ -27,11 +27,12 @@ export default function (): React.JSX.Element {
     const location = useLocation();
 
     useEffect(() => {
-        const data = location.pathname.split("/");
+        const data = new Set(location.pathname.split("/"));
 
         setBreadcrumbs(() => {
             const bc: Breadcrumb[] = [];
-            data.forEach((path, index) => {
+            let index = 0;
+            data.forEach((path) => {
                 const prevLoc = bc[index - 1]?.location;
                 switch (path) {
                     case "":
@@ -49,6 +50,7 @@ export default function (): React.JSX.Element {
                             }${path}`,
                         });
                 }
+                index++;
             });
             return bc;
         });
