@@ -1,4 +1,7 @@
+use std::collections::HashMap;
 use std::path::Path;
+
+use uuid::Uuid;
 
 use crate::db;
 use crate::fs;
@@ -75,10 +78,28 @@ pub fn create_project(name: &str, directory: &str) -> (bool, String) {
     let path = Path::new(directory).join(name);
 
     if path.exists() {
-        return (false, "Project already exists".to_string());
+        return (false, "Directory is not empty".to_string());
     }
 
-    fs::create_project(path)
+    let data = fs::create_project(&path);
+
+    if !data.0 {
+        return data;
+    }
+
+    // Insert to db
+    let mut data_to_insert = HashMap::new();
+
+    let id = Uuid::new_v4().to_string();
+
+    data_to_insert.insert("id", id.clone());
+    data_to_insert.insert("name", name.to_string());
+    data_to_insert.insert("path", path.to_string_lossy().to_string());
+
+    match db::insert(db::PROJECTS_TABLE, data_to_insert) {
+        Ok(_) => (true, id),
+        Err(e) => (false, e.to_string()),
+    }
 }
 
 // /**
