@@ -1,6 +1,19 @@
+import { invoke } from "@tauri-apps/api/core";
 import { PlusIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function (): React.JSX.Element {
+    const [projects, setProjects] = useState([]);
+
+    async function get_projects() {
+        const data = await invoke("get_projects");
+        console.log({ data });
+    }
+
+    useEffect(() => {
+        get_projects();
+    }, []);
+
     return (
         <section>
             <div className="space-y-2">
