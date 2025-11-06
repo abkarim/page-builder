@@ -1,4 +1,8 @@
 mod commands;
+mod db;
+mod fs;
+
+use commands::projects;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -6,7 +10,10 @@ pub fn run() {
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![commands::projects::create_project,])
+        .invoke_handler(tauri::generate_handler![
+            projects::create_project,
+            projects::get_projects
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
