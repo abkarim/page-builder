@@ -26,7 +26,7 @@ pub fn project_exists(path: &str) -> bool {
     }
 }
 
-pub fn create_project(path: PathBuf) -> (bool, String) {
+pub fn create_project(path: &PathBuf) -> (bool, String) {
     match fs::create_dir(path) {
         Ok(_) => (true, "Project created successfully".to_string()),
         Err(err) => {
