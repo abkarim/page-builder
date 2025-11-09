@@ -92,18 +92,14 @@ pub fn get_projects() -> Result<Vec<db::Project>, String> {
  * Create project
  */
 #[tauri::command]
-pub fn create_project(name: &str, directory: &str) -> (bool, String) {
+pub fn create_project(name: &str, directory: &str) -> Result<String, String> {
     let path = Path::new(directory).join(name);
 
     if path.exists() {
-        return (false, "Directory is not empty".to_string());
+        return Err("Directory is not empty".to_string());
     }
 
-    let data = fs::create_project(&path);
-
-    if !data.0 {
-        return data;
-    }
+    fs::create_project(&path).map_err(|e| e.to_string())?;
 
     // Insert to db
     let mut data_to_insert = HashMap::new();
@@ -115,11 +111,11 @@ pub fn create_project(name: &str, directory: &str) -> (bool, String) {
     data_to_insert.insert("path", path.to_string_lossy().to_string());
 
     match db::insert(db::PROJECTS_TABLE, data_to_insert) {
-        Ok(_) => (true, id),
+        Ok(_) => Ok("project created successfully".to_string()),
         Err(e) => {
             // Delete created folder
-
-            (false, e.to_string())
+            fs::remove_project(&path, true)?;
+            Err(e.to_string())
         }
     }
 }
