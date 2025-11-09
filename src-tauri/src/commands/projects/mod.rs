@@ -1,13 +1,14 @@
+use serde::Serialize;
 use std::collections::HashMap;
 use std::path::Path;
-
-use serde::Serialize;
+use ts_rs::TS;
 use uuid::Uuid;
 
 use crate::db;
 use crate::fs;
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Debug, TS)]
+#[ts(export)]
 pub struct Project {
     pub id: String,
     pub name: String,
