@@ -12,6 +12,7 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             projects::create_project,
+            projects::remove_project,
             projects::get_projects
         ])
         .run(tauri::generate_context!())
