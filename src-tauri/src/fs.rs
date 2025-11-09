@@ -83,13 +83,9 @@ pub fn project_exists(path: &str) -> bool {
     }
 }
 
-pub fn create_project(path: &PathBuf) -> (bool, String) {
+pub fn create_project(path: &PathBuf) -> Result<bool, String> {
     match fs::create_dir(path) {
-        Ok(_) => (true, "Project created successfully".to_string()),
-        Err(err) => {
-            let msg = format!("Failed to create project folder: {}", err);
-            eprintln!("{}", msg);
-            (false, msg)
-        }
+        Ok(_) => Ok(true),
+        Err(err) => Err(format!("Failed to create project folder: {}", err)),
     }
 }
