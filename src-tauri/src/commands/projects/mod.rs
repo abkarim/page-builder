@@ -1,10 +1,18 @@
 use std::collections::HashMap;
 use std::path::Path;
 
+use serde::Serialize;
 use uuid::Uuid;
 
 use crate::db;
 use crate::fs;
+
+#[derive(Serialize, Debug)]
+pub struct Project {
+    pub id: String,
+    pub name: String,
+    pub path: String,
+}
 
 /**
  * Is project exists
@@ -57,15 +65,15 @@ pub fn remove_project(uuid: String) -> Result<String, String> {
  * Get projects
  */
 #[tauri::command]
-pub fn get_projects() -> Result<Vec<db::Project>, String> {
+pub fn get_projects() -> Result<Vec<Project>, String> {
     let projects = db::get(db::PROJECTS_TABLE, None).map_err(|e| format!("Error: {}", e))?;
 
     println!("{:?}", projects);
 
     // Map HashMap<String,String> to Project
-    let projects: Vec<db::Project> = projects
+    let projects: Vec<Project> = projects
         .into_iter()
-        .map(|row| db::Project {
+        .map(|row| Project {
             id: row.get("id").cloned().unwrap_or_default(),
             name: row.get("name").cloned().unwrap_or_default(),
             path: row.get("path").cloned().unwrap_or_default(),
@@ -74,7 +82,7 @@ pub fn get_projects() -> Result<Vec<db::Project>, String> {
     println!("{:?}", projects);
 
     // Only return projects that exists on disk
-    let existing_projects: Vec<db::Project> = projects
+    let existing_projects: Vec<Project> = projects
         .into_iter()
         .filter(|p| fs::project_exists(&p.path))
         .collect();

@@ -1,13 +1,5 @@
 use rusqlite::{params_from_iter, Connection, Result};
-use serde::Serialize;
 use std::collections::HashMap;
-
-#[derive(Serialize, Debug)]
-pub struct Project {
-    pub id: String,
-    pub name: String,
-    pub path: String,
-}
 
 pub const PROJECTS_TABLE: &str = "projects";
 
