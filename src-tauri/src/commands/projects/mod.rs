@@ -60,6 +60,8 @@ pub fn remove_project(uuid: String) -> Result<String, String> {
 pub fn get_projects() -> Result<Vec<db::Project>, String> {
     let projects = db::get(db::PROJECTS_TABLE, None).map_err(|e| format!("Error: {}", e))?;
 
+    println!("{:?}", projects);
+
     // Map HashMap<String,String> to Project
     let projects: Vec<db::Project> = projects
         .into_iter()
@@ -69,12 +71,15 @@ pub fn get_projects() -> Result<Vec<db::Project>, String> {
             path: row.get("path").cloned().unwrap_or_default(),
         })
         .collect();
+    println!("{:?}", projects);
 
     // Only return projects that exists on disk
     let existing_projects: Vec<db::Project> = projects
         .into_iter()
         .filter(|p| fs::project_exists(&p.path))
         .collect();
+
+    println!("{:?}", existing_projects);
 
     Ok(existing_projects)
 }
@@ -100,6 +105,15 @@ pub fn create_project(name: &str, directory: &str) -> Result<String, String> {
     }
 
     fs::create_project(&path).map_err(|e| e.to_string())?;
+
+    // Add project.json
+    let initial_content = format!(
+        r#"{{
+        "name": {},
+    }}"#,
+        name
+    );
+    std::fs::write(path.join("project.json"), initial_content).map_err(|e| e.to_string())?;
 
     // Insert to db
     let mut data_to_insert = HashMap::new();
