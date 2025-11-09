@@ -2,7 +2,7 @@ use rusqlite::{params_from_iter, Connection, Result};
 use serde::Serialize;
 use std::collections::HashMap;
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 pub struct Project {
     pub id: String,
     pub name: String,
