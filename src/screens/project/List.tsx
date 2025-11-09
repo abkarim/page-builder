@@ -6,8 +6,12 @@ export default function (): React.JSX.Element {
     const [projects, setProjects] = useState([]);
 
     async function get_projects() {
-        const data = await invoke("get_projects");
-        console.log({ data });
+        try {
+            const data = await invoke("get_projects");
+            console.log({ data });
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     useEffect(() => {
