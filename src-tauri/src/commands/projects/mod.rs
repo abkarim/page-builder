@@ -30,17 +30,35 @@ pub fn get_project(uuid: &str) -> &str {
 }
 
 /**
+ * Remove project
+ */
+#[tauri::command]
+pub fn remove_project(uuid: String) -> Result<String, String> {
+    let project = db::get(
+        db::PROJECTS_TABLE,
+        Some(HashMap::from([("id", uuid.clone())])),
+    );
+
+    println!("{:#?}", project);
+
+    return Ok("debug".to_string());
+
+    // Get project info from db
+    // let force = true;
+    // let dir_path = Path::new("");
+
+    // match fs::remove_project(dir_path, force) {
+    //     Ok(_) => Ok(String::from("project removed successfully")),
+    //     Err(e) => Err(format!("Err: {}", e)),
+    // }
+}
+
+/**
  * Get projects
  */
 #[tauri::command]
-pub fn get_projects() -> Vec<db::Project> {
-    let projects = match db::get(db::PROJECTS_TABLE, None) {
-        Ok(p) => p,
-        Err(e) => {
-            eprintln!("Failed to get projects: {}", e);
-            return vec![];
-        }
-    };
+pub fn get_projects() -> Result<Vec<db::Project>, String> {
+    let projects = db::get(db::PROJECTS_TABLE, None).map_err(|e| format!("Error: {}", e))?;
 
     // Map HashMap<String,String> to Project
     let projects: Vec<db::Project> = projects
@@ -58,7 +76,7 @@ pub fn get_projects() -> Vec<db::Project> {
         .filter(|p| fs::project_exists(&p.path))
         .collect();
 
-    existing_projects
+    Ok(existing_projects)
 }
 
 /**
@@ -98,7 +116,11 @@ pub fn create_project(name: &str, directory: &str) -> (bool, String) {
 
     match db::insert(db::PROJECTS_TABLE, data_to_insert) {
         Ok(_) => (true, id),
-        Err(e) => (false, e.to_string()),
+        Err(e) => {
+            // Delete created folder
+
+            (false, e.to_string())
+        }
     }
 }
 
