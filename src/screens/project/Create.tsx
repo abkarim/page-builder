@@ -37,22 +37,14 @@ export default function (): React.JSX.Element {
         setIsLoading(true);
 
         try {
-            const [success, message] = await invoke<[boolean, string]>(
-                "create_project",
-                {
-                    name,
-                    directory,
-                }
-            );
-
-            if (!success) {
-                return toast.error(message);
-            }
+            const message = await invoke<string>("create_project", {
+                name,
+                directory,
+            });
 
             toast.success(message);
-        } catch (e) {
-            toast.error("Something went wrong, please try again");
-            console.error(e);
+        } catch (err) {
+            toast.error(err as string);
         } finally {
             setIsLoading(false);
         }
