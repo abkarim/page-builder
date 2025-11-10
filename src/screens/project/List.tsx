@@ -2,8 +2,17 @@ import { invoke } from "@tauri-apps/api/core";
 import { PlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { type Project } from "./../../../src-tauri/bindings/Project";
+import {
+    ContextMenu,
+    ContextMenuContent,
+    ContextMenuItem,
+    ContextMenuSeparator,
+    ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+import { useNavigate } from "react-router-dom";
 
 export default function (): React.JSX.Element {
+    const navigate = useNavigate();
     const [projects, setProjects] = useState<Project[]>([]);
 
     async function get_projects() {
@@ -21,13 +30,38 @@ export default function (): React.JSX.Element {
 
     return (
         <section>
-            <div className="space-y-2">
+            <div className="flex items-stretch gap-4">
                 {projects.map((project) => (
-                    <div key={project.id}>
-                        <p>{project.name}</p>
-                    </div>
+                    <ContextMenu>
+                        <ContextMenuTrigger
+                            onClick={() => navigate(`/project/${project.id}`)}
+                        >
+                            <button
+                                key={project.id}
+                                className="p-2 rounded-sm bg-muted h-full"
+                            >
+                                <p className="min-w-12">{project.name}</p>
+                            </button>
+                        </ContextMenuTrigger>
+                        <ContextMenuContent>
+                            <ContextMenuItem
+                                onClick={() =>
+                                    navigate(`/project/${project.id}`)
+                                }
+                            >
+                                Edit
+                            </ContextMenuItem>
+                            <ContextMenuSeparator />
+                            <ContextMenuItem className="text-red-600 hover:bg-red-600! hover:text-white! ">
+                                Delete
+                            </ContextMenuItem>
+                        </ContextMenuContent>
+                    </ContextMenu>
                 ))}
-                <button className="flex flex-col gap-2 justify-center items-center p-2 rounded-sm text-[var(--color-primary-foreground)] bg-[var(--foreground)]">
+                <button
+                    onClick={() => navigate("/project/add")}
+                    className="flex flex-col gap-2 justify-center items-center p-2 rounded-sm text-[var(--color-primary-foreground)] bg-[var(--foreground)]"
+                >
                     <PlusIcon size={52} />
                     <p>Create new project</p>
                 </button>
