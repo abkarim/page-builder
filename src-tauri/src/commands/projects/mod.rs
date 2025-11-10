@@ -69,8 +69,6 @@ pub fn remove_project(uuid: String) -> Result<String, String> {
 pub fn get_projects() -> Result<Vec<Project>, String> {
     let projects = db::get(db::PROJECTS_TABLE, None).map_err(|e| format!("Error: {}", e))?;
 
-    println!("{:?}", projects);
-
     // Map HashMap<String,String> to Project
     let projects: Vec<Project> = projects
         .into_iter()
@@ -80,15 +78,12 @@ pub fn get_projects() -> Result<Vec<Project>, String> {
             path: row.get("path").cloned().unwrap_or_default(),
         })
         .collect();
-    println!("{:?}", projects);
 
     // Only return projects that exists on disk
     let existing_projects: Vec<Project> = projects
         .into_iter()
         .filter(|p| fs::project_exists(&p.path))
         .collect();
-
-    println!("{:?}", existing_projects);
 
     Ok(existing_projects)
 }
