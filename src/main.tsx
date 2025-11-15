@@ -4,14 +4,17 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import { SidebarProvider } from "./components/ui/sidebar";
 import { Toaster } from "./components/ui/sonner";
+import { ConfirmDialogContextProvider } from "./context/ConfirmDialogContext";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>
-        <BrowserRouter>
-            <SidebarProvider>
-                <App />
-                <Toaster />
-            </SidebarProvider>
-        </BrowserRouter>
+        <ConfirmDialogContextProvider>
+            <BrowserRouter>
+                <SidebarProvider>
+                    <App />
+                    <Toaster />
+                </SidebarProvider>
+            </BrowserRouter>
+        </ConfirmDialogContextProvider>
     </React.StrictMode>
 );

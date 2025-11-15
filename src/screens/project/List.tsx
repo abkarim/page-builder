@@ -10,10 +10,17 @@ import {
     ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { useNavigate } from "react-router-dom";
+import useConfirmDialog from "@/hooks/useConfirmDialog";
 
 export default function (): React.JSX.Element {
     const navigate = useNavigate();
     const [projects, setProjects] = useState<Project[]>([]);
+    const getConfirmation = useConfirmDialog();
+
+    async function remove_project(uuid: Project["id"]) {
+        const ok = await getConfirmation({});
+        if (!ok) return;
+    }
 
     async function get_projects() {
         try {
