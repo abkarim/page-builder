@@ -1,6 +1,7 @@
 use serde::Serialize;
 use std::collections::HashMap;
 use std::path::Path;
+use std::path::PathBuf;
 use ts_rs::TS;
 use uuid::Uuid;
 
@@ -34,8 +35,20 @@ pub struct Project {
  * Get project
  */
 #[tauri::command]
-pub fn get_project(uuid: &str) -> &str {
-    return uuid;
+pub fn get_project(uuid: &String) -> Result<Project, String> {
+    let rows = db::get(
+        db::PROJECTS_TABLE,
+        Some(HashMap::from([("id", uuid.clone())])),
+    )
+    .map_err(|e| format!("{}", e))?;
+
+    let row = rows.into_iter().next().ok_or("Project not found")?;
+
+    Ok(Project {
+        id: row.get("id").cloned().ok_or("missing id")?,
+        name: row.get("name").cloned().ok_or("missing name")?,
+        path: row.get("path").cloned().ok_or("missing path")?,
+    })
 }
 
 /**
@@ -43,23 +56,17 @@ pub fn get_project(uuid: &str) -> &str {
  */
 #[tauri::command]
 pub fn remove_project(uuid: String) -> Result<String, String> {
-    let project = db::get(
-        db::PROJECTS_TABLE,
-        Some(HashMap::from([("id", uuid.clone())])),
-    );
+    let project = get_project(&uuid)?;
 
-    println!("{:#?}", project);
+    // remove project from disk
+    let path = PathBuf::from(&project.path);
+    fs::remove_project(&path, true)?;
 
-    return Ok("debug".to_string());
+    // remove project from database
+    db::delete(db::PROJECTS_TABLE, HashMap::from([("id", project.id)]))
+        .map_err(|e| format!("{}", e))?;
 
-    // Get project info from db
-    // let force = true;
-    // let dir_path = Path::new("");
-
-    // match fs::remove_project(dir_path, force) {
-    //     Ok(_) => Ok(String::from("project removed successfully")),
-    //     Err(e) => Err(format!("Err: {}", e)),
-    // }
+    return Ok("project removed successfully".to_string());
 }
 
 /**
