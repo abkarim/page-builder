@@ -11,15 +11,30 @@ import {
 } from "@/components/ui/context-menu";
 import { useNavigate } from "react-router-dom";
 import useConfirmDialog from "@/hooks/useConfirmDialog";
+import { toast } from "sonner";
 
 export default function (): React.JSX.Element {
     const navigate = useNavigate();
     const [projects, setProjects] = useState<Project[]>([]);
     const getConfirmation = useConfirmDialog();
 
-    async function remove_project(uuid: Project["id"]) {
+    async function removeProject(uuid: Project["id"]) {
         const ok = await getConfirmation({});
         if (!ok) return;
+        try {
+            const msg = await invoke<string>("remove_project", {
+                uuid,
+            });
+
+            /**
+             * Remove the project
+             */
+            setProjects((prev) => prev.filter((p) => p.id !== uuid));
+
+            toast.success(msg);
+        } catch (err) {
+            toast.error(err as string);
+        }
     }
 
     async function get_projects() {
@@ -59,7 +74,10 @@ export default function (): React.JSX.Element {
                                 Edit
                             </ContextMenuItem>
                             <ContextMenuSeparator />
-                            <ContextMenuItem className="text-red-600 hover:bg-red-600! hover:text-white! ">
+                            <ContextMenuItem
+                                onClick={() => removeProject(project.id)}
+                                className="text-red-600 hover:bg-red-600! hover:text-white! "
+                            >
                                 Delete
                             </ContextMenuItem>
                         </ContextMenuContent>
