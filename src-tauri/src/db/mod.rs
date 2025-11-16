@@ -4,7 +4,7 @@ use std::collections::HashMap;
 pub const PROJECTS_TABLE: &str = "projects";
 
 pub fn init_db() -> Result<Connection> {
-    let conn = Connection::open("app.db")?;
+    let conn = Connection::open("./../app.db")?;
     conn.execute(
         &format!(
             "CREATE TABLE IF NOT EXISTS {} (
