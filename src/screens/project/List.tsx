@@ -1,7 +1,8 @@
 import { invoke } from "@tauri-apps/api/core";
 import { PlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-import { type Project } from "./../../../src-tauri/bindings/Project";
+import { type Project } from "src-tauri/bindings/Project";
+
 import {
     ContextMenu,
     ContextMenuContent,
