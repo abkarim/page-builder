@@ -20,7 +20,7 @@ pub struct Project {
  * Get project
  */
 #[tauri::command]
-pub fn get_project(uuid: &String) -> Result<Project, String> {
+pub fn get_project(uuid: String) -> Result<Project, String> {
     let rows = db::get(
         db::PROJECTS_TABLE,
         Some(HashMap::from([("id", uuid.clone())])),
@@ -41,7 +41,7 @@ pub fn get_project(uuid: &String) -> Result<Project, String> {
  */
 #[tauri::command]
 pub fn remove_project(uuid: String) -> Result<String, String> {
-    let project = get_project(&uuid)?;
+    let project = get_project(uuid.clone())?;
 
     // remove project from disk
     let path = PathBuf::from(&project.path);
