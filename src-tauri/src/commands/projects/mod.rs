@@ -17,21 +17,6 @@ pub struct Project {
 }
 
 /**
- * Is project exists
- *
- * Checks if a project exists
- * in db and disk
- */
-// pub fn is_project_exists(uuid: &str) -> bool {}
-
-/**
- * Delete project
- * from disk and db
- */
-// #[tauri::command]
-// pub fn delete_project(uuid: &str) -> bool {}
-
-/**
  * Get project
  */
 #[tauri::command]
