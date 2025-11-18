@@ -105,7 +105,7 @@ pub fn create_project(name: &str, directory: &str) -> Result<String, String> {
     // Add project.json
     let initial_content = format!(
         r#"{{
-        "name": {},
+        "name": "{}",
     }}"#,
         name
     );
@@ -121,7 +121,7 @@ pub fn create_project(name: &str, directory: &str) -> Result<String, String> {
     data_to_insert.insert("path", path.to_string_lossy().to_string());
 
     match db::insert(db::PROJECTS_TABLE, data_to_insert) {
-        Ok(_) => Ok("project created successfully".to_string()),
+        Ok(_) => Ok(id),
         Err(e) => {
             // Delete created folder
             fs::remove_project(&path, true)?;

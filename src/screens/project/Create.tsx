@@ -6,11 +6,13 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
+import { useNavigate } from "react-router-dom";
 
 export default function (): React.JSX.Element {
     const [name, setName] = useState("");
     const [directory, setDirectory] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
 
     async function selectDirectory() {
         try {
@@ -34,15 +36,24 @@ export default function (): React.JSX.Element {
             return toast.error("Name can't be empty");
         }
 
+        if (!directory) {
+            return toast.error("Directory can't be empty");
+        }
+
         setIsLoading(true);
 
         try {
-            const message = await invoke<string>("create_project", {
+            const uuid = await invoke<string>("create_project", {
                 name,
                 directory,
             });
 
-            toast.success(message);
+            toast.success("Project created successfully");
+
+            /**
+             * Redirect user to the newly created project
+             */
+            navigate(`/project/${uuid}`);
         } catch (err) {
             toast.error(err as string);
         } finally {
