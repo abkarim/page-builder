@@ -7,6 +7,7 @@ use uuid::Uuid;
 
 use crate::db;
 use crate::fs;
+use crate::snippets;
 
 #[derive(Serialize, Debug, TS)]
 #[ts(export)]
@@ -128,6 +129,29 @@ pub fn create_project(name: &str, directory: &str) -> Result<String, String> {
             Err(e.to_string())
         }
     }
+}
+
+/**
+ * Create new design
+ */
+#[tauri::command]
+pub fn create_new_design(name: String, project_uuid: String) -> Result<String, String> {
+    if name.trim().len() == 0 {
+        return Err("Name can't be empty".to_string());
+    }
+    if project_uuid.trim().len() == 0 {
+        return Err("Project id is required".to_string());
+    }
+
+    let project = get_project(project_uuid)?;
+
+    std::fs::write(
+        Path::new(&project.path).join(format!("{}.html", name)),
+        snippets::html::get_html_snippet(&name),
+    )
+    .map_err(|e| e.to_string())?;
+
+    Ok("Design created successfully".to_string())
 }
 
 // /**

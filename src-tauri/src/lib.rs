@@ -1,6 +1,7 @@
 mod commands;
 mod db;
 mod fs;
+mod snippets;
 
 use commands::projects;
 
@@ -14,7 +15,8 @@ pub fn run() {
             projects::create_project,
             projects::remove_project,
             projects::get_projects,
-            projects::get_project
+            projects::get_project,
+            projects::create_new_design
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
