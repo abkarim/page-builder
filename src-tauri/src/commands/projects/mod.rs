@@ -121,14 +121,23 @@ pub fn create_project(name: &str, directory: &str) -> Result<String, String> {
     data_to_insert.insert("name", name.to_string());
     data_to_insert.insert("path", path.to_string_lossy().to_string());
 
-    match db::insert(db::PROJECTS_TABLE, data_to_insert) {
-        Ok(_) => Ok(id),
+    let result = match db::insert(db::PROJECTS_TABLE, data_to_insert) {
+        Ok(_) => Ok(id.clone()),
         Err(e) => {
             // Delete created folder
             fs::remove_project(&path, true)?;
             Err(e.to_string())
         }
+    };
+
+    if let Ok(_) = &result {
+        match create_new_design(String::from("Home"), id) {
+            Ok(_) => {}
+            Err(_e) => {}
+        }
     }
+
+    result
 }
 
 /**
