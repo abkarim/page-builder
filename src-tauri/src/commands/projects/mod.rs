@@ -135,15 +135,15 @@ pub fn create_project(name: &str, directory: &str) -> Result<String, String> {
  * Create new design
  */
 #[tauri::command]
-pub fn create_new_design(name: String, project_uuid: String) -> Result<String, String> {
+pub fn create_new_design(name: String, uuid: String) -> Result<String, String> {
     if name.trim().len() == 0 {
         return Err("Name can't be empty".to_string());
     }
-    if project_uuid.trim().len() == 0 {
+    if uuid.trim().len() == 0 {
         return Err("Project id is required".to_string());
     }
 
-    let project = get_project(project_uuid)?;
+    let project = get_project(uuid)?;
 
     std::fs::write(
         Path::new(&project.path).join(format!("{}.html", name)),
