@@ -13,6 +13,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import useConfirmDialog from "@/hooks/useConfirmDialog";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 export default function (): React.JSX.Element {
     const navigate = useNavigate();
@@ -84,13 +85,13 @@ export default function (): React.JSX.Element {
                         </ContextMenuContent>
                     </ContextMenu>
                 ))}
-                <button
+                <Button
                     onClick={() => navigate("/project/add")}
-                    className="flex flex-col gap-2 justify-center items-center p-2 rounded-sm text-[var(--color-primary-foreground)] bg-[var(--foreground)]"
+                    className="h-full flex flex-col gap-2 justify-center items-center p-2 py-5 rounded-sm text-[var(--color-primary-foreground)] bg-[var(--foreground)]"
                 >
                     <PlusIcon size={52} />
                     <p>Create new project</p>
-                </button>
+                </Button>
             </div>
         </section>
     );
