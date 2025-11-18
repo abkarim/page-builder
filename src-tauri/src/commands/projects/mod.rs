@@ -18,6 +18,15 @@ pub struct Project {
 }
 
 /**
+ * assets path
+ */
+pub const ASSETS_PATH: &str = "/assets/";
+pub const ASSETS_CSS_PATH: &str = "/assets/css/";
+pub const ASSETS_JS_PATH: &str = "/assets/js/";
+pub const PROJECT_CSS_FILENAME: &str = "styles.css";
+pub const PROJECT_JS_FILENAME: &str = "app.js";
+
+/**
  * Get project
  */
 #[tauri::command]
