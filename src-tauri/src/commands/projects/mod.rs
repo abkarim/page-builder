@@ -7,7 +7,10 @@ use uuid::Uuid;
 
 use crate::db;
 use crate::fs;
+use crate::fs::create_file;
 use crate::snippets;
+use crate::snippets::css;
+use crate::snippets::js;
 
 #[derive(Serialize, Debug, TS)]
 #[ts(export)]
@@ -20,9 +23,8 @@ pub struct Project {
 /**
  * assets path
  */
-pub const ASSETS_PATH: &str = "/assets/";
-pub const ASSETS_CSS_PATH: &str = "/assets/css/";
-pub const ASSETS_JS_PATH: &str = "/assets/js/";
+pub const PROJECT_ASSETS_CSS_PATH: &str = "assets/css/";
+pub const PROJECT_ASSETS_JS_PATH: &str = "assets/js/";
 pub const PROJECT_CSS_FILENAME: &str = "styles.css";
 pub const PROJECT_JS_FILENAME: &str = "app.js";
 
@@ -119,7 +121,7 @@ pub fn create_project(name: &str, directory: &str) -> Result<String, String> {
     }}"#,
         name
     );
-    std::fs::write(path.join("project.json"), initial_content).map_err(|e| e.to_string())?;
+    fs::create_file(&path.join("project.json"), initial_content)?;
 
     // Insert to db
     let mut data_to_insert = HashMap::new();
@@ -140,10 +142,22 @@ pub fn create_project(name: &str, directory: &str) -> Result<String, String> {
     };
 
     if let Ok(_) = &result {
-        match create_new_design(String::from("Home"), id) {
-            Ok(_) => {}
-            Err(_e) => {}
-        }
+        // Create default design file
+        create_new_design(String::from("Home"), id)?;
+
+        // Create project css file
+        create_file(
+            &path
+                .join(PROJECT_ASSETS_CSS_PATH)
+                .join(PROJECT_CSS_FILENAME),
+            css::generate_css_snippet(),
+        )?;
+
+        // Create project js file
+        create_file(
+            &path.join(PROJECT_ASSETS_JS_PATH).join(PROJECT_JS_FILENAME),
+            js::generate_default_js(),
+        )?;
     }
 
     result
@@ -163,11 +177,10 @@ pub fn create_new_design(name: String, uuid: String) -> Result<String, String> {
 
     let project = get_project(uuid)?;
 
-    std::fs::write(
-        Path::new(&project.path).join(format!("{}.html", name)),
+    fs::create_file(
+        &Path::new(&project.path).join(format!("{}.html", name)),
         snippets::html::get_html_snippet(&name),
-    )
-    .map_err(|e| e.to_string())?;
+    )?;
 
     Ok("Design created successfully".to_string())
 }
