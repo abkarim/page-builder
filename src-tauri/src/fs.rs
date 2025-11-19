@@ -89,3 +89,17 @@ pub fn create_project(path: &PathBuf) -> Result<bool, String> {
         Err(err) => Err(format!("Failed to create project folder: {}", err)),
     }
 }
+
+pub fn create_file(path: &PathBuf, content: String) -> Result<bool, String> {
+    println!("{:?}", &path);
+
+    // Create parents directly
+    if let Some(parent) = path.parent() {
+        println!("parent {:?}", &parent);
+        fs::create_dir_all(parent).map_err(|e| e.to_string())?;
+    }
+
+    fs::write(path, content).map_err(|e| e.to_string())?;
+
+    Ok(true)
+}
