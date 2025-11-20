@@ -21,9 +21,21 @@ import { type Project } from "src-tauri/bindings/Project";
 export default function (): React.JSX.Element {
     const { id } = useParams();
     const [project, setProject] = useState<Project>();
+    const [designs, setDesigns] = useState([]);
     const [newDesignName, setNewDesignName] = useState("");
     const [newDesignSheetOpenState, setNewDesignSheetOpenState] =
         useState(false);
+
+    async function getDesigns() {
+        try {
+            const data = await invoke("get_designs", {
+                uuid: project?.id,
+            });
+            console.log({ data });
+        } catch (e) {
+            toast.error(e as string);
+        }
+    }
 
     async function getProject() {
         try {
@@ -44,6 +56,12 @@ export default function (): React.JSX.Element {
         }
         getProject();
     }, []);
+
+    useEffect(() => {
+        if (!project?.id) return;
+
+        getDesigns();
+    }, [project]);
 
     async function createNewDesign() {
         /**
