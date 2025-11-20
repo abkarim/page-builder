@@ -100,3 +100,21 @@ pub fn create_file(path: &PathBuf, content: String) -> Result<bool, String> {
 
     Ok(true)
 }
+
+pub fn get_design_files(path: &Path) -> io::Result<Vec<String>> {
+    let mut files: Vec<String> = fs::read_dir(path)?
+        .filter_map(|entry| entry.ok())
+        .map(|entry| entry.path())
+        .filter(|p| p.is_file())
+        .filter(|p| p.extension().and_then(|e| e.to_str()) == Some("html"))
+        .filter_map(|p| {
+            p.file_stem() // removes extension
+                .and_then(|os| os.to_str())
+                .map(|s| s.to_string())
+        })
+        .collect();
+
+    files.sort();
+
+    Ok(files)
+}
