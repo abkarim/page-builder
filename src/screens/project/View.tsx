@@ -86,6 +86,7 @@ export default function (): React.JSX.Element {
 
             setNewDesignName("");
             setNewDesignSheetOpenState(false);
+            getDesigns();
             toast.success("Design created successfully");
         } catch (err) {
             toast.error(err as string);
