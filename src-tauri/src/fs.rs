@@ -91,11 +91,8 @@ pub fn create_project(path: &PathBuf) -> Result<bool, String> {
 }
 
 pub fn create_file(path: &PathBuf, content: String) -> Result<bool, String> {
-    println!("{:?}", &path);
-
     // Create parents directly
     if let Some(parent) = path.parent() {
-        println!("parent {:?}", &parent);
         fs::create_dir_all(parent).map_err(|e| e.to_string())?;
     }
 
