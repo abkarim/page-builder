@@ -16,7 +16,8 @@ pub fn run() {
             projects::remove_project,
             projects::get_projects,
             projects::get_project,
-            projects::create_new_design
+            projects::create_new_design,
+            projects::get_designs
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
