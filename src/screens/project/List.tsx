@@ -54,7 +54,7 @@ export default function (): React.JSX.Element {
 
     return (
         <section>
-            <div className="flex items-stretch gap-4">
+            <div className="flex items-stretch gap-4 flex-wrap">
                 {projects.map((project) => (
                     <ContextMenu>
                         <ContextMenuTrigger
