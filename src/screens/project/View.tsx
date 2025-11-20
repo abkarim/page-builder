@@ -1,4 +1,11 @@
 import { Button } from "@/components/ui/button";
+import {
+    ContextMenu,
+    ContextMenuContent,
+    ContextMenuItem,
+    ContextMenuSeparator,
+    ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -21,17 +28,17 @@ import { type Project } from "src-tauri/bindings/Project";
 export default function (): React.JSX.Element {
     const { id } = useParams();
     const [project, setProject] = useState<Project>();
-    const [designs, setDesigns] = useState([]);
+    const [designs, setDesigns] = useState<string[]>([]);
     const [newDesignName, setNewDesignName] = useState("");
     const [newDesignSheetOpenState, setNewDesignSheetOpenState] =
         useState(false);
 
     async function getDesigns() {
         try {
-            const data = await invoke("get_designs", {
+            const data = await invoke<string[]>("get_designs", {
                 uuid: project?.id,
             });
-            console.log({ data });
+            setDesigns(data);
         } catch (e) {
             toast.error(e as string);
         }
@@ -91,7 +98,39 @@ export default function (): React.JSX.Element {
                 <p>Project:</p>
                 <h2>{project?.name}</h2>
             </div>
-            <div className="mt-2">
+            <div className="mt-2 flex flex-wrap gap-5">
+                {designs.map((name) => (
+                    <ContextMenu>
+                        <ContextMenuTrigger
+                            onClick={() => {
+                                // navigate(`/project/${project.id}`);
+                            }}
+                        >
+                            <button
+                                key={name}
+                                className="p-2 rounded-sm bg-muted h-full"
+                            >
+                                <p className="min-w-12">{name}</p>
+                            </button>
+                        </ContextMenuTrigger>
+                        <ContextMenuContent>
+                            <ContextMenuItem
+                                onClick={() => {
+                                    // navigate(`/project/${project.id}`)
+                                }}
+                            >
+                                Edit
+                            </ContextMenuItem>
+                            <ContextMenuSeparator />
+                            <ContextMenuItem
+                                onClick={() => {}}
+                                className="text-red-600 hover:bg-red-600! hover:text-white! "
+                            >
+                                Delete
+                            </ContextMenuItem>
+                        </ContextMenuContent>
+                    </ContextMenu>
+                ))}
                 <Sheet
                     open={newDesignSheetOpenState}
                     onOpenChange={setNewDesignSheetOpenState}
