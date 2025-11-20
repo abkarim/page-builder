@@ -8,6 +8,7 @@ use uuid::Uuid;
 use crate::db;
 use crate::fs;
 use crate::fs::create_file;
+use crate::fs::get_design_files;
 use crate::snippets;
 use crate::snippets::css;
 use crate::snippets::js;
@@ -183,6 +184,18 @@ pub fn create_new_design(name: String, uuid: String) -> Result<String, String> {
     )?;
 
     Ok("Design created successfully".to_string())
+}
+
+/**
+ * Get designs
+ */
+#[tauri::command]
+pub fn get_designs(uuid: String) -> Result<Vec<String>, String> {
+    let project = get_project(uuid)?;
+
+    let designs = get_design_files(Path::new(&project.path)).map_err(|e| e.to_string())?;
+
+    Ok(designs)
 }
 
 // /**
