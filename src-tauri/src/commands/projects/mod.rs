@@ -198,6 +198,27 @@ pub fn get_designs(uuid: String) -> Result<Vec<String>, String> {
     Ok(designs)
 }
 
+/**
+ * Get content of a project file
+ */
+#[tauri::command]
+pub fn get_project_file_content(uuid: String, name: String) -> Result<String, String> {
+    if uuid.trim().len() == 0 {
+        return Err("uuid is required".to_string());
+    }
+
+    if name.trim().len() == 0 {
+        return Err("name is required".to_string());
+    }
+
+    let project = get_project(uuid)?;
+
+    let content =
+        fs::get_project_file_content(&Path::new(&project.path), &format!("{}.html", name))?;
+
+    Ok(content)
+}
+
 // /**
 //  * Update project file
 //  */
