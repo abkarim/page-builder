@@ -118,3 +118,7 @@ pub fn get_design_files(path: &Path) -> io::Result<Vec<String>> {
 
     Ok(files)
 }
+
+pub fn get_project_file_content(project_path: &Path, filename: &String) -> Result<String, String> {
+    fs::read_to_string(project_path.join(filename)).map_err(|e| e.to_string())
+}
