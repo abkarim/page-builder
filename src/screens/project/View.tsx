@@ -21,7 +21,7 @@ import {
 import { invoke } from "@tauri-apps/api/core";
 import { PlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { type Project } from "src-tauri/bindings/Project";
 
@@ -32,6 +32,7 @@ export default function (): React.JSX.Element {
     const [newDesignName, setNewDesignName] = useState("");
     const [newDesignSheetOpenState, setNewDesignSheetOpenState] =
         useState(false);
+    const navigate = useNavigate();
 
     async function getDesigns() {
         try {
@@ -104,7 +105,7 @@ export default function (): React.JSX.Element {
                     <ContextMenu>
                         <ContextMenuTrigger
                             onClick={() => {
-                                // navigate(`/project/${project.id}`);
+                                navigate(`/project/${project?.id}/${name}`);
                             }}
                         >
                             <button
@@ -117,7 +118,7 @@ export default function (): React.JSX.Element {
                         <ContextMenuContent>
                             <ContextMenuItem
                                 onClick={() => {
-                                    // navigate(`/project/${project.id}`)
+                                    navigate(`/project/${project?.id}/${name}`);
                                 }}
                             >
                                 Edit
