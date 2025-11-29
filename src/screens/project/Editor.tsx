@@ -1,3 +1,6 @@
+import Elements from "@/components/elementsEditor/Index";
+import ElementStylesEditor from "@/components/stylesEditor/Index";
+import { Button } from "@/components/ui/button";
 import { invoke } from "@tauri-apps/api/core";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -28,11 +31,17 @@ export default function Editor() {
         getContent();
     }, []);
 
-    console.log({ content });
-
     return (
         <section>
-            Editor {id} {name}
+            <div className="flex justify-between items-center">
+                <p>Editing: {name}</p>
+                <Button>Save</Button>
+            </div>
+            <section className="flex items-start justify-between">
+                <Elements />
+                <iframe content={content} className="w-full h-full" />
+                <ElementStylesEditor />
+            </section>
         </section>
     );
 }
