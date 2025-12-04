@@ -3,7 +3,7 @@ mod db;
 mod fs;
 mod snippets;
 
-use commands::projects;
+use commands::{projects, templates};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -18,7 +18,8 @@ pub fn run() {
             projects::get_project,
             projects::create_new_design,
             projects::get_designs,
-            projects::get_project_file_content
+            projects::get_project_file_content,
+            templates::blocks::get_blocks
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
