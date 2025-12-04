@@ -1,5 +1,5 @@
-import Elements from "@/components/elementsEditor/Index";
-import ElementStylesEditor from "@/components/stylesEditor/Index";
+import Elements from "@/components/editor/Components";
+import ElementStylesEditor from "@/components/editor/Index";
 import { Button } from "@/components/ui/button";
 import { invoke } from "@tauri-apps/api/core";
 import { useEffect, useState } from "react";
