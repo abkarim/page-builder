@@ -8,8 +8,11 @@ import {
 export default function Elements(): React.JSX.Element {
     return (
         <section>
-            <SidebarProvider defaultOpen={true}>
-                <SidebarTrigger className="z-10" />
+            <SidebarProvider defaultOpen={true} className="flex flex-col">
+                <div className="flex items-center gap-1">
+                    <SidebarTrigger className="z-10" />
+                    <h4>Elements</h4>
+                </div>
                 <Sidebar
                     variant="sidebar"
                     collapsible="offcanvas"

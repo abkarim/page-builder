@@ -8,8 +8,14 @@ import {
 export default function ElementStylesEditor(): React.JSX.Element {
     return (
         <section>
-            <SidebarProvider defaultOpen={true}>
-                <SidebarTrigger className="z-10" />
+            <SidebarProvider
+                defaultOpen={true}
+                className="flex flex-col items-end"
+            >
+                <div className="flex items-center gap-1">
+                    <h4>Editor</h4>
+                    <SidebarTrigger className="z-10" />
+                </div>
                 <Sidebar
                     variant="sidebar"
                     collapsible="offcanvas"
