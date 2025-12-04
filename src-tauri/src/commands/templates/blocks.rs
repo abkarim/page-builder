@@ -1,5 +1,5 @@
 use std::{
-    fs::{self, ReadDir},
+    fs::{self},
     path::PathBuf,
 };
 
@@ -14,16 +14,10 @@ const BLOCKS_DIR_PATH: &str = "./_up_/block-templates";
  * contents
  */
 #[tauri::command]
-pub fn get_blocks() -> String {
+pub fn get_blocks() -> Result<String, String> {
     let blocks_dir_path: PathBuf = PathBuf::from(&BLOCKS_DIR_PATH);
 
-    let paths: ReadDir = match fs::read_dir(&blocks_dir_path) {
-        Ok(paths) => paths,
-        Err(err) => {
-            eprintln!("Failed to open blocks directory: {}", err);
-            return String::from("[]");
-        }
-    };
+    let paths = fs::read_dir(&blocks_dir_path).map_err(|e| e.to_string())?;
 
     let mut content: String = String::from("[");
 
@@ -49,5 +43,6 @@ pub fn get_blocks() -> String {
     }
 
     content.push_str("]");
-    return content;
+
+    Ok(content)
 }
