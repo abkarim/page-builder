@@ -1,12 +1,12 @@
 {
   "id": 2,
   "name": "button",
-  "acceptStyle": [
+  "element": "<button type='button' role='button' page-builder-element='true' page-builder-element-id='2'>{$TEXT$}</button>",
+  "default_content": "Click me",
+  "available_styles": [
     "*"
   ],
-  "acceptEdit": [
+  "available_edits": [
     "text"
-  ],
-  "defaultText": "Click me",
-  "element": "<button type='button' role='button' page-builder-element='true' page-builder-element-id='2'>{$TEXT$}</button>"
+  ]
 }

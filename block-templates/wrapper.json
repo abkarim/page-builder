@@ -1,15 +1,15 @@
 {
   "id": 7,
   "name": "Wrapper",
-  "acceptStyle": [
+  "available_styles": [
     "*",
     "layout"
   ],
-  "acceptEdit": [
+  "available_edits": [
     "tag"
   ],
   "element": "<div page-builder-element='true' page-builder-element-id='6'><div replaceable='true' class='jfkghbhkjdhgfh'>+</div></div>",
-  "tagList": [
+  "alternative_tags": [
     "div",
     "section",
     "header",

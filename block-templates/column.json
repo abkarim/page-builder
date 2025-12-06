@@ -1,16 +1,16 @@
 {
   "id": 6,
   "name": "Column",
-  "acceptStyle": [
+  "element": "<div page-builder-element='true' page-builder-element-id='6'><div replaceable='true' class='jfkghkjdhgfh'>+</div><div replaceable='true' class='jkghgdsattd'>+</div></div>",
+  "available_styles": [
     "*",
     "columnLayout"
   ],
-  "acceptEdit": [
+  "available_edits": [
     "tag"
   ],
   "className": "columnLayout",
-  "element": "<div page-builder-element='true' page-builder-element-id='6'><div replaceable='true' class='jfkghkjdhgfh'>+</div><div replaceable='true' class='jkghgdsattd'>+</div></div>",
-  "tagList": [
+  "alternative_tags": [
     "div",
     "section",
     "header",

@@ -1,16 +1,16 @@
 {
   "id": 1,
   "name": "Heading",
-  "acceptStyle": [
+  "element": "<h2 page-builder-element='true' page-builder-element-id='1' >{$TEXT$}</h2>",
+  "default_content": "Heading Title here",
+  "available_styles": [
     "*"
   ],
-  "acceptEdit": [
+  "available_edits": [
     "text",
     "tag"
   ],
-  "defaultText": "Heading Title here",
-  "element": "<h2 page-builder-element='true' page-builder-element-id='1' >{$TEXT$}</h2>",
-  "tagList": [
+  "alternative_tags": [
     "h1",
     "h2",
     "h3",
