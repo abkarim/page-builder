@@ -28,7 +28,7 @@ pub fn get_blocks() -> Result<String, String> {
 
         // Add attribute
         contents = contents.replace(
-            "page-builder-element='true'",
+            "$ATTR_VALUES$",
             "page-builder-element='true' draggable='true' ondragstart='dragStart(event)' onClick='handleStyle(event)' class=''",
         );
 
