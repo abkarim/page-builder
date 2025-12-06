@@ -1,7 +1,7 @@
 {
   "id": 5,
   "name": "image",
-  "element": "<img alt='' src='https://web-dev.imgix.net/image/admin/fZo7BJGec2MNRt6cWpeh.jpg' page-builder-element='true' page-builder-element-id='5' />",
+  "element": "<img alt='' src='https://web-dev.imgix.net/image/admin/fZo7BJGec2MNRt6cWpeh.jpg' $ATTR_VALUES$ page-builder-element-id='5' />",
   "available_styles": [
     "*"
   ],

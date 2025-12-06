@@ -1,7 +1,7 @@
 {
   "id": 1,
   "name": "Heading",
-  "element": "<h2 page-builder-element='true' page-builder-element-id='1' >{$TEXT$}</h2>",
+  "element": "<h2 $ATTR_VALUES$ page-builder-element-id='1' >{$CONTENT$}</h2>",
   "default_content": "Heading Title here",
   "available_styles": [
     "*"

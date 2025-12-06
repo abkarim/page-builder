@@ -1,7 +1,7 @@
 {
   "id": 2,
   "name": "button",
-  "element": "<button type='button' role='button' page-builder-element='true' page-builder-element-id='2'>{$TEXT$}</button>",
+  "element": "<button type='button' role='button' page-builder-element-id='2' $ATTR_VALUES$ >{$CONTENT$}</button>",
   "default_content": "Click me",
   "available_styles": [
     "*"

@@ -1,8 +1,7 @@
 {
   "id": 3,
-  "type": "html",
   "name": "horizontal row",
-  "element": "<hr page-builder-element='true' page-builder-element-id='3' />",
+  "element": "<hr $ATTR_VALUES$ page-builder-element-id='3' />",
   "available_styles": [
     "spacing",
     "color",

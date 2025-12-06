@@ -1,7 +1,8 @@
 {
   "id": 4,
   "name": "HTML",
-  "element": "<div page-builder-element='true' page-builder-element-id='4'>HTML HERE</div>",
+  "element": "<div $ATTR_VALUES$ page-builder-element-id='4'>{$CONTENT$}</div>",
+  "default_content": "HTML Here",
   "available_styles": [
     "*"
   ],
