@@ -8,6 +8,7 @@ import {
 import { toast } from "sonner";
 import { invoke } from "@tauri-apps/api/core";
 import { Blocks } from "./blocks";
+import { Button } from "../ui/button";
 
 export default function Components(): React.JSX.Element {
     const [blocks, setBlocks] = useState<Blocks[]>([]);
@@ -25,8 +26,6 @@ export default function Components(): React.JSX.Element {
         get_blocks();
     }, []);
 
-    console.log({ blocks });
-
     return (
         <section>
             <SidebarProvider defaultOpen={true} className="flex flex-col">
@@ -40,7 +39,11 @@ export default function Components(): React.JSX.Element {
                     className="relative z-0"
                 >
                     <SidebarContent>
-                        <section>components</section>
+                        <section className="flex flex-wrap gap-1 p-2">
+                            {blocks.map((block) => (
+                                <Button key={block.id}>{block.name}</Button>
+                            ))}
+                        </section>
                     </SidebarContent>
                 </Sidebar>
             </SidebarProvider>
