@@ -7,9 +7,10 @@ import {
 } from "../ui/sidebar";
 import { toast } from "sonner";
 import { invoke } from "@tauri-apps/api/core";
+import { Blocks } from "./blocks";
 
 export default function Components(): React.JSX.Element {
-    const [blocks, setBlocks] = useState([]);
+    const [blocks, setBlocks] = useState<Blocks[]>([]);
 
     async function get_blocks() {
         try {
