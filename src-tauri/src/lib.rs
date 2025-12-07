@@ -19,7 +19,8 @@ pub fn run() {
             projects::create_new_design,
             projects::get_designs,
             projects::get_project_file_content,
-            templates::blocks::get_blocks
+            templates::blocks::get_blocks,
+            templates::components::get_components
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
