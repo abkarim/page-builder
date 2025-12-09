@@ -3,7 +3,7 @@ import ElementStylesEditor from "@/components/editor/Index";
 import { Button } from "@/components/ui/button";
 import { invoke } from "@tauri-apps/api/core";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useBlocker, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 export default function Editor() {
@@ -27,8 +27,19 @@ export default function Editor() {
         }
     }
 
+    const blocker = useBlocker(
+        ({ currentLocation, nextLocation, historyAction }) => {
+            console.log({ currentLocation, historyAction, nextLocation });
+            return true;
+        }
+    );
+
     useEffect(() => {
         getContent();
+    }, []);
+
+    useEffect(() => {
+        console.log({ blocker });
     }, []);
 
     return (
