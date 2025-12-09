@@ -57,11 +57,18 @@ export default function Editor() {
         }
     }, [blocker]);
 
+    /**
+     * Save changes
+     */
+    async function saveChanges() {
+        setHasUnsavedChanges(false);
+    }
+
     return (
         <section>
             <div className="flex justify-between items-center">
                 <p>Editing: {name}</p>
-                <Button>Save</Button>
+                <Button onClick={saveChanges}>Save</Button>
             </div>
             <section className="flex items-start justify-between">
                 <Elements />
