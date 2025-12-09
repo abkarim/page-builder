@@ -1,6 +1,7 @@
 import Elements from "@/components/editor/Components";
 import ElementStylesEditor from "@/components/editor/Index";
 import { Button } from "@/components/ui/button";
+import useConfirmDialog from "@/hooks/useConfirmDialog";
 import { invoke } from "@tauri-apps/api/core";
 import { useEffect, useState } from "react";
 import { useBlocker, useParams } from "react-router-dom";
@@ -8,7 +9,9 @@ import { toast } from "sonner";
 
 export default function Editor() {
     const { id, name } = useParams();
+    const confirmDialog = useConfirmDialog();
     const [content, setContent] = useState("");
+    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
     async function getContent() {
         if (!id || !name) {
@@ -27,20 +30,32 @@ export default function Editor() {
         }
     }
 
-    const blocker = useBlocker(
-        ({ currentLocation, nextLocation, historyAction }) => {
-            console.log({ currentLocation, historyAction, nextLocation });
-            return true;
-        }
-    );
-
     useEffect(() => {
         getContent();
     }, []);
 
+    /**
+     * Block navigation if unsaved changes is detected
+     */
+    const blocker = useBlocker(() => {
+        return hasUnsavedChanges;
+    });
     useEffect(() => {
-        console.log({ blocker });
-    }, []);
+        if (blocker.state === "blocked") {
+            (async () => {
+                const result = await confirmDialog({
+                    title: "You have unsaved changes",
+                    description: "Are you sure to discard these changes?",
+                });
+
+                if (result) {
+                    blocker.proceed();
+                } else {
+                    blocker.reset();
+                }
+            })();
+        }
+    }, [blocker]);
 
     return (
         <section>
