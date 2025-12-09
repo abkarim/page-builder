@@ -72,7 +72,7 @@ export default function Editor() {
             </div>
             <section className="flex items-start justify-between">
                 <Elements />
-                <iframe content={content} className="w-full h-full" />
+                <iframe srcDoc={content} className="w-full h-full border " />
                 <ElementStylesEditor />
             </section>
         </section>
