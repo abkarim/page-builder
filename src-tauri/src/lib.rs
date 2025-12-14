@@ -1,13 +1,25 @@
 mod commands;
 mod db;
 mod fs;
+mod protocol;
 mod snippets;
 
 use commands::{projects, templates};
+use std::sync::Mutex;
+use tauri::Manager;
+struct ProjectRoot(Mutex<Option<String>>);
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .register_uri_scheme_protocol("project", move |context, request| {
+            let app_handle = context.app_handle();
+            protocol::register_custom_protocol(&app_handle, &request)
+        })
+        .setup(|app| {
+            app.manage(ProjectRoot(Mutex::new(None)));
+            Ok(())
+        })
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_dialog::init())
         .invoke_handler(tauri::generate_handler![
