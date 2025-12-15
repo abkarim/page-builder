@@ -6,8 +6,6 @@ mod snippets;
 
 use commands::{projects, templates};
 use std::sync::Mutex;
-use tauri::Manager;
-struct ProjectRoot(Mutex<Option<String>>);
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -16,8 +14,10 @@ pub fn run() {
             let app_handle = context.app_handle();
             protocol::register_custom_protocol(&app_handle, &request)
         })
-        .setup(|app| {
-            app.manage(ProjectRoot(Mutex::new(None)));
+        .setup(|_| {
+            projects::PROJECT_ROOT
+                .set(Mutex::new(None))
+                .expect("Failed to initialize PROJECT_ROOT status variable");
             Ok(())
         })
         .plugin(tauri_plugin_fs::init())
