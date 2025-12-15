@@ -2,6 +2,7 @@ use serde::Serialize;
 use std::collections::HashMap;
 use std::path::Path;
 use std::path::PathBuf;
+use std::sync::{Mutex, OnceLock};
 use ts_rs::TS;
 use uuid::Uuid;
 
@@ -28,6 +29,48 @@ pub const PROJECT_ASSETS_CSS_PATH: &str = "assets/css/";
 pub const PROJECT_ASSETS_JS_PATH: &str = "assets/js/";
 pub const PROJECT_CSS_FILENAME: &str = "styles.css";
 pub const PROJECT_JS_FILENAME: &str = "app.js";
+
+pub static PROJECT_ROOT: OnceLock<Mutex<Option<String>>> = OnceLock::new();
+
+/**
+ * Get project root
+ * the project that is current open
+ */
+pub fn get_project_root() -> Result<String, String> {
+    let root_mutex = match PROJECT_ROOT.get() {
+        Some(m) => m,
+        None => return Err("Project root is not initialized".to_string()),
+    };
+
+    let root_guard = match root_mutex.lock() {
+        Ok(guard) => guard,
+        Err(e) => return Err(format!("Failed to lock Project_Root Mutex: {}", e)),
+    };
+
+    match root_guard.as_ref() {
+        Some(path) => Ok(path.clone()),
+        None => Err("Project root is not set".to_string()),
+    }
+}
+
+/**
+ * Set project root of the project
+ * that is currently open
+ */
+pub fn set_project_root(new_path: String) -> Result<(), String> {
+    let root_mutex = match PROJECT_ROOT.get() {
+        Some(m) => m,
+        None => return Err("Project Root static variable not initialized.".to_string()),
+    };
+
+    let mut root_guard = match root_mutex.lock() {
+        Ok(guard) => guard,
+        Err(e) => return Err(format!("Failed to lock ProjectRoot Mutex: {}", e)),
+    };
+
+    *root_guard = Some(new_path.clone());
+    Ok(())
+}
 
 /**
  * Get project
