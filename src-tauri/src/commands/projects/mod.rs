@@ -85,6 +85,9 @@ pub fn get_project(uuid: String) -> Result<Project, String> {
 
     let row = rows.into_iter().next().ok_or("Project not found")?;
 
+    // Set current project root as the default project root
+    set_project_root(row.get("path").cloned().ok_or("missing path")?)?;
+
     Ok(Project {
         id: row.get("id").cloned().ok_or("missing id")?,
         name: row.get("name").cloned().ok_or("missing name")?,
