@@ -12,7 +12,15 @@ pub fn run() {
     tauri::Builder::default()
         .register_uri_scheme_protocol("project", move |context, request| {
             let app_handle = context.app_handle();
-            protocol::register_custom_protocol(&app_handle, &request)
+            let res = protocol::register_custom_protocol(&app_handle, &request);
+
+            let (mut parts, body) = res.into_parts();
+
+            parts
+                .headers
+                .insert("Access-Control-Allow-Origin", "*".parse().unwrap());
+
+            tauri::http::Response::from_parts(parts, body)
         })
         .setup(|_| {
             projects::PROJECT_ROOT
