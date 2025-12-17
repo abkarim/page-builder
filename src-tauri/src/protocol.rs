@@ -6,7 +6,7 @@ use tauri::{
 use crate::commands::projects;
 
 pub const PROTOCOL: &str = "project";
-pub const PROTOCOL_PREFIX: &str = "project://";
+pub const PROTOCOL_PREFIX: &str = "project://localhost/";
 
 pub fn register_custom_protocol(
     _app_handle: &AppHandle,
