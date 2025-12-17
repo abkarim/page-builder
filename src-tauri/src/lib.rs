@@ -10,7 +10,7 @@ use std::sync::Mutex;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
-        .register_uri_scheme_protocol("project", move |context, request| {
+        .register_uri_scheme_protocol(protocol::PROTOCOL, move |context, request| {
             let app_handle = context.app_handle();
             let res = protocol::register_custom_protocol(&app_handle, &request);
 

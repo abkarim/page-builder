@@ -5,12 +5,14 @@ use tauri::{
 
 use crate::commands::projects;
 
+pub const PROTOCOL: &str = "project";
+pub const PROTOCOL_PREFIX: &str = "project://";
+
 pub fn register_custom_protocol(
-    app_handle: &AppHandle,
+    _app_handle: &AppHandle,
     request: &Request<Vec<u8>>,
 ) -> Response<Vec<u8>> {
     let uri = request.uri().to_string();
-    println!("{:?}", uri);
 
     let project_root = match projects::get_project_root() {
         Ok(path) => path,
@@ -22,6 +24,11 @@ pub fn register_custom_protocol(
                 .unwrap();
         }
     };
+
+    // get actual response
+    let uri = uri.replace(PROTOCOL_PREFIX, "");
+
+    println!("{:?}", uri);
 
     let response_body = format!("Hello from Tauri! You requested: {}", uri);
 
