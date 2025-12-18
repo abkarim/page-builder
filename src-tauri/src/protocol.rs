@@ -1,4 +1,5 @@
 use mime_guess;
+use percent_encoding::percent_decode_str;
 use std::{fs, path::Path};
 
 use tauri::{
@@ -16,8 +17,30 @@ pub fn register_custom_protocol(
     request: &Request<Vec<u8>>,
 ) -> Response<Vec<u8>> {
     let uri = request.uri().to_string();
+    let decoded_uri = percent_decode_str(&uri.replace(PROTOCOL_PREFIX, ""))
+        .decode_utf8_lossy()
+        .trim_start_matches('/')
+        .to_string();
 
     let mut response = Response::builder().status(200).body(Vec::new()).unwrap();
+
+    // Prevent Path Traversal
+    // Check if any part of the path attempts to go "up" using '..'
+    if decoded_uri.contains("..") || decoded_uri.starts_with('/') || decoded_uri.contains('\\') {
+        *response.status_mut() = StatusCode::FORBIDDEN;
+        *response.body_mut() = "Access Denied: Illegal path sequence".as_bytes().to_vec();
+        return response;
+    }
+
+    // Prevents access to .env, .git, .htaccess, etc.
+    if decoded_uri
+        .split('/')
+        .any(|segment| segment.starts_with('.'))
+    {
+        *response.status_mut() = StatusCode::FORBIDDEN;
+        *response.body_mut() = "Access Denied: Hidden files restricted".as_bytes().to_vec();
+        return response;
+    }
 
     let project_root = match projects::get_project_root() {
         Ok(path) => path,
@@ -29,15 +52,12 @@ pub fn register_custom_protocol(
         }
     };
 
-    // get actual request
-    let uri = uri.replace(PROTOCOL_PREFIX, "");
-
     // is this uri requests core files
-    if uri.starts_with("core/") {
+    if decoded_uri.starts_with("core/") {
         return response;
     }
 
-    let file_path = Path::new(&project_root).join(&uri);
+    let file_path = Path::new(&project_root).join(&decoded_uri);
     if !file_path.exists() {
         *response.status_mut() = StatusCode::NOT_FOUND;
         *response.body_mut() = "requested file not found".as_bytes().to_vec();

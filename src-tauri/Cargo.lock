@@ -2362,6 +2362,7 @@ name = "pagebuilder"
 version = "0.1.0"
 dependencies = [
  "mime_guess",
+ "percent-encoding",
  "rusqlite",
  "serde",
  "serde_json",
