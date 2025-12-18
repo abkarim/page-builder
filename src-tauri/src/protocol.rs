@@ -1,5 +1,8 @@
+use mime_guess;
+use std::{fs, path::Path};
+
 use tauri::{
-    http::{Request, Response},
+    http::{Request, Response, StatusCode},
     AppHandle,
 };
 
@@ -14,26 +17,53 @@ pub fn register_custom_protocol(
 ) -> Response<Vec<u8>> {
     let uri = request.uri().to_string();
 
+    let mut response = Response::builder().status(200).body(Vec::new()).unwrap();
+
     let project_root = match projects::get_project_root() {
         Ok(path) => path,
         Err(err) => {
-            println!("{}", err);
-            return Response::builder()
-                .status(404)
-                .body("Not found".as_bytes().to_vec())
-                .unwrap();
+            *response.status_mut() = StatusCode::NOT_FOUND;
+            *response.body_mut() = err.as_bytes().to_vec();
+
+            return response;
         }
     };
 
-    // get actual response
+    // get actual request
     let uri = uri.replace(PROTOCOL_PREFIX, "");
 
-    println!("{:?}", uri);
+    // is this uri requests core files
+    if uri.starts_with("core/") {
+        return response;
+    }
 
-    let response_body = format!("Hello from Tauri! You requested: {}", uri);
+    let file_path = Path::new(&project_root).join(&uri);
+    if !file_path.exists() {
+        *response.status_mut() = StatusCode::NOT_FOUND;
+        *response.body_mut() = "requested file not found".as_bytes().to_vec();
 
-    Response::builder()
-        .status(200)
-        .body(response_body.as_bytes().to_vec())
-        .unwrap()
+        return response;
+    }
+
+    // read file as bytes
+    match fs::read(&file_path) {
+        Ok(data) => {
+            *response.status_mut() = StatusCode::OK;
+            *response.body_mut() = data;
+
+            // set the content type
+            let mime = mime_guess::from_path(&file_path)
+                .first_or_octet_stream()
+                .to_string();
+            response
+                .headers_mut()
+                .insert("Content-Type", mime.parse().unwrap());
+        }
+        Err(err) => {
+            *response.status_mut() = StatusCode::INTERNAL_SERVER_ERROR;
+            *response.body_mut() = format!("Error: {}", err).into_bytes();
+        }
+    }
+
+    response
 }
