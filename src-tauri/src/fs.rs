@@ -23,6 +23,7 @@ pub fn is_directory_empty<P: AsRef<Path>>(directory_path: P) -> io::Result<bool>
     let mut entries = fs::read_dir(path)?;
     Ok(entries.next().is_none())
 }
+
 /**
  * Remove project
  *
