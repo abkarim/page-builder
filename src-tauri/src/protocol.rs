@@ -11,6 +11,7 @@ use crate::commands::projects;
 
 pub const PROTOCOL: &str = "project";
 pub const PROTOCOL_PREFIX: &str = "project://localhost/";
+pub const EDITOR_ASSETS_PREFIX: &str = "core";
 
 pub fn register_custom_protocol(
     _app_handle: &AppHandle,
@@ -53,7 +54,7 @@ pub fn register_custom_protocol(
     };
 
     // is this uri requests core files
-    if decoded_uri.starts_with("core/") {
+    if decoded_uri.starts_with(&format!("{}/", EDITOR_ASSETS_PREFIX)) {
         return response;
     }
 
