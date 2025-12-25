@@ -283,7 +283,45 @@ pub fn get_project_file_content(uuid: String, name: String) -> Result<String, St
     Ok(content)
 }
 
-// /**
-//  * Update project file
-//  */
-// pub fn update_project_file_content(uuid: &str, filename: &str, content: &str) -> bool {}
+/**
+ * Update project file
+ */
+#[tauri::command]
+pub fn update_project_file_content(
+    uuid: String,
+    filename: String,
+    new_content: String,
+) -> Result<String, String> {
+    if uuid.trim().len() == 0 {
+        return Err("project id is required".to_string());
+    }
+
+    if filename.trim().len() == 0 {
+        return Err("filename is required".to_string());
+    }
+
+    // Check project
+    let project = get_project(uuid.clone())?;
+
+    // Check file
+    let file_path = Path::new(&project.path).join(&format!("{}.html", filename));
+    if !file_path.exists() {
+        return Err("file not found".to_string());
+    }
+
+    match std::fs::write(file_path, new_content) {
+        Ok(_) => {}
+        Err(err) => return Err(format!("Error: {}", err)),
+    }
+
+    // Set updated at in db
+    let mut data_to_update = HashMap::new();
+    data_to_update.insert("updated_at", Utc::now().to_rfc3339());
+
+    let mut filter = HashMap::new();
+    filter.insert("id", uuid.clone());
+
+    db::update(db::PROJECTS_TABLE, data_to_update, filter).map_err(|e| e.to_string())?;
+
+    Ok("updated successfully".to_string())
+}
