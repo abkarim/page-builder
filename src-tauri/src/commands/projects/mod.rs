@@ -1,3 +1,4 @@
+use chrono::Utc;
 use serde::Serialize;
 use std::collections::HashMap;
 use std::path::Path;
@@ -230,12 +231,21 @@ pub fn create_new_design(name: String, uuid: String) -> Result<String, String> {
         return Err("Project id is required".to_string());
     }
 
-    let project = get_project(uuid)?;
+    let project = get_project(uuid.clone())?;
 
     fs::create_file(
         &Path::new(&project.path).join(format!("{}.html", name)),
         snippets::html::get_html_snippet(&name),
     )?;
+
+    // Set updated at in db
+    let mut data_to_update = HashMap::new();
+    data_to_update.insert("updated_at", Utc::now().to_rfc3339());
+
+    let mut filter = HashMap::new();
+    filter.insert("id", uuid.clone());
+
+    db::update(db::PROJECTS_TABLE, data_to_update, filter).map_err(|e| e.to_string())?;
 
     Ok("Design created successfully".to_string())
 }
