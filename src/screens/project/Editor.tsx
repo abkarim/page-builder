@@ -8,73 +8,90 @@ import { useBlocker, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 export default function Editor() {
-    const { id, name } = useParams();
-    const confirmDialog = useConfirmDialog();
-    const [content, setContent] = useState("");
-    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const { id, name } = useParams();
+  const confirmDialog = useConfirmDialog();
+  const [content, setContent] = useState("");
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
-    async function getContent() {
-        if (!id || !name) {
-            return toast.error("invalid project file");
-        }
-
-        try {
-            const content = await invoke<string>("get_project_file_content", {
-                uuid: id,
-                name,
-            });
-
-            setContent(content);
-        } catch (err) {
-            toast.error(err as string);
-        }
+  async function getContent() {
+    if (!id || !name) {
+      return toast.error("invalid project file");
     }
 
-    useEffect(() => {
-        getContent();
-    }, []);
+    try {
+      const content = await invoke<string>("get_project_file_content", {
+        uuid: id,
+        name,
+      });
 
-    /**
-     * Block navigation if unsaved changes is detected
-     */
-    const blocker = useBlocker(() => {
-        return hasUnsavedChanges;
-    });
-    useEffect(() => {
-        if (blocker.state === "blocked") {
-            (async () => {
-                const result = await confirmDialog({
-                    title: "You have unsaved changes",
-                    description: "Are you sure to discard these changes?",
-                });
+      setContent(content);
+    } catch (err) {
+      toast.error(err as string);
+    }
+  }
 
-                if (result) {
-                    blocker.proceed();
-                } else {
-                    blocker.reset();
-                }
-            })();
+  useEffect(() => {
+    getContent();
+  }, []);
+
+  /**
+   * Block navigation if unsaved changes is detected
+   */
+  const blocker = useBlocker(() => {
+    return hasUnsavedChanges;
+  });
+  useEffect(() => {
+    if (blocker.state === "blocked") {
+      (async () => {
+        const result = await confirmDialog({
+          title: "You have unsaved changes",
+          description: "Are you sure to discard these changes?",
+        });
+
+        if (result) {
+          blocker.proceed();
+        } else {
+          blocker.reset();
         }
-    }, [blocker]);
+      })();
+    }
+  }, [blocker]);
 
+  /**
+   * Save changes
+   */
+  async function saveChanges() {
     /**
-     * Save changes
+     * Only allow to save if we have unsaved changes
      */
-    async function saveChanges() {
-        setHasUnsavedChanges(false);
+    if (!hasUnsavedChanges) {
+      return toast.error("nothing to save");
     }
 
-    return (
-        <section>
-            <div className="flex justify-between items-center">
-                <p>Editing: {name}</p>
-                <Button onClick={saveChanges}>Save</Button>
-            </div>
-            <section className="flex items-start justify-between">
-                <Elements />
-                <iframe srcDoc={content} className="w-full h-full border " />
-                <ElementStylesEditor />
-            </section>
-        </section>
-    );
+    try {
+      const msg = await invoke<string>("update_project_file_content", {
+        uuid: id,
+        filename: name,
+        newContent: content,
+      });
+      setHasUnsavedChanges(false);
+      toast.success(msg);
+    } catch (err) {
+      toast.error(err as string);
+    }
+  }
+
+  return (
+    <section>
+      <div className="flex justify-between items-center">
+        <p>Editing: {name}</p>
+        <Button onClick={saveChanges}>Save</Button>
+      </div>
+      <section className="flex items-start justify-between">
+        <Elements />
+        <iframe srcDoc={content} className="w-full h-full border " />
+        <ElementStylesEditor />
+      </section>
+    </section>
+  );
 }
