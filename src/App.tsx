@@ -18,7 +18,8 @@ import {
 import { useEffect, useState } from "react";
 import { validate as isValidUUID } from "uuid";
 import { invoke } from "@tauri-apps/api/core";
-import { Project } from "src-tauri/bindings/Project";
+import { type Project } from "src-tauri/bindings/Project";
+import { toast } from "sonner";
 
 type Breadcrumb = {
   location: string;
@@ -50,7 +51,7 @@ export default function App(): React.JSX.Element {
 
           default:
             bc.push({
-              name: path.charAt(0).toUpperCase() + path.slice(1),
+              name: path,
               location: `${prevLoc}${prevLoc !== "/" ? "/" : ""}${path}`,
             });
         }
@@ -61,10 +62,14 @@ export default function App(): React.JSX.Element {
   }, [location]);
 
   async function getProjectName(uuid: string) {
-    const projectData = await invoke<Project>("get_project", {
-      uuid,
-    });
-    setProjectName(projectData.name);
+    try {
+      const projectData = await invoke<Project>("get_project", {
+        uuid,
+      });
+      setProjectName(projectData.name);
+    } catch (err) {
+      toast.error(err as string);
+    }
   }
 
   return (
@@ -92,9 +97,9 @@ export default function App(): React.JSX.Element {
                  */
                 if (
                   isValidUUID(data) &&
-                  breadcrumbs[index - 1]?.name == "Project"
+                  breadcrumbs[index - 1]?.name == "project"
                 ) {
-                  getProjectName(data);
+                  getProjectName(data.trim());
                   data = projectName;
                 }
 
@@ -105,7 +110,7 @@ export default function App(): React.JSX.Element {
                         className="cursor-pointer"
                         onClick={() => navigate(location)}
                       >
-                        {data}
+                        {data.charAt(0).toUpperCase() + data.slice(1)}
                       </BreadcrumbLink>
                     </BreadcrumbItem>
                     {breadcrumbs.length - 1 > index && <BreadcrumbSeparator />}
