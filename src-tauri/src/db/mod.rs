@@ -10,7 +10,8 @@ pub fn init_db() -> Result<Connection> {
             "CREATE TABLE IF NOT EXISTS {} (
                 id TEXT PRIMARY KEY,
                 name TEXT NOT NULL,
-                path TEXT NOT NULL
+                path TEXT NOT NULL,
+                updated_at TEXT DEFAULT CURRENT_TIMESTAMP
                 )",
             PROJECTS_TABLE
         ),

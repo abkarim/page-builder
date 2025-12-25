@@ -20,6 +20,7 @@ pub struct Project {
     pub id: String,
     pub name: String,
     pub path: String,
+    pub updated_at: String,
 }
 
 /**
@@ -97,6 +98,7 @@ pub fn get_project(uuid: String) -> Result<Project, String> {
         id: row.get("id").cloned().ok_or("missing id")?,
         name: row.get("name").cloned().ok_or("missing name")?,
         path: row.get("path").cloned().ok_or("missing path")?,
+        updated_at: row.get("updated_at").cloned().ok_or("missing updated_at")?,
     })
 }
 
@@ -132,6 +134,7 @@ pub fn get_projects() -> Result<Vec<Project>, String> {
             id: row.get("id").cloned().unwrap_or_default(),
             name: row.get("name").cloned().unwrap_or_default(),
             path: row.get("path").cloned().unwrap_or_default(),
+            updated_at: row.get("updated_at").cloned().unwrap_or_default(),
         })
         .collect();
 
