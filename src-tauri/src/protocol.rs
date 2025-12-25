@@ -1,5 +1,6 @@
 use mime_guess;
 use percent_encoding::percent_decode_str;
+use serde::de;
 use std::{fs, path::Path};
 
 use tauri::{
@@ -7,7 +8,7 @@ use tauri::{
     AppHandle,
 };
 
-use crate::commands::projects;
+use crate::commands::projects::{self, EDITOR_ASSETS_PATH};
 
 pub const PROTOCOL: &str = "project";
 pub const PROTOCOL_PREFIX: &str = "project://localhost/";
@@ -53,8 +54,43 @@ pub fn register_custom_protocol(
         }
     };
 
+    let editor_assets_prefix = format!("{}/", EDITOR_ASSETS_PREFIX);
     // is this uri requests core files
-    if decoded_uri.starts_with(&format!("{}/", EDITOR_ASSETS_PREFIX)) {
+    if decoded_uri.starts_with(&editor_assets_prefix) {
+        let decoded_uri = decoded_uri.replace(&editor_assets_prefix, "");
+
+        let dir_path = Path::new(&EDITOR_ASSETS_PATH);
+        if !dir_path.exists() {
+            *response.status_mut() = StatusCode::INTERNAL_SERVER_ERROR;
+            *response.body_mut() = "editor assets not found".as_bytes().to_vec();
+            return response;
+        }
+
+        let dir_path = dir_path.join(decoded_uri);
+        if !dir_path.exists() {
+            *response.status_mut() = StatusCode::NOT_FOUND;
+            *response.body_mut() = "editor asset not found".as_bytes().to_vec();
+            return response;
+        }
+
+        match fs::read(&dir_path) {
+            Ok(data) => {
+                *response.status_mut() = StatusCode::OK;
+                *response.body_mut() = data;
+
+                let mime = mime_guess::from_path(&dir_path)
+                    .first_or_octet_stream()
+                    .to_string();
+                response
+                    .headers_mut()
+                    .insert("Content-Type", mime.parse().unwrap());
+            }
+            Err(err) => {
+                *response.status_mut() = StatusCode::INTERNAL_SERVER_ERROR;
+                *response.body_mut() = format!("Error: {}", err).into_bytes();
+            }
+        }
+
         return response;
     }
 
