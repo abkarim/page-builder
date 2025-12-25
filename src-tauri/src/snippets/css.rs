@@ -19,8 +19,8 @@ pub fn generate_css_snippet() -> String {
         -webkit-text-size-adjust: 100%;
         }
 
-        /* Remove link underlines by default (optional) 
-        — remove this if you want default styles 
+        /* Remove link underlines by default (optional)
+        — remove this if you want default styles
         */
         a {
         text-decoration: none;
@@ -79,6 +79,11 @@ pub fn generate_css_snippet() -> String {
         outline: 2px solid #00000022;
         outline-offset: 2px;
         }
+
+        button {
+            pointer-events: cursor;
+        }
+
     "#
     .to_string()
 }
