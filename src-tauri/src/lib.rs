@@ -38,6 +38,7 @@ pub fn run() {
             projects::create_new_design,
             projects::get_designs,
             projects::get_project_file_content,
+            projects::update_project_file_content,
             templates::blocks::get_blocks,
             templates::components::get_components
         ])
