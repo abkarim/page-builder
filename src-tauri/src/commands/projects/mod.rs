@@ -89,7 +89,7 @@ pub fn get_project(uuid: String) -> Result<Project, String> {
     )
     .map_err(|e| format!("{}", e))?;
 
-    let row = rows.into_iter().next().ok_or("Project not found")?;
+    let row = rows.into_iter().next().ok_or("project not found")?;
 
     // Set current project root as the default project root
     set_project_root(row.get("path").cloned().ok_or("missing path")?)?;
