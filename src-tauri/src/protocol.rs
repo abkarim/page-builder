@@ -1,6 +1,5 @@
 use mime_guess;
 use percent_encoding::percent_decode_str;
-use serde::de;
 use std::{fs, path::Path};
 
 use tauri::{
