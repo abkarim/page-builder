@@ -28,3 +28,4 @@ rusqlite = { version = "0.37", features = ["bundled"] }
 ts-rs = "11.1"
 mime_guess = "2.0"
 percent-encoding = "2.3"
+chrono = "0.4"
