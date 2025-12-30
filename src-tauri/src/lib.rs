@@ -7,6 +7,8 @@ mod snippets;
 use commands::{projects, templates};
 use std::sync::Mutex;
 
+pub const APP_VERSION: &str = env!("CARGO_PKG_VERSION");
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
