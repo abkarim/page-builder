@@ -14,6 +14,7 @@ use crate::fs::get_design_files;
 use crate::snippets;
 use crate::snippets::css;
 use crate::snippets::js;
+use crate::APP_VERSION;
 
 #[derive(Serialize, Debug, TS)]
 #[ts(export)]
@@ -174,8 +175,9 @@ pub fn create_project(name: &str, directory: &str) -> Result<String, String> {
     let initial_content = format!(
         r#"{{
         "name": "{}",
+        "app_version": "{}"
     }}"#,
-        name
+        name, APP_VERSION
     );
     fs::create_file(&path.join("project.json"), initial_content)?;
 
