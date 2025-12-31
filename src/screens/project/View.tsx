@@ -48,6 +48,7 @@ export default function (): React.JSX.Element {
     try {
       const data = await invoke<Project>("get_project", {
         uuid: id,
+        fixIfRequired: true,
       });
       setProject(data);
     } catch (err) {
