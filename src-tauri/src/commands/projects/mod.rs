@@ -1,4 +1,5 @@
 use chrono::Utc;
+use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
 use std::path::Path;
@@ -13,6 +14,7 @@ use crate::fs::create_file;
 use crate::fs::get_design_files;
 use crate::snippets;
 use crate::snippets::css;
+use crate::snippets::html::get_updated_contents;
 use crate::snippets::js;
 use crate::APP_VERSION;
 
@@ -24,6 +26,14 @@ pub struct Project {
     pub path: String,
     pub updated_at: String,
 }
+
+#[derive(Debug, Deserialize, Serialize)]
+struct ProjectData {
+    name: String,
+    app_version: String,
+}
+
+pub const PROJECT_FILE_NAME: &str = "project.json";
 
 /**
  * assets path
@@ -84,7 +94,9 @@ pub fn set_project_root(new_path: String) -> Result<(), String> {
  * Get project
  */
 #[tauri::command]
-pub fn get_project(uuid: String) -> Result<Project, String> {
+pub fn get_project(uuid: String, fix_if_required: Option<bool>) -> Result<Project, String> {
+    let fix_if_required = fix_if_required.unwrap_or(false);
+
     let rows = db::get(
         db::PROJECTS_TABLE,
         Some(HashMap::from([("id", uuid.clone())])),
@@ -93,13 +105,31 @@ pub fn get_project(uuid: String) -> Result<Project, String> {
 
     let row = rows.into_iter().next().ok_or("project not found")?;
 
+    let uuid = row.get("id").cloned().unwrap();
+    let project_path = row.get("path").cloned().unwrap();
+
     // Set current project root as the default project root
-    set_project_root(row.get("path").cloned().ok_or("missing path")?)?;
+    set_project_root(project_path.clone())?;
+
+    // Check if requested fixing
+    if fix_if_required {
+        let path = Path::new(&project_path).join(PROJECT_FILE_NAME);
+        if path.exists() {
+            let contents = std::fs::read_to_string(path).unwrap();
+
+            let project_data: ProjectData = serde_json::from_str(&contents).unwrap();
+
+            // upgrade project if version in the file doesn't match to app version
+            if project_data.app_version != APP_VERSION {
+                upgrade_project(Path::new(&project_path), &uuid)?;
+            }
+        }
+    }
 
     Ok(Project {
-        id: row.get("id").cloned().ok_or("missing id")?,
+        id: uuid,
         name: row.get("name").cloned().ok_or("missing name")?,
-        path: row.get("path").cloned().ok_or("missing path")?,
+        path: project_path,
         updated_at: row.get("updated_at").cloned().ok_or("missing updated_at")?,
     })
 }
@@ -109,7 +139,7 @@ pub fn get_project(uuid: String) -> Result<Project, String> {
  */
 #[tauri::command]
 pub fn remove_project(uuid: String) -> Result<String, String> {
-    let project = get_project(uuid.clone())?;
+    let project = get_project(uuid.clone(), None)?;
 
     // remove project from disk
     let path = PathBuf::from(&project.path);
@@ -150,13 +180,72 @@ pub fn get_projects() -> Result<Vec<Project>, String> {
 }
 
 /**
+ * Upgrade projects
+ */
+fn upgrade_project(project_path: &Path, uuid: &String) -> Result<bool, String> {
+    // upgrade all designs
+    let designs = fs::get_design_files(&project_path).unwrap();
+    for design in designs {
+        if let Ok(content) = fs::get_project_file_content(&project_path, &design) {
+            let updated_content = get_updated_contents(content);
+            update_project_file_content(uuid.clone(), design, updated_content)?;
+        };
+    }
+
+    // upgrade assets
+    std::fs::write(
+        &project_path
+            .join(PROJECT_ASSETS_CSS_PATH)
+            .join(PROJECT_CSS_FILENAME),
+        snippets::css::generate_css_snippet(),
+    )
+    .map_err(|e| format!("failed to update css file: {}", e.to_string()))?;
+    std::fs::write(
+        &project_path
+            .join(PROJECT_ASSETS_JS_PATH)
+            .join(PROJECT_JS_FILENAME),
+        snippets::js::generate_default_js(),
+    )
+    .map_err(|e| format!("failed to update js file: {}", e.to_string()))?;
+
+    update_project_details(uuid, None)?;
+
+    Ok(true)
+}
+
+/**
  * Update project
  * This function handles project info
  * project name
  * project path
  * everything that is available in project.json file
  */
-// pub fn update_project_details(uuid: &str) -> bool {}
+pub fn update_project_details(uuid: &String, name: Option<String>) -> Result<(), String> {
+    let name = name.unwrap_or("".to_string());
+
+    let project = get_project(uuid.clone(), None)?;
+    let path = Path::new(&project.path).join(PROJECT_FILE_NAME);
+
+    let project_file_content = std::fs::read_to_string(&path)
+        .map_err(|e| format!("error reading project file: {}", e.to_string()))?;
+    let mut project_data: ProjectData = serde_json::from_str(&project_file_content)
+        .map_err(|e| format!("error converting json in project file: {}", e))?;
+
+    project_data.app_version = APP_VERSION.to_string();
+
+    if name.trim().len() != 0 {
+        project_data.name = name;
+    }
+
+    std::fs::write(
+        path,
+        serde_json::to_string_pretty(&project_data)
+            .map_err(|e| format!("error converting to json project file: {}", e))?,
+    )
+    .map_err(|e| format!("error updating project.json: {}", e.to_string()))?;
+
+    Ok(())
+}
 
 /**
  * Create project
@@ -171,15 +260,15 @@ pub fn create_project(name: &str, directory: &str) -> Result<String, String> {
 
     fs::create_project(&path).map_err(|e| e.to_string())?;
 
+    let project_data = ProjectData {
+        name: name.to_string(),
+        app_version: APP_VERSION.to_string(),
+    };
+
     // Add project.json
-    let initial_content = format!(
-        r#"{{
-        "name": "{}",
-        "app_version": "{}"
-    }}"#,
-        name, APP_VERSION
-    );
-    fs::create_file(&path.join("project.json"), initial_content)?;
+    let initial_content = serde_json::to_string_pretty(&project_data)
+        .map_err(|e| format!("failed to serialize project JSON: {}", e))?;
+    fs::create_file(&path.join(PROJECT_FILE_NAME), initial_content)?;
 
     // Insert to db
     let mut data_to_insert = HashMap::new();
@@ -233,7 +322,7 @@ pub fn create_new_design(name: String, uuid: String) -> Result<String, String> {
         return Err("Project id is required".to_string());
     }
 
-    let project = get_project(uuid.clone())?;
+    let project = get_project(uuid.clone(), None)?;
 
     fs::create_file(
         &Path::new(&project.path).join(format!("{}.html", name)),
@@ -257,7 +346,7 @@ pub fn create_new_design(name: String, uuid: String) -> Result<String, String> {
  */
 #[tauri::command]
 pub fn get_designs(uuid: String) -> Result<Vec<String>, String> {
-    let project = get_project(uuid)?;
+    let project = get_project(uuid, None)?;
 
     let designs = get_design_files(Path::new(&project.path)).map_err(|e| e.to_string())?;
 
@@ -277,7 +366,7 @@ pub fn get_project_file_content(uuid: String, name: String) -> Result<String, St
         return Err("name is required".to_string());
     }
 
-    let project = get_project(uuid)?;
+    let project = get_project(uuid, None)?;
 
     let content =
         fs::get_project_file_content(&Path::new(&project.path), &format!("{}.html", name))?;
@@ -303,7 +392,7 @@ pub fn update_project_file_content(
     }
 
     // Check project
-    let project = get_project(uuid.clone())?;
+    let project = get_project(uuid.clone(), None)?;
 
     // Check file
     let file_path = Path::new(&project.path).join(&format!("{}.html", filename));
