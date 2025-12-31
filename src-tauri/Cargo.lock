@@ -2366,6 +2366,7 @@ dependencies = [
  "chrono",
  "mime_guess",
  "percent-encoding",
+ "regex",
  "rusqlite",
  "serde",
  "serde_json",
