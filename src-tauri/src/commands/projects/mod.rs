@@ -28,7 +28,7 @@ pub struct Project {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-struct ProjectData {
+pub struct ProjectData {
     name: String,
     app_version: String,
 }
@@ -226,10 +226,7 @@ pub fn update_project_details(uuid: &String, name: Option<String>) -> Result<(),
     let project = get_project(uuid.clone(), None)?;
     let path = Path::new(&project.path).join(PROJECT_FILE_NAME);
 
-    let project_file_content = std::fs::read_to_string(&path)
-        .map_err(|e| format!("error reading project file: {}", e.to_string()))?;
-    let mut project_data: ProjectData = serde_json::from_str(&project_file_content)
-        .map_err(|e| format!("error converting json in project file: {}", e))?;
+    let mut project_data: ProjectData = fs::get_project_root_file_content(&path)?;
 
     project_data.app_version = APP_VERSION.to_string();
 
@@ -237,12 +234,7 @@ pub fn update_project_details(uuid: &String, name: Option<String>) -> Result<(),
         project_data.name = name;
     }
 
-    std::fs::write(
-        path,
-        serde_json::to_string_pretty(&project_data)
-            .map_err(|e| format!("error converting to json project file: {}", e))?,
-    )
-    .map_err(|e| format!("error updating project.json: {}", e.to_string()))?;
+    fs::write_project_root_file_content(&path, &project_data)?;
 
     Ok(())
 }
@@ -266,9 +258,7 @@ pub fn create_project(name: &str, directory: &str) -> Result<String, String> {
     };
 
     // Add project.json
-    let initial_content = serde_json::to_string_pretty(&project_data)
-        .map_err(|e| format!("failed to serialize project JSON: {}", e))?;
-    fs::create_file(&path.join(PROJECT_FILE_NAME), initial_content)?;
+    fs::write_project_root_file_content(&path.join(PROJECT_FILE_NAME), &project_data)?;
 
     // Insert to db
     let mut data_to_insert = HashMap::new();
