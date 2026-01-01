@@ -2,6 +2,8 @@ use std::fs::{self};
 use std::io;
 use std::path::{Path, PathBuf};
 
+use crate::commands::projects::ProjectData;
+
 pub fn is_directory_empty<P: AsRef<Path>>(directory_path: P) -> io::Result<bool> {
     let path = directory_path.as_ref();
 
@@ -122,4 +124,33 @@ pub fn get_design_files(path: &Path) -> io::Result<Vec<String>> {
 
 pub fn get_project_file_content(project_path: &Path, filename: &String) -> Result<String, String> {
     fs::read_to_string(project_path.join(filename)).map_err(|e| e.to_string())
+}
+
+/**
+ * Write content to project file
+ */
+pub fn write_project_root_file_content(
+    project_file_path: &PathBuf,
+    data: &ProjectData,
+) -> Result<(), String> {
+    std::fs::write(
+        project_file_path,
+        serde_json::to_string_pretty(data)
+            .map_err(|e| format!("error converting to json project file: {}", e))?,
+    )
+    .map_err(|e| format!("error updating project.json: {}", e.to_string()))?;
+
+    Ok(())
+}
+
+/**
+ * Get contents of project file
+ */
+pub fn get_project_root_file_content(project_file_path: &PathBuf) -> Result<ProjectData, String> {
+    let project_file_content = std::fs::read_to_string(project_file_path)
+        .map_err(|e| format!("error reading project file: {}", e.to_string()))?;
+    let project_data: ProjectData = serde_json::from_str(&project_file_content)
+        .map_err(|e| format!("error converting json in project file: {}", e))?;
+
+    Ok(project_data)
 }
