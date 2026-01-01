@@ -1,21 +1,14 @@
 use chrono::Utc;
-use serde::Deserialize;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use std::path::Path;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::sync::{Mutex, OnceLock};
 use ts_rs::TS;
 use uuid::Uuid;
 
 use crate::db;
-use crate::fs;
-use crate::fs::create_file;
-use crate::fs::get_design_files;
-use crate::snippets;
-use crate::snippets::css;
-use crate::snippets::html::get_updated_contents;
-use crate::snippets::js;
+use crate::fs::{self, create_file, get_design_files};
+use crate::snippets::{self, css, html::get_updated_contents, js};
 use crate::APP_VERSION;
 
 #[derive(Serialize, Debug, TS)]
