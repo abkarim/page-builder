@@ -104,7 +104,7 @@ export default function Editor() {
         </Button>
       </div>
 
-      <section className="flex items-stretch gap-2 my-1 h-full">
+      <section className="flex items-stretch justify-between gap-2 my-1 h-full">
         <Elements show={showElements} />
         <div className="w-full">
           <iframe srcDoc={content} className="w-full h-full outline block" />
