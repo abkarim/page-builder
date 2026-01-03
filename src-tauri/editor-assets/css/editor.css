@@ -2,4 +2,5 @@
     text-align: center;
     border: 1px solid blue;
     width: 100%;
+    cursor: pointer;
 }
