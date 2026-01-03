@@ -87,9 +87,11 @@ export default function Editor() {
         <p>Editing: {name}</p>
         <Button onClick={saveChanges}>Save</Button>
       </div>
-      <section className="flex items-start justify-between">
+      <section className="flex items-stretch justify-between">
         <Elements />
-        <iframe srcDoc={content} className="w-full h-full border " />
+        <div className="w-full mt-8">
+          <iframe srcDoc={content} className="w-full h-full border block" />
+        </div>
         <ElementStylesEditor />
       </section>
     </section>
