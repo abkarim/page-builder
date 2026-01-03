@@ -67,7 +67,7 @@ pub fn get_html_snippet(title: &String) -> String {
 
                 {body_snippet}
 
-                <script src="{js_path}{project_js_filename}"></script>
+                <script type="module" src="{js_path}{project_js_filename}"></script>
 
                 {footer_snippet}
             </body>
