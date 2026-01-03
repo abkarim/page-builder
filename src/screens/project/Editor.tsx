@@ -4,9 +4,17 @@ import { Button } from "@/components/ui/button";
 import useConfirmDialog from "@/hooks/useConfirmDialog";
 import { invoke } from "@tauri-apps/api/core";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useBlocker, useParams } from "react-router-dom";
 import { toast } from "sonner";
+
+/**
+ * Communication message event type
+ */
+interface EditorMessageData {
+  type: "test";
+  payload: Record<string, unknown>;
+}
 
 export default function Editor() {
   const { id, name } = useParams();
@@ -15,6 +23,7 @@ export default function Editor() {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showElements, setShowElemtns] = useState(true);
   const [showStylesEditor, setShowStylesEditor] = useState(true);
+  const editorRef = useRef<HTMLIFrameElement>(null);
 
   async function getContent() {
     if (!id || !name) {
@@ -43,6 +52,7 @@ export default function Editor() {
   const blocker = useBlocker(() => {
     return hasUnsavedChanges;
   });
+
   useEffect(() => {
     if (blocker.state === "blocked") {
       (async () => {
@@ -59,6 +69,36 @@ export default function Editor() {
       })();
     }
   }, [blocker]);
+
+  /**
+   * Get messages from editor iframe
+   */
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent<EditorMessageData>) => {
+      console.log(event.data);
+    };
+
+    window.addEventListener("message", handleMessage);
+
+    return () => window.removeEventListener("message", handleMessage);
+  }, []);
+
+  /**
+   * Send message to Editor Iframe
+   */
+  function sendMessageToEditor() {
+    if (!editorRef?.current || !editorRef?.current?.contentWindow) return;
+
+    const { postMessage } = editorRef.current.contentWindow;
+
+    postMessage(
+      {
+        type: "Test",
+        message: "Hello",
+      },
+      "*",
+    );
+  }
 
   /**
    * Save changes
@@ -107,7 +147,11 @@ export default function Editor() {
       <section className="flex items-stretch gap-2 my-1 h-full">
         <Elements show={showElements} />
         <div className="w-full">
-          <iframe srcDoc={content} className="w-full h-full outline block" />
+          <iframe
+            ref={editorRef}
+            srcDoc={content}
+            className="w-full h-full outline block"
+          />
         </div>
         <ElementStylesEditor show={showStylesEditor} />
       </section>
