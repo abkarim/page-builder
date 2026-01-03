@@ -3,6 +3,7 @@ import ElementStylesEditor from "@/components/editor/Index";
 import { Button } from "@/components/ui/button";
 import useConfirmDialog from "@/hooks/useConfirmDialog";
 import { invoke } from "@tauri-apps/api/core";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useBlocker, useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -12,6 +13,7 @@ export default function Editor() {
   const confirmDialog = useConfirmDialog();
   const [content, setContent] = useState("");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [showElements, setShowElemtns] = useState(true);
 
   async function getContent() {
     if (!id || !name) {
@@ -87,9 +89,20 @@ export default function Editor() {
         <p>Editing: {name}</p>
         <Button onClick={saveChanges}>Save</Button>
       </div>
-      <section className="flex items-stretch justify-between">
-        <Elements />
-        <div className="w-full mt-8">
+      <div className="flex justify-between items-center">
+        <Button variant="ghost" onClick={() => setShowElemtns((prev) => !prev)}>
+          <ChevronLeftIcon />
+          Elements
+        </Button>
+        <Button variant="ghost">
+          Style Editor
+          <ChevronRightIcon />
+        </Button>
+      </div>
+
+      <section className="flex items-stretch gap-2 mt-1">
+        <Elements show={showElements} />
+        <div className="w-full">
           <iframe srcDoc={content} className="w-full h-full border block" />
         </div>
         <ElementStylesEditor />
