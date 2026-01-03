@@ -92,7 +92,7 @@ export default function Editor() {
       </div>
       <div className="flex justify-between items-center">
         <Button variant="ghost" onClick={() => setShowElemtns((prev) => !prev)}>
-          <ChevronLeftIcon />
+          {!showElements ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           Elements
         </Button>
         <Button
@@ -100,7 +100,7 @@ export default function Editor() {
           onClick={() => setShowStylesEditor((prev) => !prev)}
         >
           Style Editor
-          <ChevronRightIcon />
+          {showStylesEditor ? <ChevronRightIcon /> : <ChevronLeftIcon />}
         </Button>
       </div>
 
