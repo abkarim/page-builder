@@ -85,7 +85,7 @@ export default function Editor() {
   }
 
   return (
-    <section>
+    <section className="h-full">
       <div className="flex justify-between items-center">
         <p>Editing: {name}</p>
         <Button onClick={saveChanges}>Save</Button>
@@ -104,10 +104,10 @@ export default function Editor() {
         </Button>
       </div>
 
-      <section className="flex items-stretch gap-2 mt-1">
+      <section className="flex items-stretch gap-2 my-1 h-full">
         <Elements show={showElements} />
         <div className="w-full">
-          <iframe srcDoc={content} className="w-full h-full border block" />
+          <iframe srcDoc={content} className="w-full h-full outline block" />
         </div>
         <ElementStylesEditor show={showStylesEditor} />
       </section>

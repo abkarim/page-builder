@@ -120,7 +120,7 @@ export default function App(): React.JSX.Element {
             </BreadcrumbList>
           </Breadcrumb>
         </header>
-        <div className="mt-2">
+        <div className="mt-2 h-full">
           <Outlet />
         </div>
       </section>
