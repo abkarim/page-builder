@@ -40,7 +40,7 @@ export default function Components({ show }: Props): React.JSX.Element {
   if (!show) return <></>;
 
   return (
-    <section className="w-md">
+    <section className="w-md bg-accent rounded ">
       <Tabs defaultValue="blocks" className="p-2">
         <TabsList>
           <TabsTrigger value="blocks">Blocks</TabsTrigger>
