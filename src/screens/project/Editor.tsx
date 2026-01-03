@@ -14,6 +14,7 @@ export default function Editor() {
   const [content, setContent] = useState("");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showElements, setShowElemtns] = useState(true);
+  const [showStylesEditor, setShowStylesEditor] = useState(true);
 
   async function getContent() {
     if (!id || !name) {
@@ -94,7 +95,10 @@ export default function Editor() {
           <ChevronLeftIcon />
           Elements
         </Button>
-        <Button variant="ghost">
+        <Button
+          variant="ghost"
+          onClick={() => setShowStylesEditor((prev) => !prev)}
+        >
           Style Editor
           <ChevronRightIcon />
         </Button>
@@ -105,7 +109,7 @@ export default function Editor() {
         <div className="w-full">
           <iframe srcDoc={content} className="w-full h-full border block" />
         </div>
-        <ElementStylesEditor />
+        <ElementStylesEditor show={showStylesEditor} />
       </section>
     </section>
   );
