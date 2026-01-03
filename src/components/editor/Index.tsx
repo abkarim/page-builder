@@ -8,7 +8,7 @@ export default function ElementStylesEditor({
   if (!show) return <></>;
 
   return (
-    <section className="w-md bg-accent rounded p-2">
+    <section className="max-w-60 w-full bg-accent rounded p-2">
       <section>Styles Editor</section>
     </section>
   );
