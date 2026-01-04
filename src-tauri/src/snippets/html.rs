@@ -26,7 +26,7 @@ fn get_html_footer_snippet() -> String {
     format!(
         r#"
             <!-- {page_builder_wrapper}-start footer -->
-            <script src="{editor_assets}/js/editor.js"></script>
+            <script type="module" src="{editor_assets}/js/editor.js"></script>
             <!-- {page_builder_wrapper}-end footer -->
         "#,
         page_builder_wrapper = PAGE_BUILDER_COMMENT_WRAPPER,
