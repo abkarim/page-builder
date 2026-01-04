@@ -39,7 +39,7 @@ pub const PROJECT_JS_FILENAME: &str = "app.js";
 /**
  * Editor assets
  */
-pub const EDITOR_ASSETS_PATH: &str = "./editor-assets";
+pub const EDITOR_ASSETS_PATH: &str = "./../editor-assets";
 
 pub static PROJECT_ROOT: OnceLock<Mutex<Option<String>>> = OnceLock::new();
 
