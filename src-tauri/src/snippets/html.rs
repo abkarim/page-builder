@@ -104,8 +104,13 @@ pub fn get_updated_contents(current_content: String) -> String {
         let pattern =
             format!(r"<!-- {wrapper}-start {target} -->[\s\S]*?<!-- {wrapper}-end {target} -->");
 
-        if let Ok(re) = Regex::new(&pattern) {
-            content = re.replace(&content, new_snippet.as_str()).into_owned();
+        match Regex::new(&pattern) {
+            Ok(re) => {
+                content = re.replace(&content, new_snippet.as_str()).into_owned();
+            }
+            Err(err) => {
+                println!("Error: {}", err)
+            }
         }
     }
 
