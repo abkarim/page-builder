@@ -1,9 +1,21 @@
 const origin = "*";
+const pageBuilderData = {
+    className: "page-builder-element",
+};
 /**
  * Send message to parent
  */
-function sendMessageToParent() {
-    window.parent.postMessage("HI", origin);
+function sendMessageToParent(data) {
+    window.parent.postMessage(data, origin);
 }
-sendMessageToParent();
+/**
+ * Get insert Element
+ */
+const insertElement = document.querySelector(`button.insert-${pageBuilderData.className}`);
+insertElement.addEventListener("click", () => sendMessageToParent({
+    type: "insert",
+    payload: {
+        target: "hey",
+    },
+}));
 export {};
