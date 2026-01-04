@@ -7,14 +7,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useBlocker, useParams } from "react-router-dom";
 import { toast } from "sonner";
-
-/**
- * Communication message event type
- */
-interface EditorMessageData {
-  type: "test";
-  payload: Record<string, unknown>;
-}
+import { type EditorMessageData } from "./EditorTypes";
 
 export default function Editor() {
   const { id, name } = useParams();
@@ -23,6 +16,7 @@ export default function Editor() {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showElements, setShowElemtns] = useState(true);
   const [showStylesEditor, setShowStylesEditor] = useState(true);
+  const [editorTarget, setEditorTarget] = useState("");
   const editorRef = useRef<HTMLIFrameElement>(null);
 
   async function getContent() {
@@ -75,7 +69,17 @@ export default function Editor() {
    */
   useEffect(() => {
     const handleMessage = (event: MessageEvent<EditorMessageData>) => {
-      console.log(event.data);
+      const { type, payload } = event.data;
+      /**
+       * Handle Insert
+       */
+      if (type === "insert") {
+        /**
+         * Open elements tab if close
+         */
+        setShowElemtns(true);
+        setEditorTarget(payload.id as string);
+      }
     };
 
     window.addEventListener("message", handleMessage);
