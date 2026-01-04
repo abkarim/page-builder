@@ -7,7 +7,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useBlocker, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { type EditorMessageData } from "./EditorTypes";
+import { CanvasMessageData, type EditorMessageData } from "./EditorTypes";
 
 export default function Editor() {
   const { id, name } = useParams();
@@ -90,18 +90,12 @@ export default function Editor() {
   /**
    * Send message to Editor Iframe
    */
-  function sendMessageToEditor() {
+  function sendMessageToCanvas(data: CanvasMessageData) {
     if (!editorRef?.current || !editorRef?.current?.contentWindow) return;
 
     const { postMessage } = editorRef.current.contentWindow;
 
-    postMessage(
-      {
-        type: "Test",
-        message: "Hello",
-      },
-      "*",
-    );
+    postMessage(data, "*");
   }
 
   /**
@@ -149,7 +143,18 @@ export default function Editor() {
       </div>
 
       <section className="flex items-stretch gap-2 my-1 h-full">
-        <Elements show={showElements} />
+        <Elements
+          show={showElements}
+          onElementClick={(id) => {
+            sendMessageToCanvas({
+              type: "element",
+              payload: {
+                type: "insert",
+                data: `<h1>${id}</h1>`,
+              },
+            });
+          }}
+        />
         <div className="w-full">
           <iframe
             ref={editorRef}
