@@ -179,9 +179,14 @@ fn upgrade_project(project_path: &Path, uuid: &String) -> Result<bool, String> {
     // upgrade all designs
     let designs = fs::get_design_files(&project_path).unwrap();
     for design in designs {
-        if let Ok(content) = fs::get_project_file_content(&project_path, &design) {
-            let updated_content = get_updated_contents(content);
-            update_project_file_content(uuid.clone(), design, updated_content)?;
+        match fs::get_project_file_content(&project_path, &format!("{}.html", &design)) {
+            Ok(content) => {
+                let updated_content = get_updated_contents(content);
+                update_project_file_content(uuid.clone(), design, updated_content)?;
+            }
+            Err(err) => {
+                println!("Err: {}", err);
+            }
         };
     }
 
