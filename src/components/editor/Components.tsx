@@ -8,9 +8,13 @@ import { Component } from "./components";
 
 interface Props {
   show: boolean;
+  onElementClick: (id: number) => void;
 }
 
-export default function Components({ show }: Props): React.JSX.Element {
+export default function Components({
+  show,
+  onElementClick,
+}: Props): React.JSX.Element {
   const [blocks, setBlocks] = useState<Blocks[]>([]);
   const [components, setComponents] = useState<Component[]>([]);
 
@@ -60,7 +64,9 @@ export default function Components({ show }: Props): React.JSX.Element {
           <section className="flex flex-wrap gap-1">
             <>
               {blocks.map((block) => (
-                <Button key={block.id}>{block.name}</Button>
+                <Button onClick={() => onElementClick(block.id)} key={block.id}>
+                  {block.name}
+                </Button>
               ))}
               {blocks.length === 0 && <p>No results</p>}
             </>
