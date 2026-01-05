@@ -145,12 +145,12 @@ export default function Editor() {
       <section className="flex items-stretch gap-2 my-1 h-full">
         <Elements
           show={showElements}
-          onElementClick={(id) => {
+          onElementClick={(elementType, data) => {
             sendMessageToCanvas({
-              type: "element",
+              type: elementType,
               payload: {
                 type: "insert",
-                data: `<h1>${id}</h1>`,
+                data,
               },
             });
           }}
