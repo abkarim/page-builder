@@ -16,7 +16,6 @@ export default function Editor() {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showElements, setShowElemtns] = useState(true);
   const [showStylesEditor, setShowStylesEditor] = useState(true);
-  const [editorTarget, setEditorTarget] = useState("");
   const editorRef = useRef<HTMLIFrameElement>(null);
 
   async function getContent() {
@@ -78,7 +77,6 @@ export default function Editor() {
          * Open elements tab if close
          */
         setShowElemtns(true);
-        setEditorTarget(payload.id as string);
       }
     };
 
