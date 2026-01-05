@@ -3,5 +3,5 @@ export type Block = {
   name: string;
   tag: string;
   content?: string;
-  attributes?: [Record<string, string>];
+  attributes?: Record<string, string>[];
 };
