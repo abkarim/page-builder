@@ -1,13 +1,30 @@
 import {
-  CanvasMessageData,
+  type CanvasMessageData,
   type EditorMessageData,
 } from "../../src/screens/project/EditorTypes";
+import { type Block } from "../../src/components/editor/block";
 
 const origin = "*";
+
+let target: {
+  parent: HTMLElement | null;
+  reference: HTMLElement | null;
+  position?: "before" | "after";
+} = {
+  parent: null,
+  reference: null,
+};
 
 const pageBuilderData = {
   className: "page-builder-element",
 };
+
+/**
+ * Get insert Element
+ */
+const insertElement = document.querySelector(
+  `button.insert-${pageBuilderData.className}`,
+);
 
 /**
  * Send message to parent
@@ -17,29 +34,82 @@ function sendMessageToParent(data: EditorMessageData) {
 }
 
 /**
+ * Create element from string
+ */
+function createElementFromBlock(data: Block): HTMLElement {
+  const element = document.createElement(data.tag);
+  if (data.content) {
+    element.innerHTML = data.content;
+  }
+
+  if (data.attributes) {
+    data.attributes.forEach((attribute) => {
+      Object.entries(attribute).forEach(([key, value]) => {
+        element.setAttribute(key, value);
+      });
+    });
+  }
+
+  return element;
+}
+
+/**
+ * Insert Element to page
+ */
+function insertElementToPage(element: HTMLElement) {
+  const { parent, position, reference } = target;
+
+  /**
+   * If no parent found insert the element after
+   * the insertElement
+   */
+  if (!parent) {
+    if (insertElement) {
+      insertElement.before(element);
+    }
+    return;
+  }
+
+  /**
+   * If not found insert as first child
+   */
+  if (!reference) {
+    parent.prepend(element);
+    return;
+  }
+
+  if (position === "before") reference.before(element);
+  if (position === "after") reference.after(element);
+}
+
+/**
  * Receive message from Parent
  */
 function receiveMessageData(event: MessageEvent<CanvasMessageData>) {
   const { type, payload } = event.data;
 
-  if (type === "element") {
+  if (type === "block") {
     if (payload.type === "insert") {
-      const body = document.querySelector("body")!;
+      const element = createElementFromBlock(payload.data as Block);
 
-      body.innerHTML = payload.data + body.innerHTML;
+      insertElementToPage(element);
     }
   }
 }
 
 window.addEventListener("message", receiveMessageData);
 
-/**
- * Get insert Element
- */
-const insertElement = document.querySelector(
-  `button.insert-${pageBuilderData.className}`,
-);
-insertElement!.addEventListener("click", () => {
+insertElement!.addEventListener("click", (e) => {
+  /**
+   * TODO
+   * Determine and modify target info
+   */
+  target = {
+    parent: document.body,
+    reference: e.currentTarget as HTMLElement,
+    position: "before",
+  };
+
   sendMessageToParent({
     type: "insert",
     payload: {
