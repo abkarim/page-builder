@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { invoke } from "@tauri-apps/api/core";
-import { Blocks } from "./blocks";
+import { Block } from "./block";
 import { Button } from "../ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Component } from "./components";
 
 interface Props {
   show: boolean;
-  onElementClick: (id: number) => void;
+  onElementClick: (elementType: "block" | "component", block: Block) => void;
 }
 
 export default function Components({
   show,
   onElementClick,
 }: Props): React.JSX.Element {
-  const [blocks, setBlocks] = useState<Blocks[]>([]);
+  const [blocks, setBlocks] = useState<Block[]>([]);
   const [components, setComponents] = useState<Component[]>([]);
 
   async function get_blocks() {
@@ -64,7 +64,10 @@ export default function Components({
           <section className="flex flex-wrap gap-1">
             <>
               {blocks.map((block) => (
-                <Button onClick={() => onElementClick(block.id)} key={block.id}>
+                <Button
+                  onClick={() => onElementClick("block", block)}
+                  key={block.id}
+                >
                   {block.name}
                 </Button>
               ))}
