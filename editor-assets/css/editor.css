@@ -4,3 +4,7 @@
     width: 100%;
     cursor: pointer;
 }
+
+body > *:not(.insert-page-builder-element):hover {
+    outline: 1px solid blue;
+}

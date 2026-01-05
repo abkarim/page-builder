@@ -159,7 +159,7 @@ export default function Editor() {
           <iframe
             ref={editorRef}
             srcDoc={content}
-            className="w-full h-full outline block"
+            className="w-full h-full outline"
           />
         </div>
         <ElementStylesEditor show={showStylesEditor} />
