@@ -1,21 +1,7 @@
 {
-  "id": 1,
+  "id": 3,
   "name": "Heading",
-  "element": "<h2 $ATTR_VALUES$ page-builder-element-id='1' >{$CONTENT$}</h2>",
-  "default_content": "Heading Title here",
-  "available_styles": [
-    "*"
-  ],
-  "available_edits": [
-    "text",
-    "tag"
-  ],
-  "alternative_tags": [
-    "h1",
-    "h2",
-    "h3",
-    "h4",
-    "h5",
-    "h6"
-  ]
+  "tag": "h2",
+  "content": "Heading Title here",
+  "attributes": []
 }

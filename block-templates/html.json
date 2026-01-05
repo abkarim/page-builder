@@ -1,17 +1,6 @@
 {
-  "id": 4,
+  "id": 5,
   "name": "HTML",
-  "element": "<div $ATTR_VALUES$ page-builder-element-id='4'>{$CONTENT$}</div>",
-  "default_content": "HTML Here",
-  "available_styles": [
-    "*"
-  ],
-  "available_edits": [
-    "HTMLContent",
-    "tag"
-  ],
-  "alternative_tags": [
-    "div",
-    "section"
-  ]
+  "tag": "div",
+  "content": "HTML Here"
 }

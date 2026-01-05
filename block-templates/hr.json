@@ -1,12 +1,5 @@
 {
-  "id": 3,
+  "id": 4,
   "name": "horizontal row",
-  "element": "<hr $ATTR_VALUES$ page-builder-element-id='3' />",
-  "available_styles": [
-    "spacing",
-    "color",
-    "border",
-    "shadow",
-    "size"
-  ]
+  "tag": "hr"
 }

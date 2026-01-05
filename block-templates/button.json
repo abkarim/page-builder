@@ -1,12 +1,7 @@
 {
-  "id": 2,
-  "name": "button",
-  "element": "<button type='button' role='button' page-builder-element-id='2' $ATTR_VALUES$ >{$CONTENT$}</button>",
-  "default_content": "Click me",
-  "available_styles": [
-    "*"
-  ],
-  "available_edits": [
-    "text"
-  ]
+  "id": 1,
+  "name": "Button",
+  "tag": "button",
+  "content": "Click me",
+  "attributes": [{ "type": "button" }, { "role": "button" }]
 }
