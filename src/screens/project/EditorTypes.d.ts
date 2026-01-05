@@ -7,7 +7,7 @@ export interface EditorMessageData {
 }
 
 export interface CanvasMessageData {
-  type: "element";
+  type: "block" | "component";
   payload: {
     type: "insert";
     data: unknown;

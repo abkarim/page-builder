@@ -1,4 +1,4 @@
-export type Blocks = {
+export type Block = {
   id: number;
   name: string;
   tag: string;
