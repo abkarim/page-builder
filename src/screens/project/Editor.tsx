@@ -135,7 +135,7 @@ export default function Editor() {
           variant="ghost"
           onClick={() => setShowStylesEditor((prev) => !prev)}
         >
-          Style Editor
+          Editor
           {showStylesEditor ? <ChevronRightIcon /> : <ChevronLeftIcon />}
         </Button>
       </div>
