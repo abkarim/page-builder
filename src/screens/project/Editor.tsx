@@ -3,11 +3,21 @@ import ElementStylesEditor from "@/components/editor/Index";
 import { Button } from "@/components/ui/button";
 import useConfirmDialog from "@/hooks/useConfirmDialog";
 import { invoke } from "@tauri-apps/api/core";
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  RedoIcon,
+  UndoIcon,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useBlocker, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { CanvasMessageData, type EditorMessageData } from "./EditorTypes";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function Editor() {
   const { id, name } = useParams();
@@ -142,13 +152,38 @@ export default function Editor() {
         <p>Editing: {name}</p>
         <Button onClick={saveChanges}>Save</Button>
       </div>
-      <div className="flex justify-between items-center">
-        <Button variant="ghost" onClick={() => setShowElemtns((prev) => !prev)}>
+      <div className="flex justify-between items-center mt-1">
+        <Button
+          variant="secondary"
+          onClick={() => setShowElemtns((prev) => !prev)}
+        >
           {!showElements ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           Elements
         </Button>
+        <div className="flex items-center gap-2">
+          <Tooltip>
+            <TooltipTrigger>
+              <Button variant={"secondary"} disabled={editCount === 0}>
+                <UndoIcon />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Undo</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger>
+              <Button variant={"secondary"} disabled={true} title="Redo">
+                <RedoIcon />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Redo</p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
         <Button
-          variant="ghost"
+          variant="secondary"
           onClick={() => setShowStylesEditor((prev) => !prev)}
         >
           Editor
