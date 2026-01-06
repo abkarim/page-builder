@@ -114,15 +114,20 @@ export default function Editor() {
     /**
      * Only allow to save if we have unsaved changes
      */
-    if (!hasUnsavedChanges && editCount === 0) {
+    if (!hasUnsavedChanges || editCount === 0) {
       return toast.error("nothing to save");
     }
 
     try {
+      const iframeDoc = (
+        editorRef.current?.contentDocument ||
+        editorRef.current?.contentWindow?.document
+      )?.documentElement.outerHTML;
+
       const msg = await invoke<string>("update_project_file_content", {
         uuid: id,
         filename: name,
-        newContent: content,
+        newContent: iframeDoc,
       });
       setHasUnsavedChanges(false);
       toast.success(msg);
