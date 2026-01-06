@@ -6,6 +6,8 @@ let target = {
 const pageBuilderData = {
     className: "page-builder-element",
 };
+const availableUndo = [];
+const availableRedo = [];
 /**
  * Get insert Element
  */
@@ -69,8 +71,13 @@ function receiveMessageData(event) {
         if (payload.type === "insert") {
             const element = createElementFromBlock(payload.data);
             insertElementToPage(element);
+            availableUndo.push({ type: "insert", element: element });
             sendMessageToParent({
-                type: "added",
+                type: "historySync",
+                payload: {
+                    availableUndo: availableUndo.length,
+                    availableRedo: availableRedo.length,
+                },
             });
         }
     }

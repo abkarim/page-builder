@@ -20,6 +20,16 @@ const pageBuilderData = {
 };
 
 /**
+ * History
+ */
+type History = {
+  type: "insert";
+  element: HTMLElement;
+}[];
+const availableUndo: History = [];
+const availableRedo: History = [];
+
+/**
  * Get insert Element
  */
 const insertElement = document.querySelector(
@@ -93,8 +103,13 @@ function receiveMessageData(event: MessageEvent<CanvasMessageData>) {
       const element = createElementFromBlock(payload.data as Block);
 
       insertElementToPage(element);
+      availableUndo.push({ type: "insert", element: element });
       sendMessageToParent({
-        type: "added",
+        type: "historySync",
+        payload: {
+          availableUndo: availableUndo.length,
+          availableRedo: availableRedo.length,
+        },
       });
     }
   }
