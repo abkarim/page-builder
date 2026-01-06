@@ -24,7 +24,8 @@ export default function Editor() {
   const confirmDialog = useConfirmDialog();
   const [content, setContent] = useState("");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const [editCount, setEditCount] = useState(0);
+  const [availableUndo, setAvailableUndo] = useState(0);
+  const [availableRedo, setAvailableRedo] = useState(0);
   const [showElements, setShowElemtns] = useState(true);
   const [showStylesEditor, setShowStylesEditor] = useState(true);
   const editorRef = useRef<HTMLIFrameElement>(null);
@@ -79,7 +80,7 @@ export default function Editor() {
    */
   useEffect(() => {
     const handleMessage = (event: MessageEvent<EditorMessageData>) => {
-      const { type } = event.data;
+      const { type, payload } = event.data;
       /**
        * Handle Insert
        */
@@ -94,9 +95,16 @@ export default function Editor() {
       /**
        * Update edit count
        */
-      if (type === "added") {
+      if (type === "historySync") {
         setHasUnsavedChanges(true);
-        setEditCount((prev) => prev + 1);
+        if (
+          payload?.availableUndo !== undefined &&
+          payload?.availableRedo !== undefined
+        ) {
+          setAvailableUndo(payload.availableUndo as number);
+          setAvailableRedo(payload.availableRedo as number);
+        }
+
         return;
       }
     };
@@ -124,7 +132,7 @@ export default function Editor() {
     /**
      * Only allow to save if we have unsaved changes
      */
-    if (!hasUnsavedChanges || editCount === 0) {
+    if (!hasUnsavedChanges || availableUndo === 0) {
       return toast.error("nothing to save");
     }
 
@@ -163,7 +171,7 @@ export default function Editor() {
         <div className="flex items-center gap-2">
           <Tooltip>
             <TooltipTrigger>
-              <Button variant={"secondary"} disabled={editCount === 0}>
+              <Button variant={"secondary"} disabled={availableUndo === 0}>
                 <UndoIcon />
               </Button>
             </TooltipTrigger>
@@ -173,7 +181,11 @@ export default function Editor() {
           </Tooltip>
           <Tooltip>
             <TooltipTrigger>
-              <Button variant={"secondary"} disabled={true} title="Redo">
+              <Button
+                variant={"secondary"}
+                disabled={availableRedo === 0}
+                title="Redo"
+              >
                 <RedoIcon />
               </Button>
             </TooltipTrigger>

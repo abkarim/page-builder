@@ -2,7 +2,7 @@
  * Communication message event type
  */
 export interface EditorMessageData {
-  type: "test" | "insert" | "added";
+  type: "test" | "insert" | "historySync";
   payload?: Record<string, unknown>;
 }
 
