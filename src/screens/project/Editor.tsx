@@ -14,6 +14,7 @@ export default function Editor() {
   const confirmDialog = useConfirmDialog();
   const [content, setContent] = useState("");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [editCount, setEditCount] = useState(0);
   const [showElements, setShowElemtns] = useState(true);
   const [showStylesEditor, setShowStylesEditor] = useState(true);
   const editorRef = useRef<HTMLIFrameElement>(null);
@@ -68,7 +69,7 @@ export default function Editor() {
    */
   useEffect(() => {
     const handleMessage = (event: MessageEvent<EditorMessageData>) => {
-      const { type, payload } = event.data;
+      const { type } = event.data;
       /**
        * Handle Insert
        */
@@ -77,6 +78,16 @@ export default function Editor() {
          * Open elements tab if close
          */
         setShowElemtns(true);
+        return;
+      }
+
+      /**
+       * Update edit count
+       */
+      if (type === "added") {
+        setHasUnsavedChanges(true);
+        setEditCount((prev) => prev + 1);
+        return;
       }
     };
 
@@ -103,7 +114,7 @@ export default function Editor() {
     /**
      * Only allow to save if we have unsaved changes
      */
-    if (!hasUnsavedChanges) {
+    if (!hasUnsavedChanges && editCount === 0) {
       return toast.error("nothing to save");
     }
 

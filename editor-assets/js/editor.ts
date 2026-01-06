@@ -93,6 +93,9 @@ function receiveMessageData(event: MessageEvent<CanvasMessageData>) {
       const element = createElementFromBlock(payload.data as Block);
 
       insertElementToPage(element);
+      sendMessageToParent({
+        type: "added",
+      });
     }
   }
 }

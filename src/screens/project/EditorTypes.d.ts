@@ -2,8 +2,8 @@
  * Communication message event type
  */
 export interface EditorMessageData {
-  type: "test" | "insert";
-  payload: Record<string, unknown>;
+  type: "test" | "insert" | "added";
+  payload?: Record<string, unknown>;
 }
 
 export interface CanvasMessageData {

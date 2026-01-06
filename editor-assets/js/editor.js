@@ -69,6 +69,9 @@ function receiveMessageData(event) {
         if (payload.type === "insert") {
             const element = createElementFromBlock(payload.data);
             insertElementToPage(element);
+            sendMessageToParent({
+                type: "added",
+            });
         }
     }
 }
