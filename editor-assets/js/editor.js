@@ -90,10 +90,11 @@
   window.addEventListener("message", receiveMessageData);
 
   // editor-assets/js/element.ts
-  var target = {
+  var defaultTarget = {
     parent: null,
     reference: null
   };
+  var target = defaultTarget;
   var pageBuilderData = {
     className: "page-builder-element",
     placeholderElementClassName: "page-buider-element-placeholder"
@@ -161,11 +162,15 @@
     e.preventDefault();
     const { target: targetElement, offsetY } = e;
     if (!(targetElement instanceof HTMLElement)) return;
-    target = {
-      parent: targetElement.parentElement,
-      reference: targetElement,
-      position: targetElement.offsetHeight / 2 < offsetY ? "after" : "before"
-    };
+    if (targetElement === document.body || targetElement === insertElement) {
+      target = defaultTarget;
+    } else {
+      target = {
+        parent: targetElement.parentElement,
+        reference: targetElement,
+        position: targetElement.offsetHeight / 2 < offsetY ? "after" : "before"
+      };
+    }
     moveElementInPage(placeholderElement);
   });
   document.body.addEventListener("drop", (e) => {
