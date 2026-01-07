@@ -3,6 +3,7 @@ import {
   type EditorMessageData,
 } from "../../src/screens/project/EditorTypes";
 import { type Block } from "../../src/components/editor/block";
+import { addToHistory, type History, redo, undo } from "./history";
 
 const origin = "*";
 
@@ -20,16 +21,6 @@ const pageBuilderData = {
 };
 
 /**
- * History
- */
-type History = {
-  type: "insert";
-  element: HTMLElement;
-}[];
-const availableUndo: History = [];
-const availableRedo: History = [];
-
-/**
  * Get insert Element
  */
 const insertElement = document.querySelector(
@@ -39,7 +30,7 @@ const insertElement = document.querySelector(
 /**
  * Send message to parent
  */
-function sendMessageToParent(data: EditorMessageData) {
+export function sendMessageToParent(data: EditorMessageData) {
   window.parent.postMessage(data, origin);
 }
 
@@ -103,15 +94,20 @@ function receiveMessageData(event: MessageEvent<CanvasMessageData>) {
       const element = createElementFromBlock(payload.data as Block);
 
       insertElementToPage(element);
-      availableUndo.push({ type: "insert", element: element });
-      sendMessageToParent({
-        type: "historySync",
-        payload: {
-          availableUndo: availableUndo.length,
-          availableRedo: availableRedo.length,
-        },
-      });
+      addToHistory({ type: "insert", element: element });
     }
+
+    return;
+  }
+
+  if (type === "undo") {
+    undo();
+    return;
+  }
+
+  if (type === "redo") {
+    redo();
+    return;
   }
 }
 
