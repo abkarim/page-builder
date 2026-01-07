@@ -1,5 +1,10 @@
 "use strict";
 (() => {
+  // src/components/editor/blockUtil.ts
+  function isBlock(obj) {
+    return obj !== null && obj !== void 0 && typeof obj.id === "number" && typeof obj.name === "string" && typeof obj.tag === "string";
+  }
+
   // editor-assets/js/history.ts
   var availableUndo = [];
   var availableRedo = [];
@@ -90,7 +95,8 @@
     reference: null
   };
   var pageBuilderData = {
-    className: "page-builder-element"
+    className: "page-builder-element",
+    placeholderElementClassName: "page-buider-element-placeholder"
   };
   var insertElement = document.querySelector(
     `button.insert-${pageBuilderData.className}`
@@ -124,6 +130,10 @@
     if (position === "before") reference.before(element);
     if (position === "after") reference.after(element);
   }
+  function moveElementInPage(element) {
+    element.remove();
+    insertElementToPage(element);
+  }
   insertElement.addEventListener("click", (e) => {
     target = {
       parent: document.body,
@@ -137,4 +147,37 @@
       }
     });
   });
+  var placeholderElement = createElementFromBlock({
+    id: 2334233247234,
+    name: "Placeholder",
+    tag: "div",
+    attributes: [
+      {
+        class: pageBuilderData.placeholderElementClassName
+      }
+    ]
+  });
+  document.body.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    const { target: targetElement, offsetY } = e;
+    if (!(targetElement instanceof HTMLElement)) return;
+    target = {
+      parent: targetElement.parentElement,
+      reference: targetElement,
+      position: targetElement.offsetHeight / 2 < offsetY ? "after" : "before"
+    };
+    moveElementInPage(placeholderElement);
+  });
+  document.body.addEventListener("drop", (e) => {
+    e.preventDefault();
+    const data = e.dataTransfer?.getData("text/plain");
+    if (data === void 0) return;
+    const block = JSON.parse(data);
+    if (!isBlock(block)) return;
+    const element = createElementFromBlock(block);
+    insertElementToPage(element);
+    placeholderElement.remove();
+    addToHistory({ type: "insert", element });
+  });
+  document.body.addEventListener("dragleave", () => placeholderElement.remove());
 })();

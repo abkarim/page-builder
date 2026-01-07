@@ -1,5 +1,7 @@
+import { isBlock } from "../../src/components/editor/blockUtil";
 import { type Block } from "../../src/components/editor/block";
 import { sendMessageToParent } from "./message";
+import { addToHistory } from "./history";
 
 let target: {
   parent: HTMLElement | null;
@@ -12,6 +14,7 @@ let target: {
 
 const pageBuilderData = {
   className: "page-builder-element",
+  placeholderElementClassName: "page-buider-element-placeholder",
 };
 
 /**
@@ -70,6 +73,12 @@ export function insertElementToPage(element: HTMLElement) {
   if (position === "after") reference.after(element);
 }
 
+export function moveElementInPage(element: HTMLElement) {
+  element.remove();
+
+  insertElementToPage(element);
+}
+
 insertElement!.addEventListener("click", (e) => {
   /**
    * TODO
@@ -88,3 +97,69 @@ insertElement!.addEventListener("click", (e) => {
     },
   });
 });
+
+/**
+ * Drag and Drop functionality
+ */
+
+const placeholderElement = createElementFromBlock({
+  id: 2334233247234,
+  name: "Placeholder",
+  tag: "div",
+  attributes: [
+    {
+      class: pageBuilderData.placeholderElementClassName,
+    },
+  ],
+});
+
+/**
+ * Set target on drag
+ */
+document.body.addEventListener("dragover", (e) => {
+  e.preventDefault();
+
+  const { target: targetElement, offsetY } = e;
+
+  if (!(targetElement instanceof HTMLElement)) return;
+
+  /**
+   * Identify and change target
+   */
+  target = {
+    parent: targetElement.parentElement,
+    reference: targetElement,
+    position: targetElement.offsetHeight / 2 < offsetY ? "after" : "before",
+  };
+
+  moveElementInPage(placeholderElement);
+});
+
+/**
+ * Insert Element on drop
+ */
+document.body.addEventListener("drop", (e) => {
+  e.preventDefault();
+
+  /**
+   * Get data
+   * and data must be of type Block
+   */
+  const data = e.dataTransfer?.getData("text/plain");
+  if (data === undefined) return;
+
+  const block = JSON.parse(data);
+  if (!isBlock(block)) return;
+
+  const element = createElementFromBlock(block);
+  insertElementToPage(element);
+  placeholderElement.remove();
+
+  addToHistory({ type: "insert", element });
+});
+
+/**
+ * Remove placeholder element
+ * after drag functionality ends
+ */
+document.body.addEventListener("dragleave", () => placeholderElement.remove());
