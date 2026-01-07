@@ -1,4 +1,4 @@
-import { sendMessageToParent } from "./editor";
+import { sendMessageToParent } from "./message";
 
 /**
  * History

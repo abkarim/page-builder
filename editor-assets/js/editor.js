@@ -58,8 +58,33 @@
     });
   }
 
-  // editor-assets/js/editor.ts
+  // editor-assets/js/message.ts
   var origin = "*";
+  function sendMessageToParent(data) {
+    window.parent.postMessage(data, origin);
+  }
+  function receiveMessageData(event) {
+    const { type, payload } = event.data;
+    if (type === "block") {
+      if (payload?.type !== void 0 && payload.type === "insert") {
+        const element = createElementFromBlock(payload.data);
+        insertElementToPage(element);
+        addToHistory({ type: "insert", element });
+      }
+      return;
+    }
+    if (type === "undo") {
+      undo();
+      return;
+    }
+    if (type === "redo") {
+      redo();
+      return;
+    }
+  }
+  window.addEventListener("message", receiveMessageData);
+
+  // editor-assets/js/element.ts
   var target = {
     parent: null,
     reference: null
@@ -70,9 +95,6 @@
   var insertElement = document.querySelector(
     `button.insert-${pageBuilderData.className}`
   );
-  function sendMessageToParent(data) {
-    window.parent.postMessage(data, origin);
-  }
   function createElementFromBlock(data) {
     const element = document.createElement(data.tag);
     if (data.content) {
@@ -102,26 +124,6 @@
     if (position === "before") reference.before(element);
     if (position === "after") reference.after(element);
   }
-  function receiveMessageData(event) {
-    const { type, payload } = event.data;
-    if (type === "block") {
-      if (payload?.type !== void 0 && payload.type === "insert") {
-        const element = createElementFromBlock(payload.data);
-        insertElementToPage(element);
-        addToHistory({ type: "insert", element });
-      }
-      return;
-    }
-    if (type === "undo") {
-      undo();
-      return;
-    }
-    if (type === "redo") {
-      redo();
-      return;
-    }
-  }
-  window.addEventListener("message", receiveMessageData);
   insertElement.addEventListener("click", (e) => {
     target = {
       parent: document.body,
