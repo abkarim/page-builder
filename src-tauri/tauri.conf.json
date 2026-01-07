@@ -4,7 +4,7 @@
   "version": "./../package.json",
   "identifier": "com.karim.pagebuilder",
   "build": {
-    "beforeDevCommand": "npm run dev & npx tsc ./editor-assets/js/*.ts --outDir ./editor-assets/js --watch --module ESNext --target ESNext --allowJs true --skipLibCheck true",
+    "beforeDevCommand": "npm run dev & npx esbuild ./editor-assets/js/editor.ts --outfile=./editor-assets/js/editor.js --bundle --watch --format=iife --target=esnext",
     "devUrl": "http://localhost:1420",
     "beforeBuildCommand": "npm run build",
     "frontendDist": "../dist"
