@@ -90,7 +90,7 @@ export default function App(): React.JSX.Element {
             <BreadcrumbList>
               {breadcrumbs.map((bc, index) => {
                 const { name, location } = bc;
-                let data = name;
+                let data = decodeURI(name);
 
                 /**
                  * Set project name if this uuid is represents the project
