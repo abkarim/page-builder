@@ -171,7 +171,11 @@ export default function Editor() {
         <div className="flex items-center gap-2">
           <Tooltip>
             <TooltipTrigger>
-              <Button variant={"secondary"} disabled={availableUndo === 0}>
+              <Button
+                variant={"secondary"}
+                onClick={() => sendMessageToCanvas({ type: "undo" })}
+                disabled={availableUndo === 0}
+              >
                 <UndoIcon />
               </Button>
             </TooltipTrigger>
@@ -184,7 +188,7 @@ export default function Editor() {
               <Button
                 variant={"secondary"}
                 disabled={availableRedo === 0}
-                title="Redo"
+                onClick={() => sendMessageToCanvas({ type: "redo" })}
               >
                 <RedoIcon />
               </Button>
