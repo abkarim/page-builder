@@ -67,6 +67,10 @@ export default function Components({
                 <Button
                   onClick={() => onElementClick("block", block)}
                   key={block.id}
+                  draggable={true}
+                  onDragStart={(e) => {
+                    e.dataTransfer.setData("text/plain", JSON.stringify(block));
+                  }}
                 >
                   {block.name}
                 </Button>
