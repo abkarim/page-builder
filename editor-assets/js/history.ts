@@ -1,4 +1,3 @@
-import { match } from "assert";
 import { sendMessageToParent } from "./editor";
 
 /**
