@@ -89,6 +89,18 @@
   }
   window.addEventListener("message", receiveMessageData);
 
+  // editor-assets/js/util.ts
+  function throttle(func, limit) {
+    let inThrottle;
+    return function(...args) {
+      if (!inThrottle) {
+        func.apply(this, args);
+        inThrottle = true;
+        setTimeout(() => inThrottle = false, limit);
+      }
+    };
+  }
+
   // editor-assets/js/element.ts
   var defaultTarget = {
     parent: null,
@@ -148,6 +160,21 @@
       }
     });
   });
+  var updateDragPosition = throttle(
+    (targetElement, offsetY) => {
+      if (targetElement === document.body || targetElement === insertElement) {
+        target = defaultTarget;
+      } else {
+        target = {
+          parent: targetElement.parentElement,
+          reference: targetElement,
+          position: targetElement.offsetHeight / 2 < offsetY ? "after" : "before"
+        };
+      }
+      moveElementInPage(placeholderElement);
+    },
+    70
+  );
   var placeholderElement = createElementFromBlock({
     id: 2334233247234,
     name: "Placeholder",
@@ -161,17 +188,9 @@
   document.body.addEventListener("dragover", (e) => {
     e.preventDefault();
     const { target: targetElement, offsetY } = e;
-    if (!(targetElement instanceof HTMLElement)) return;
-    if (targetElement === document.body || targetElement === insertElement) {
-      target = defaultTarget;
-    } else {
-      target = {
-        parent: targetElement.parentElement,
-        reference: targetElement,
-        position: targetElement.offsetHeight / 2 < offsetY ? "after" : "before"
-      };
+    if (targetElement instanceof HTMLElement) {
+      updateDragPosition(targetElement, offsetY);
     }
-    moveElementInPage(placeholderElement);
   });
   document.body.addEventListener("drop", (e) => {
     e.preventDefault();

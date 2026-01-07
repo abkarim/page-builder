@@ -2,6 +2,7 @@ import { isBlock } from "../../src/components/editor/blockUtil";
 import { type Block } from "../../src/components/editor/block";
 import { sendMessageToParent } from "./message";
 import { addToHistory } from "./history";
+import { throttle } from "./util";
 
 const defaultTarget = {
   parent: null,
@@ -104,6 +105,32 @@ insertElement!.addEventListener("click", (e) => {
  * Drag and Drop functionality
  */
 
+const updateDragPosition = throttle(
+  (targetElement: HTMLElement, offsetY: number) => {
+    /**
+     * Identify and change target
+     *
+     * 1. if target element is insert element
+     * set target as it's parent
+     *
+     * 2. if target element is body
+     * add element to the end of the page
+     */
+    if (targetElement === document.body || targetElement === insertElement) {
+      target = defaultTarget;
+    } else {
+      target = {
+        parent: targetElement.parentElement,
+        reference: targetElement,
+        position: targetElement.offsetHeight / 2 < offsetY ? "after" : "before",
+      };
+    }
+
+    moveElementInPage(placeholderElement);
+  },
+  70,
+);
+
 const placeholderElement = createElementFromBlock({
   id: 2334233247234,
   name: "Placeholder",
@@ -123,28 +150,9 @@ document.body.addEventListener("dragover", (e) => {
 
   const { target: targetElement, offsetY } = e;
 
-  if (!(targetElement instanceof HTMLElement)) return;
-
-  /**
-   * Identify and change target
-   *
-   * 1. if target element is insert element
-   * set target as it's parent
-   *
-   * 2. if target element is body
-   * add element to the end of the page
-   */
-  if (targetElement === document.body || targetElement === insertElement) {
-    target = defaultTarget;
-  } else {
-    target = {
-      parent: targetElement.parentElement,
-      reference: targetElement,
-      position: targetElement.offsetHeight / 2 < offsetY ? "after" : "before",
-    };
+  if (targetElement instanceof HTMLElement) {
+    updateDragPosition(targetElement, offsetY);
   }
-
-  moveElementInPage(placeholderElement);
 });
 
 /**
