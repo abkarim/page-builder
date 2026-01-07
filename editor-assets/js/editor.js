@@ -68,7 +68,7 @@ function insertElementToPage(element) {
 function receiveMessageData(event) {
     const { type, payload } = event.data;
     if (type === "block") {
-        if (payload.type === "insert") {
+        if (payload?.type !== undefined && payload.type === "insert") {
             const element = createElementFromBlock(payload.data);
             insertElementToPage(element);
             availableUndo.push({ type: "insert", element: element });

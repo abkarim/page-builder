@@ -99,7 +99,7 @@ function receiveMessageData(event: MessageEvent<CanvasMessageData>) {
   const { type, payload } = event.data;
 
   if (type === "block") {
-    if (payload.type === "insert") {
+    if (payload?.type !== undefined && payload.type === "insert") {
       const element = createElementFromBlock(payload.data as Block);
 
       insertElementToPage(element);

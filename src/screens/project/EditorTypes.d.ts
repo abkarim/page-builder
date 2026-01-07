@@ -7,8 +7,8 @@ export interface EditorMessageData {
 }
 
 export interface CanvasMessageData {
-  type: "block" | "component";
-  payload: {
+  type: "block" | "component" | "undo" | "redo";
+  payload?: {
     type: "insert";
     data: unknown;
   };
