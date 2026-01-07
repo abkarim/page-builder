@@ -5,6 +5,12 @@
     cursor: pointer;
 }
 
+.page-buider-element-placeholder {
+    padding: 0.5em;
+    border-radius: 0.1em;
+    background-color: lightgray;
+}
+
 body > *:not(.insert-page-builder-element):hover {
     outline: 1px solid blue;
 }
