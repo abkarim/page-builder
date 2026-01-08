@@ -183,3 +183,34 @@ document.body.addEventListener("drop", (e) => {
  * after drag functionality ends
  */
 document.body.addEventListener("dragleave", () => placeholderElement.remove());
+
+/**
+ * Element selection functionality
+ */
+function selectElement(e: Event) {
+  if (!e.target) return;
+  const element = e.target as HTMLElement;
+
+  /**
+   * We want everything except
+   * the insert element
+   */
+  if (element === insertElement) return;
+
+  /**
+   * Set target element
+   */
+  target = {
+    parent: element.parentElement,
+    reference: element,
+  };
+
+  sendMessageToParent({
+    type: "styleEditor",
+    payload: {
+      tagName: target.reference?.tagName,
+    },
+  });
+}
+
+document.body.addEventListener("click", selectElement);

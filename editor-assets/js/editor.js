@@ -204,4 +204,20 @@
     addToHistory({ type: "insert", element });
   });
   document.body.addEventListener("dragleave", () => placeholderElement.remove());
+  function selectElement(e) {
+    if (!e.target) return;
+    const element = e.target;
+    if (element === insertElement) return;
+    target = {
+      parent: element.parentElement,
+      reference: element
+    };
+    sendMessageToParent({
+      type: "styleEditor",
+      payload: {
+        tagName: target.reference?.tagName
+      }
+    });
+  }
+  document.body.addEventListener("click", selectElement);
 })();

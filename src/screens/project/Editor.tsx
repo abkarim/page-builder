@@ -28,6 +28,9 @@ export default function Editor() {
   const [availableRedo, setAvailableRedo] = useState(0);
   const [showElements, setShowElemtns] = useState(true);
   const [showStylesEditor, setShowStylesEditor] = useState(true);
+  const [selectedElementInfo, setSelectedElementInfo] = useState<{
+    tagName: string;
+  } | null>(null);
   const editorRef = useRef<HTMLIFrameElement>(null);
 
   async function getContent() {
@@ -81,6 +84,25 @@ export default function Editor() {
   useEffect(() => {
     const handleMessage = (event: MessageEvent<EditorMessageData>) => {
       const { type, payload } = event.data;
+
+      /**
+       * Handle style editor
+       */
+      if (type === "styleEditor") {
+        /**
+         * Show styleEditor
+         */
+        setShowStylesEditor(true);
+
+        if (payload?.tagName !== undefined) {
+          setSelectedElementInfo({
+            tagName: payload.tagName as string,
+          });
+        }
+
+        return;
+      }
+
       /**
        * Handle Insert
        */
@@ -227,7 +249,10 @@ export default function Editor() {
             className="w-full h-full outline"
           />
         </div>
-        <ElementStylesEditor show={showStylesEditor} />
+        <ElementStylesEditor
+          show={showStylesEditor}
+          tagName={selectedElementInfo?.tagName}
+        />
       </section>
     </section>
   );
