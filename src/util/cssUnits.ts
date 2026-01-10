@@ -12,7 +12,7 @@ export const FONT_RELATIVE_UNITS = {
   ParentFontSize: "em",
   RootFontSize: "rem",
   XHeight: "ex",
-  ZeroWidth: "ch",
+  CharacterWidth: "ch",
   LineHeight: "lh",
   RootLineHeight: "rlh",
 };
@@ -22,7 +22,7 @@ export const VIEWPORT_UNITS = {
   ViewportHeight: "vh",
   ViewportMin: "vmin",
   ViewportMax: "vmax",
-  SmallViewportWidth: "svw", // Modern additions
+  SmallViewportWidth: "svw",
   LargeViewportWidth: "lvw",
   DynamicViewportWidth: "dvw",
 };
