@@ -37,3 +37,19 @@ export const CSS_UNITS = {
   ...VIEWPORT_UNITS,
   ...OTHER_UNITS,
 };
+
+export function getSizeUnitFromCSSValue(value: string): {
+  size: number;
+  unit: string;
+} {
+  const match = value.match(/^(-?\d*\.?\d+)(.*)$/);
+
+  if (!match) {
+    return { size: 0, unit: "" };
+  }
+
+  return {
+    size: parseFloat(match[1]),
+    unit: match[2].trim(), // .trim() handles cases like "10 px"
+  };
+}
