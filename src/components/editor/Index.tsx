@@ -1,3 +1,5 @@
+import Margin from "./stylesEditor/Margin";
+
 interface Props {
   show: boolean;
   tagName?: string;
@@ -11,7 +13,9 @@ export default function ElementStylesEditor({
 
   return (
     <section className="max-w-60 w-full bg-accent rounded p-2">
-      <section>Showing {tagName}: Styles Editor</section>
+      <div>
+        <Margin />
+      </div>
     </section>
   );
 }
