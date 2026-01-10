@@ -1,59 +1,63 @@
 import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
+import CSSValueInput from "@/components/ui/CSSValueInput";
 import { useState } from "react";
 
 export default function Margin() {
+  const [combined, setCombined] = useState(true);
   const [data, setData] = useState({
-    top: {
-      value: "",
-      unit: "px",
-    },
-    bottom: {
-      value: "",
-      unit: "px",
-    },
-    left: {
-      value: "",
-      unit: "px",
-    },
-    right: {
-      value: "",
-      unit: "px",
-    },
-    combined: {
-      value: "",
-      unit: "px",
-      enabled: true,
-    },
+    top: "",
+    bottom: "",
+    left: "",
+    right: "",
+    combined: "",
   });
 
-  const toggleCombined = () => {
+  function onValueChange(
+    size: number,
+    unit: string,
+    position: keyof typeof data,
+  ) {
     setData((prev) => {
-      return {
-        ...prev,
-        combined: { ...prev.combined, enabled: !prev.combined.enabled },
-      };
+      return { ...prev, [position]: `${size}${unit}` };
     });
-  };
+  }
 
   return (
     <div>
       <div className="cursor-pointer">
-        <span onClick={toggleCombined}>Combined&nbsp;</span>
-        <Checkbox checked={data.combined.enabled} onClick={toggleCombined} />
+        <span>Combined&nbsp;</span>
+        <Checkbox
+          checked={combined}
+          onClick={() => setCombined((prev) => !prev)}
+        />
       </div>
-      {data.combined.enabled ? (
-        <Input />
+      {combined ? (
+        <CSSValueInput
+          value={data.combined}
+          onChange={(size, unit) => onValueChange(size, unit, "combined")}
+        />
       ) : (
         <div>
           <label>Top</label>
-          <Input />
+          <CSSValueInput
+            value={data.top}
+            onChange={(size, unit) => onValueChange(size, unit, "top")}
+          />
           <label>Bottom</label>
-          <Input />
+          <CSSValueInput
+            value={data.bottom}
+            onChange={(size, unit) => onValueChange(size, unit, "bottom")}
+          />
           <label>Left</label>
-          <Input />
+          <CSSValueInput
+            value={data.left}
+            onChange={(size, unit) => onValueChange(size, unit, "left")}
+          />
           <label>Right</label>
-          <Input />
+          <CSSValueInput
+            value={data.right}
+            onChange={(size, unit) => onValueChange(size, unit, "right")}
+          />
         </div>
       )}
     </div>
