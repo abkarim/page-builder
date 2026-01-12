@@ -1,3 +1,4 @@
+import Align from "./stylesEditor/Align";
 import Margin from "./stylesEditor/Margin";
 import Padding from "./stylesEditor/Padding";
 
@@ -15,6 +16,7 @@ export default function ElementStylesEditor({
   return (
     <section className="max-w-60 w-full bg-accent rounded p-2">
       <div className="space-y-2">
+        <Align />
         <Margin />
         <Padding />
       </div>
