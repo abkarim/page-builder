@@ -1,6 +1,7 @@
 import Align from "./stylesEditor/Align";
 import Border from "./stylesEditor/Border";
 import Color from "./stylesEditor/Color";
+import Font from "./stylesEditor/Font";
 import Margin from "./stylesEditor/Margin";
 import Padding from "./stylesEditor/Padding";
 
@@ -23,6 +24,7 @@ export default function ElementStylesEditor({
         <Padding />
         <Border />
         <Color />
+        <Font />
       </div>
     </section>
   );
