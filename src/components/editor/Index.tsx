@@ -14,7 +14,7 @@ export default function ElementStylesEditor({
 
   return (
     <section className="max-w-60 w-full bg-accent rounded p-2">
-      <div>
+      <div className="space-y-2">
         <Margin />
         <Padding />
       </div>
