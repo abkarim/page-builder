@@ -18,7 +18,7 @@ export default function ElementStylesEditor({
   if (!show) return <></>;
 
   return (
-    <section className="max-w-60 w-full bg-accent rounded p-2">
+    <section className="max-w-60 w-full bg-accent rounded p-2 overflow-y-scroll">
       <div className="space-y-2">
         <Align />
         <Margin />
