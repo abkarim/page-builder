@@ -6,6 +6,7 @@ import Font from "./stylesEditor/Font";
 import Layout from "./stylesEditor/Layout";
 import Margin from "./stylesEditor/Margin";
 import Padding from "./stylesEditor/Padding";
+import Transform from "./stylesEditor/Transform";
 
 interface Props {
   show: boolean;
@@ -27,6 +28,7 @@ export default function ElementStylesEditor({
         <Border />
         <Color />
         <Font />
+        <Transform />
         <Layout />
         <CustomCSS />
       </div>
