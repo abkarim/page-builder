@@ -8,7 +8,7 @@ import {
 
 export default function Align() {
   return (
-    <div className="space-y-1">
+    <div className="flex items-center justify-between">
       <h6 className="text-sm">Align</h6>
       <ToggleGroup type="single" className="bg-background border">
         <ToggleGroupItem value="left">

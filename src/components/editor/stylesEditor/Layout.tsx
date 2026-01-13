@@ -1,4 +1,5 @@
 import CSSValueInput from "@/components/ui/CSSValueInput";
+import { Label } from "@/components/ui/label";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   AlignCenterVerticalIcon,
@@ -21,8 +22,8 @@ export default function Layout(): React.JSX.Element {
   return (
     <div className="space-y-1">
       <h6 className="text-sm">Layout</h6>
-      <div>
-        <h6 className="text-sm">Direction</h6>
+      <div className="flex items-center justify-between">
+        <Label className="text-sm">Direction</Label>
         <ToggleGroup type="single" className="bg-background border">
           <ToggleGroupItem value="column">
             <Columns3Icon />
@@ -32,8 +33,8 @@ export default function Layout(): React.JSX.Element {
           </ToggleGroupItem>
         </ToggleGroup>
       </div>
-      <div>
-        <h6 className="text-sm">Wrap</h6>
+      <div className="flex items-center justify-between">
+        <Label className="text-sm">Wrap</Label>
         <ToggleGroup type="single" className="bg-background border">
           <ToggleGroupItem value="wrap">
             <TextWrapIcon />
@@ -44,7 +45,7 @@ export default function Layout(): React.JSX.Element {
         </ToggleGroup>
       </div>
       <div>
-        <h6 className="text-sm">Justify</h6>
+        <Label className="text-sm">Justify</Label>
         <ToggleGroup type="single" className="bg-background border">
           <ToggleGroupItem value="flex-start">
             <AlignStartVerticalIcon />
@@ -67,7 +68,7 @@ export default function Layout(): React.JSX.Element {
         </ToggleGroup>
       </div>
       <div>
-        <h6 className="text-sm">Align</h6>
+        <Label className="text-sm">Align</Label>
         <ToggleGroup type="single" className="bg-background border">
           <ToggleGroupItem value="flex-start">
             <AlignStartHorizontalIcon />
@@ -87,7 +88,7 @@ export default function Layout(): React.JSX.Element {
         </ToggleGroup>
       </div>
       <div>
-        <h6 className="text-sm">Gap</h6>
+        <Label className="text-sm">Gap</Label>
         <CSSValueInput onChange={() => {}} />
       </div>
     </div>

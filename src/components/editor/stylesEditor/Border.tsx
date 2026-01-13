@@ -6,7 +6,7 @@ export default function Border(): React.JSX.Element {
   return (
     <div>
       <h6 className="text-sm">Border</h6>
-      <div className="space-y-1">
+      <div className="flex items-center justify-between">
         <Label className="text-sm">Color</Label>
         <ColorPicker />
       </div>
