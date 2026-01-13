@@ -6,10 +6,6 @@ export default function Color(): React.JSX.Element {
     <div className="space-y-1">
       <h6 className="text-sm">Color</h6>
       <div className="flex items-center justify-between">
-        <Label className="text-sm">Text color</Label>
-        <ColorPickerComponent />
-      </div>
-      <div className="flex items-center justify-between">
         <Label className="text-sm">Background Color</Label>
         <ColorPickerComponent />
       </div>

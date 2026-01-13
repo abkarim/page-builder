@@ -1,14 +1,12 @@
-import Align from "./stylesEditor/Align";
 import Border from "./stylesEditor/Border";
 import Color from "./stylesEditor/Color";
 import CustomCSS from "./stylesEditor/CustomCSS";
-import Font from "./stylesEditor/Font";
 import Layout from "./stylesEditor/Layout";
 import Margin from "./stylesEditor/Margin";
 import Padding from "./stylesEditor/Padding";
 import Position from "./stylesEditor/Position";
 import Size from "./stylesEditor/Size";
-import Transform from "./stylesEditor/Transform";
+import Text from "./stylesEditor/Text";
 
 interface Props {
   show: boolean;
@@ -24,14 +22,12 @@ export default function ElementStylesEditor({
   return (
     <section className="max-w-60 w-full bg-accent rounded p-2 overflow-y-scroll">
       <div className="space-y-2">
-        <Align />
+        <Text />
         <Margin />
         <Padding />
         <Border />
         <Color />
-        <Font />
         <Size />
-        <Transform />
         <Layout />
         <Position />
         <CustomCSS />
