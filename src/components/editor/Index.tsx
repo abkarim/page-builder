@@ -6,6 +6,7 @@ import Font from "./stylesEditor/Font";
 import Layout from "./stylesEditor/Layout";
 import Margin from "./stylesEditor/Margin";
 import Padding from "./stylesEditor/Padding";
+import Position from "./stylesEditor/Position";
 import Transform from "./stylesEditor/Transform";
 
 interface Props {
@@ -30,6 +31,7 @@ export default function ElementStylesEditor({
         <Font />
         <Transform />
         <Layout />
+        <Position />
         <CustomCSS />
       </div>
     </section>
