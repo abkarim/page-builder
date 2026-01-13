@@ -7,6 +7,7 @@ import Layout from "./stylesEditor/Layout";
 import Margin from "./stylesEditor/Margin";
 import Padding from "./stylesEditor/Padding";
 import Position from "./stylesEditor/Position";
+import Size from "./stylesEditor/Size";
 import Transform from "./stylesEditor/Transform";
 
 interface Props {
@@ -29,6 +30,7 @@ export default function ElementStylesEditor({
         <Border />
         <Color />
         <Font />
+        <Size />
         <Transform />
         <Layout />
         <Position />
