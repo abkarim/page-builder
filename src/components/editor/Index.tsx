@@ -31,7 +31,7 @@ export default function ElementStylesEditor({
         {isEditorAvailableForComponent("size", component) && <Size />}
         {isEditorAvailableForComponent("layout", component) && <Layout />}
         {isEditorAvailableForComponent("position", component) && <Position />}
-        <CustomCSS />
+        {isEditorAvailableForComponent("customCSS", component) && <CustomCSS />}
       </div>
     </section>
   );

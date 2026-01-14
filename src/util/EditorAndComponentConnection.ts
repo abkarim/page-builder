@@ -35,6 +35,10 @@ const connections: {
     editorName: "size",
     availableFor: "*",
   },
+  {
+    editorName: "customCSS",
+    availableFor: ["body"],
+  },
 ];
 
 export function isEditorAvailableForComponent(
