@@ -44,5 +44,13 @@ export function isEditorAvailableForComponent(
   const connection = connections.find((conn) => conn.editorName === editor);
   if (!connection) return false;
 
-  return true;
+  /**
+   * Not available if this is
+   * explicitly disabled for this component
+   */
+  if (connection.notAvailableFor?.includes(component)) return false;
+
+  if (connection.availableFor === "*") return true;
+
+  return connection.availableFor.includes(component);
 }
