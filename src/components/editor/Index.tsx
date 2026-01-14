@@ -7,23 +7,29 @@ import Margin from "./stylesEditor/Margin";
 import Padding from "./stylesEditor/Padding";
 import Position from "./stylesEditor/Position";
 import Size from "./stylesEditor/Size";
-import Text from "./stylesEditor/Text";
+import Text, { TextData } from "./stylesEditor/Text";
 
 interface Props {
   show: boolean;
   component: string;
+  data: {
+    text: TextData;
+  };
 }
 
 export default function ElementStylesEditor({
   show,
   component,
+  data,
 }: Props): React.JSX.Element {
   if (!show) return <></>;
 
   return (
     <section className="max-w-60 w-full bg-accent rounded p-2">
       <div className="space-y-2">
-        {isEditorAvailableForComponent("text", component) && <Text />}
+        {isEditorAvailableForComponent("text", component) && (
+          <Text {...data.text} />
+        )}
         {isEditorAvailableForComponent("margin", component) && <Margin />}
         {isEditorAvailableForComponent("padding", component) && <Padding />}
         {isEditorAvailableForComponent("border", component) && <Border />}

@@ -23,13 +23,25 @@ import {
   XIcon,
 } from "lucide-react";
 
-export default function Text(): React.JSX.Element {
+export interface TextData {
+  align: string;
+  transform: string;
+  color: string;
+  fontFamily: string;
+}
+
+export default function Text(data: TextData): React.JSX.Element {
+  const { align, transform, color, fontFamily } = data;
   return (
     <div className="space-y-1">
       <h6 className="text-sm">Text</h6>
       <div className="flex items-center justify-between">
         <Label className="text-sm">Align</Label>
-        <ToggleGroup type="single" className="bg-background border">
+        <ToggleGroup
+          type="single"
+          className="bg-background border"
+          defaultValue={align}
+        >
           <ToggleGroupItem value="left">
             <TextAlignStartIcon />
           </ToggleGroupItem>
@@ -46,11 +58,15 @@ export default function Text(): React.JSX.Element {
       </div>
       <div className="flex items-center justify-between">
         <Label className="text-sm">Color</Label>
-        <ColorPickerComponent />
+        <ColorPickerComponent defaultValue={color} />
       </div>
       <div className="space-y-1">
         <Label className="text-sm">Transform</Label>
-        <ToggleGroup type="single" className="bg-background border">
+        <ToggleGroup
+          type="single"
+          className="bg-background border"
+          defaultValue={transform}
+        >
           <ToggleGroupItem value="none">
             <XIcon />
           </ToggleGroupItem>
@@ -73,7 +89,7 @@ export default function Text(): React.JSX.Element {
       </div>
       <div className="flex items-center justify-between">
         <Label className="text-sm">Font Family</Label>
-        <Select>
+        <Select defaultValue={fontFamily}>
           <SelectTrigger className="bg-background w-30">
             <SelectValue placeholder="Select a font" />
           </SelectTrigger>
