@@ -46,7 +46,7 @@ export default function Components({
   return (
     <section className="w-full max-w-60 bg-accent rounded ">
       <Tabs defaultValue="blocks" className="p-2">
-        <TabsList>
+        <TabsList className="border bg-background">
           <TabsTrigger value="blocks">Blocks</TabsTrigger>
           <TabsTrigger value="components">Components</TabsTrigger>
         </TabsList>
