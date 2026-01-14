@@ -5,7 +5,7 @@ const connections: {
 }[] = [
   {
     editorName: "text",
-    availableFor: ["p", "h"],
+    availableFor: ["p", "h1", "h2", "h3", "h4", "h5", "h6"],
   },
   {
     editorName: "border",
@@ -17,7 +17,7 @@ const connections: {
   },
   {
     editorName: "layout",
-    availableFor: "*",
+    availableFor: ["column"],
   },
   {
     editorName: "margin",
