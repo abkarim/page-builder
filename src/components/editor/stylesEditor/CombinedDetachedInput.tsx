@@ -26,8 +26,8 @@ export default function CombinedDetachedInput() {
 
   return (
     <div>
-      <div className="cursor-pointer flex items-center gap-2 mb-1">
-        <Label className="text-sm" htmlFor={id}>
+      <div className="cursor-pointer flex items-center justify-end gap-2 mb-1">
+        <Label className="text-xs" htmlFor={id}>
           Combined&nbsp;
         </Label>
         <Checkbox
