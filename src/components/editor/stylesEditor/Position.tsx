@@ -1,5 +1,5 @@
 import { Label } from "@/components/ui/label";
-import CombinedDetachedInput from "./CombinedDetachedInput";
+import CombinedDetachedInput from "../../CombinedDetachedInput";
 import {
   Select,
   SelectContent,

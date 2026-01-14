@@ -1,5 +1,5 @@
 import { Label } from "@/components/ui/label";
-import CombinedDetachedInput from "./CombinedDetachedInput";
+import CombinedDetachedInput from "../../CombinedDetachedInput";
 import ColorPicker from "@/components/ColorPicker";
 
 export default function Border(): React.JSX.Element {

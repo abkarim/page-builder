@@ -1,4 +1,4 @@
-import CombinedDetachedInput from "./CombinedDetachedInput";
+import CombinedDetachedInput from "../../CombinedDetachedInput";
 
 export default function Margin() {
   return (
