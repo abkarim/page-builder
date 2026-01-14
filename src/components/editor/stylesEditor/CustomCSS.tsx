@@ -1,4 +1,3 @@
-import { Label } from "@/components/ui/label";
 import Editor from "@monaco-editor/react";
 
 export default function CustomCSS(): React.JSX.Element {
