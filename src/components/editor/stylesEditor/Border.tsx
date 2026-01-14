@@ -10,7 +10,14 @@ export default function Border(): React.JSX.Element {
         <Label className="text-sm">Color</Label>
         <ColorPicker />
       </div>
-      <CombinedDetachedInput />
+      <div>
+        <Label className="text-sm">Size</Label>
+        <CombinedDetachedInput />
+      </div>
+      <div>
+        <Label className="text-sm">Radius</Label>
+        <CombinedDetachedInput />
+      </div>
     </div>
   );
 }
