@@ -251,7 +251,7 @@ export default function Editor() {
         </div>
         <ElementStylesEditor
           show={showStylesEditor}
-          component={selectedElementInfo?.tagName || "body"}
+          component={selectedElementInfo?.tagName.toLowerCase() || "body"}
         />
       </section>
     </section>
