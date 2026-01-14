@@ -11,10 +11,16 @@ import {
   ColorPickerTrigger,
 } from "@/components/ui/color-picker";
 
-export default function ColorPickerComponent(): React.JSX.Element {
+interface Props {
+  defaultValue: string;
+}
+
+export default function ColorPickerComponent({
+  defaultValue,
+}: Props): React.JSX.Element {
   return (
     <div>
-      <ColorPicker defaultFormat="rgb" defaultValue="#3b82f6">
+      <ColorPicker defaultFormat="rgb" defaultValue={defaultValue}>
         <ColorPickerTrigger asChild>
           <ColorPickerSwatch />
         </ColorPickerTrigger>
