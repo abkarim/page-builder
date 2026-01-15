@@ -24,14 +24,14 @@ import {
 } from "lucide-react";
 
 export interface TextData {
-  align: string;
-  transform: string;
+  textAlign: string;
+  textTransform: string;
   color: string;
   fontFamily: string;
 }
 
 export default function Text(data: TextData): React.JSX.Element {
-  const { align, transform, color, fontFamily } = data;
+  const { textAlign, textTransform, color, fontFamily } = data;
   return (
     <div className="space-y-1">
       <h6 className="text-sm">Text</h6>
@@ -40,7 +40,7 @@ export default function Text(data: TextData): React.JSX.Element {
         <ToggleGroup
           type="single"
           className="bg-background border"
-          defaultValue={align}
+          defaultValue={textAlign}
         >
           <ToggleGroupItem value="left">
             <TextAlignStartIcon />
@@ -65,7 +65,7 @@ export default function Text(data: TextData): React.JSX.Element {
         <ToggleGroup
           type="single"
           className="bg-background border"
-          defaultValue={transform}
+          defaultValue={textTransform}
         >
           <ToggleGroupItem value="none">
             <XIcon />

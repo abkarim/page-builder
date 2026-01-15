@@ -9,7 +9,7 @@ import Position from "./stylesEditor/Position";
 import Size from "./stylesEditor/Size";
 import Text, { TextData } from "./stylesEditor/Text";
 
-interface Props {
+export interface ElementStylesEditorProps {
   show: boolean;
   component: string;
   data: {
@@ -21,7 +21,7 @@ export default function ElementStylesEditor({
   show,
   component,
   data,
-}: Props): React.JSX.Element {
+}: ElementStylesEditorProps): React.JSX.Element {
   if (!show) return <></>;
 
   return (
