@@ -1,5 +1,6 @@
 import { isBlock } from "../../src/components/editor/blockUtil";
 import { type Block } from "../../src/components/editor/block";
+import { type ElementStylesEditorProps } from "../../src/components/editor/Index";
 import { sendMessageToParent } from "./message";
 import { addToHistory } from "./history";
 import { throttle } from "./util";
@@ -205,10 +206,22 @@ function selectElement(e: Event) {
     reference: element,
   };
 
+  const { textAlign, color, fontFamily, textTransform } = element.style;
+
+  const stylesData: ElementStylesEditorProps["data"] = {
+    text: {
+      textAlign,
+      textTransform,
+      color,
+      fontFamily,
+    },
+  };
+
   sendMessageToParent({
     type: "styleEditor",
     payload: {
-      tagName: target.reference?.tagName,
+      tagName: element.tagName,
+      stylesData,
     },
   });
 }
