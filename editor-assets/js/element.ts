@@ -227,3 +227,9 @@ function selectElement(e: Event) {
 }
 
 document.body.addEventListener("click", selectElement);
+
+/**
+ * It sets the selectElement
+ * on body
+ */
+document.body.click();
