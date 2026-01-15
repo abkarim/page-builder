@@ -100,7 +100,7 @@ export default function Editor() {
         if (payload?.tagName !== undefined) {
           setSelectedElementInfo({
             tagName: payload.tagName as string,
-            stylesData: payload.stylesData as ElementStylesEditorProps,
+            stylesData: payload.stylesData as ElementStylesEditorProps["data"],
           });
         }
         return;
