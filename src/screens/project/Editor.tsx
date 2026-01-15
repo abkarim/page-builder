@@ -1,5 +1,7 @@
 import Elements from "@/components/editor/Components";
-import ElementStylesEditor from "@/components/editor/Index";
+import ElementStylesEditor, {
+  ElementStylesEditorProps,
+} from "@/components/editor/Index";
 import { Button } from "@/components/ui/button";
 import useConfirmDialog from "@/hooks/useConfirmDialog";
 import { invoke } from "@tauri-apps/api/core";
@@ -30,6 +32,7 @@ export default function Editor() {
   const [showStylesEditor, setShowStylesEditor] = useState(true);
   const [selectedElementInfo, setSelectedElementInfo] = useState<{
     tagName: string;
+    stylesData: ElementStylesEditorProps["data"];
   } | null>(null);
   const editorRef = useRef<HTMLIFrameElement>(null);
 
@@ -97,9 +100,9 @@ export default function Editor() {
         if (payload?.tagName !== undefined) {
           setSelectedElementInfo({
             tagName: payload.tagName as string,
+            stylesData: payload.stylesData as ElementStylesEditorProps,
           });
         }
-
         return;
       }
 
@@ -176,6 +179,8 @@ export default function Editor() {
     }
   }
 
+  console.log({ selectedElementInfo });
+
   return (
     <section className="h-full">
       <div className="flex justify-between items-center">
@@ -249,10 +254,13 @@ export default function Editor() {
             className="w-full h-full outline"
           />
         </div>
-        <ElementStylesEditor
-          show={showStylesEditor}
-          component={selectedElementInfo?.tagName.toLowerCase() || "body"}
-        />
+        {selectedElementInfo && (
+          <ElementStylesEditor
+            show={showStylesEditor}
+            component={selectedElementInfo.tagName.toLowerCase()}
+            data={selectedElementInfo.stylesData}
+          />
+        )}
       </section>
     </section>
   );
