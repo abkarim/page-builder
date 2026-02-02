@@ -1,3 +1,5 @@
+import { ElementStylesEditorProps } from "@/components/editor/Index";
+
 /**
  * Communication message event type
  */
@@ -7,9 +9,13 @@ export interface EditorMessageData {
 }
 
 export interface CanvasMessageData {
-  type: "block" | "component" | "undo" | "redo";
+  type: "block" | "component" | "undo" | "redo" | "style";
   payload?: {
     type: "insert";
     data: unknown;
+  };
+  styleData?: {
+    type: keyof ElementStylesEditorProps["data"];
+    data: ElementStylesEditorProps["data"][keyof ElementStylesEditorProps["data"]];
   };
 }
