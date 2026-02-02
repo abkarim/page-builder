@@ -206,7 +206,8 @@ function selectElement(e: Event) {
     reference: element,
   };
 
-  const { textAlign, color, fontFamily, textTransform } = element.style;
+  const { textAlign, color, fontFamily, textTransform, margin, padding } =
+    element.style;
 
   const stylesData: ElementStylesEditorProps["data"] = {
     text: {
@@ -214,6 +215,10 @@ function selectElement(e: Event) {
       textTransform,
       color,
       fontFamily,
+    },
+    spacing: {
+      margin,
+      padding,
     },
   };
 
