@@ -3,7 +3,11 @@ import {
   type CanvasMessageData,
   type EditorMessageData,
 } from "../../src/screens/project/EditorTypes";
-import { createElementFromBlock, insertElementToPage } from "./element";
+import {
+  createElementFromBlock,
+  insertElementToPage,
+  updateElementStyles,
+} from "./element";
 import { addToHistory, redo, undo } from "./history";
 
 const origin = "*";
@@ -19,7 +23,7 @@ export function sendMessageToParent(data: EditorMessageData) {
  * Receive message from Parent
  */
 function receiveMessageData(event: MessageEvent<CanvasMessageData>) {
-  const { type, payload } = event.data;
+  const { type, payload, styleData } = event.data;
 
   if (type === "block") {
     if (payload?.type !== undefined && payload.type === "insert") {
@@ -29,6 +33,11 @@ function receiveMessageData(event: MessageEvent<CanvasMessageData>) {
       addToHistory({ type: "insert", element: element });
     }
 
+    return;
+  }
+
+  if (type === "style") {
+    updateElementStyles(styleData);
     return;
   }
 
