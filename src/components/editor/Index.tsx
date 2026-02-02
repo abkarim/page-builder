@@ -28,7 +28,7 @@ export default function ElementStylesEditor({
     <section className="max-w-60 w-full bg-accent rounded p-2">
       <div className="space-y-2">
         {isEditorAvailableForComponent("text", component) && (
-          <Text {...data.text} />
+          <Text data={data.text} />
         )}
         {isEditorAvailableForComponent("margin", component) && <Margin />}
         {isEditorAvailableForComponent("padding", component) && <Padding />}

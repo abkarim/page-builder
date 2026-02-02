@@ -30,7 +30,7 @@ export interface TextData {
   fontFamily: string;
 }
 
-export default function Text(data: TextData): React.JSX.Element {
+export default function Text({ data }: { data: TextData }): React.JSX.Element {
   const { textAlign, textTransform, color, fontFamily } = data;
   return (
     <div className="space-y-1">
