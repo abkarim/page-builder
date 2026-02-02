@@ -22,6 +22,7 @@ import {
   TextInitialIcon,
   XIcon,
 } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export interface TextData {
   textAlign: string;
@@ -30,8 +31,34 @@ export interface TextData {
   fontFamily: string;
 }
 
-export default function Text({ data }: { data: TextData }): React.JSX.Element {
-  const { textAlign, textTransform, color, fontFamily } = data;
+export default function Text({
+  data,
+  updateStyle,
+}: {
+  data: TextData;
+  updateStyle: (data: TextData) => void;
+}): React.JSX.Element {
+  const {
+    textAlign,
+    textTransform,
+    color: textColor,
+    fontFamily: family,
+  } = data;
+
+  const [align, setAlign] = useState(textAlign);
+  const [transform, setTransform] = useState(textTransform);
+  const [color, setColor] = useState(textColor);
+  const [fontFamily, setFontFamily] = useState(family);
+
+  useEffect(() => {
+    updateStyle({
+      textAlign: align,
+      color: color,
+      fontFamily,
+      textTransform: transform,
+    });
+  }, [align, transform, color, fontFamily]);
+
   return (
     <div className="space-y-1">
       <h6 className="text-sm">Text</h6>
@@ -40,7 +67,8 @@ export default function Text({ data }: { data: TextData }): React.JSX.Element {
         <ToggleGroup
           type="single"
           className="bg-background border"
-          defaultValue={textAlign}
+          defaultValue={align}
+          onValueChange={(value) => setAlign(value)}
         >
           <ToggleGroupItem value="left">
             <TextAlignStartIcon />
@@ -58,14 +86,18 @@ export default function Text({ data }: { data: TextData }): React.JSX.Element {
       </div>
       <div className="flex items-center justify-between">
         <Label className="text-sm">Color</Label>
-        <ColorPickerComponent defaultValue={color} />
+        <ColorPickerComponent
+          value={color}
+          onValueChange={(value) => setColor(value)}
+        />
       </div>
       <div className="space-y-1">
         <Label className="text-sm">Transform</Label>
         <ToggleGroup
           type="single"
           className="bg-background border"
-          defaultValue={textTransform}
+          value={transform}
+          onValueChange={(value) => setTransform(value)}
         >
           <ToggleGroupItem value="none">
             <XIcon />
@@ -89,7 +121,10 @@ export default function Text({ data }: { data: TextData }): React.JSX.Element {
       </div>
       <div className="flex items-center justify-between">
         <Label className="text-sm">Font Family</Label>
-        <Select defaultValue={fontFamily}>
+        <Select
+          value={fontFamily}
+          onValueChange={(value) => setFontFamily(value)}
+        >
           <SelectTrigger className="bg-background w-30">
             <SelectValue placeholder="Select a font" />
           </SelectTrigger>
