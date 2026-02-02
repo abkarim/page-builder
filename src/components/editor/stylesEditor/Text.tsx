@@ -87,7 +87,7 @@ export default function Text({
       <div className="flex items-center justify-between">
         <Label className="text-sm">Color</Label>
         <ColorPickerComponent
-          value={color}
+          defaultValue={color}
           onValueChange={(value) => setColor(value)}
         />
       </div>

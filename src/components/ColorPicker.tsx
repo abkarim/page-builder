@@ -12,15 +12,24 @@ import {
 } from "@/components/ui/color-picker";
 
 interface Props {
-  defaultValue: string;
+  defaultValue?: string;
+  value?: string;
+  onValueChange: (color: string) => void;
 }
 
 export default function ColorPickerComponent({
   defaultValue,
+  value,
+  onValueChange,
 }: Props): React.JSX.Element {
   return (
     <div>
-      <ColorPicker defaultFormat="rgb" defaultValue={defaultValue}>
+      <ColorPicker
+        defaultFormat="rgb"
+        defaultValue={defaultValue}
+        value={value || undefined}
+        onValueChange={onValueChange}
+      >
         <ColorPickerTrigger asChild>
           <ColorPickerSwatch />
         </ColorPickerTrigger>
