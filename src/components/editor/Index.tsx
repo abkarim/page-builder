@@ -3,17 +3,17 @@ import Border from "./stylesEditor/Border";
 import Color from "./stylesEditor/Color";
 import CustomCSS from "./stylesEditor/CustomCSS";
 import Layout from "./stylesEditor/Layout";
-import Margin from "./stylesEditor/Margin";
-import Padding from "./stylesEditor/Padding";
 import Position from "./stylesEditor/Position";
 import Size from "./stylesEditor/Size";
 import Text, { TextData } from "./stylesEditor/Text";
+import Spacing, { SpacingData } from "./stylesEditor/Spacing";
 
 export interface ElementStylesEditorProps {
   show: boolean;
   component: string;
   data: {
     text: TextData;
+    spacing: SpacingData;
   };
 }
 
@@ -30,8 +30,7 @@ export default function ElementStylesEditor({
         {isEditorAvailableForComponent("text", component) && (
           <Text data={data.text} />
         )}
-        {isEditorAvailableForComponent("margin", component) && <Margin />}
-        {isEditorAvailableForComponent("padding", component) && <Padding />}
+        {isEditorAvailableForComponent("spacing", component) && <Spacing />}
         {isEditorAvailableForComponent("border", component) && <Border />}
         {isEditorAvailableForComponent("color", component) && <Color />}
         {isEditorAvailableForComponent("size", component) && <Size />}

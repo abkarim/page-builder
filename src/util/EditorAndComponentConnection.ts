@@ -20,11 +20,7 @@ const connections: {
     availableFor: ["column"],
   },
   {
-    editorName: "margin",
-    availableFor: "*",
-  },
-  {
-    editorName: "padding",
+    editorName: "spacing",
     availableFor: "*",
   },
   {
