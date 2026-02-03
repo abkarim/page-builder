@@ -4,6 +4,7 @@ import { type ElementStylesEditorProps } from "../../src/components/editor/Index
 import { sendMessageToParent } from "./message";
 import { addToHistory } from "./history";
 import { throttle } from "./util";
+import { CanvasMessageData } from "../../src/screens/project/EditorTypes";
 
 const defaultTarget = {
   parent: null,
@@ -232,6 +233,20 @@ function selectElement(e: Event) {
 }
 
 document.body.addEventListener("click", selectElement);
+
+/**
+ * Update element style
+ */
+export function updateElementStyles(
+  data: NonNullable<CanvasMessageData["styleData"]>,
+) {
+  if (!target.reference) return;
+
+  for (const [key, value] of Object.entries(data.data)) {
+    // @ts-expect-error
+    target.reference.style[key] = value;
+  }
+}
 
 /**
  * It sets the selectElement
