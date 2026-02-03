@@ -16,6 +16,8 @@ export interface CanvasMessageData {
   };
   styleData?: {
     type: keyof ElementStylesEditorProps["data"];
-    data: ElementStylesEditorProps["data"][keyof ElementStylesEditorProps["data"]];
+    data: Partial<
+      ElementStylesEditorProps["data"][keyof ElementStylesEditorProps["data"]]
+    >;
   };
 }
