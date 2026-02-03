@@ -8,15 +8,15 @@ export default function Border(): React.JSX.Element {
       <h6 className="text-sm">Border</h6>
       <div className="flex items-center justify-between">
         <Label className="text-sm">Color</Label>
-        <ColorPicker />
+        <ColorPicker onValueChange={() => {}} />
       </div>
       <div>
         <Label className="text-sm">Size</Label>
-        <CombinedDetachedInput />
+        <CombinedDetachedInput value="" onUpdate={() => {}} />
       </div>
       <div>
         <Label className="text-sm">Radius</Label>
-        <CombinedDetachedInput />
+        <CombinedDetachedInput value="" onUpdate={() => {}} />
       </div>
     </div>
   );

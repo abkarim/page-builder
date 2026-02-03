@@ -30,7 +30,7 @@ export default function Position(): React.JSX.Element {
       </div>
       <div>
         <Label className="text-sm">Value</Label>
-        <CombinedDetachedInput />
+        <CombinedDetachedInput value="" onUpdate={() => {}} />
       </div>
       <div className="flex items-center justify-between">
         <Label className="text-sm">Z-Index</Label>
