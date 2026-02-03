@@ -1,5 +1,4 @@
-import { CanvasMessageData } from "../../src/screens/project/EditorTypes";
-import { redoElementStyle, undoElementStyle } from "./element";
+import { redoElementStyle, undoElementStyle } from "./styles";
 import { sendMessageToParent } from "./message";
 
 /**

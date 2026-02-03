@@ -3,12 +3,9 @@ import {
   type CanvasMessageData,
   type EditorMessageData,
 } from "../../src/screens/project/EditorTypes";
-import {
-  createElementFromBlock,
-  insertElementToPage,
-  updateElementStyles,
-} from "./element";
+import { createElementFromBlock, insertElementToPage } from "./element";
 import { addToHistory, redo, undo } from "./history";
+import { updateElementStyles } from "./styles";
 
 const origin = "*";
 
