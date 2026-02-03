@@ -4,14 +4,13 @@ import { type ElementStylesEditorProps } from "../../src/components/editor/Index
 import { sendMessageToParent } from "./message";
 import { addToHistory, History } from "./history";
 import { throttle } from "./util";
-import { CanvasMessageData } from "../../src/screens/project/EditorTypes";
 
 const defaultTarget = {
   parent: null,
   reference: null,
 };
 
-let target: {
+export let target: {
   parent: HTMLElement | null;
   reference: HTMLElement | null;
   position?: "before" | "after";
@@ -53,7 +52,7 @@ export function createElementFromBlock(data: Block): HTMLElement {
  * Insert Element to page
  */
 export function insertElementToPage(element: HTMLElement) {
-  const { parent, position, reference } = target;
+  let { parent, position, reference } = target;
 
   /**
    * If no parent found insert the element after
@@ -84,29 +83,9 @@ export function moveElementInPage(element: HTMLElement) {
   insertElementToPage(element);
 }
 
-insertElement!.addEventListener("click", (e) => {
-  /**
-   * TODO
-   * Determine and modify target info
-   */
-  target = {
-    parent: document.body,
-    reference: e.currentTarget as HTMLElement,
-    position: "before",
-  };
-
-  sendMessageToParent({
-    type: "insert",
-    payload: {
-      target: "hey",
-    },
-  });
-});
-
 /**
  * Drag and Drop functionality
  */
-
 const updateDragPosition = throttle(
   (targetElement: HTMLElement, offsetY: number) => {
     /**
@@ -197,7 +176,19 @@ function selectElement(e: Event) {
    * We want everything except
    * the insert element
    */
-  if (element === insertElement) return;
+  if (element === insertElement) {
+    target = {
+      parent: document.body,
+      reference: insertElement as HTMLElement,
+      position: "before",
+    };
+
+    sendMessageToParent({
+      type: "insert",
+    });
+
+    return;
+  }
 
   /**
    * Set target element
@@ -206,6 +197,18 @@ function selectElement(e: Event) {
     parent: element.parentElement,
     reference: element,
   };
+
+  /**
+   * If element is body
+   * target needs to be set correctly
+   */
+  if (element === document.body) {
+    target = {
+      parent: element,
+      reference: insertElement,
+      position: "before",
+    };
+  }
 
   const { textAlign, color, fontFamily, textTransform, margin, padding } =
     element.style;
@@ -233,48 +236,6 @@ function selectElement(e: Event) {
 }
 
 document.body.addEventListener("click", selectElement);
-
-/**
- * Update element style
- */
-export function updateElementStyles(
-  data: NonNullable<CanvasMessageData["styleData"]>,
-) {
-  if (!target.reference) return;
-
-  const styleData: NonNullable<History["styleData"]> = {
-    prev: {},
-    current: {},
-  };
-
-  for (const [key, value] of Object.entries(data.data)) {
-    // @ts-expect-error
-    styleData.prev[key] = target.reference.style[key] || "";
-    // @ts-expect-error
-    styleData.current[key] = value;
-    // @ts-expect-error
-    target.reference.style[key] = value;
-  }
-
-  addToHistory({
-    type: "style",
-    element: target.reference,
-    styleData,
-  });
-}
-
-export function undoElementStyle(history: History) {
-  for (const [key, value] of Object.entries(history.styleData!.prev)) {
-    // @ts-expect-error
-    history.element.style[key] = value;
-  }
-}
-export function redoElementStyle(history: History) {
-  for (const [key, value] of Object.entries(history.styleData!.current)) {
-    // @ts-expect-error
-    history.element.style[key] = value;
-  }
-}
 
 /**
  * It sets the selectElement
