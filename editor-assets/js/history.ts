@@ -1,14 +1,20 @@
+import { CanvasMessageData } from "../../src/screens/project/EditorTypes";
+import { redoElementStyle, undoElementStyle } from "./element";
 import { sendMessageToParent } from "./message";
 
 /**
  * History
  */
 export type History = {
-  type: "insert";
+  type: "insert" | "style";
   element: HTMLElement;
   target?: {
     parent: HTMLElement;
     index: number;
+  };
+  styleData?: {
+    prev: Record<string, string>;
+    current: Record<string, string>;
   };
 };
 const availableUndo: History[] = [];
@@ -32,29 +38,36 @@ export function addToHistory(data: History) {
 }
 
 export function undo() {
-  const removedElement = availableUndo.pop();
-  if (removedElement !== undefined) {
-    switch (removedElement.type) {
+  const removedItem = availableUndo.pop();
+  if (removedItem !== undefined) {
+    switch (removedItem.type) {
       case "insert":
         /**
          * Get target info
          */
-        const parentElement = removedElement.element.parentElement!;
-        removedElement.target = {
+        const parentElement = removedItem.element.parentElement!;
+        removedItem.target = {
           parent: parentElement,
           index: Array.from(parentElement.children).indexOf(
-            removedElement.element,
+            removedItem.element,
           ),
         };
 
         /**
          * Remove this element from page
          */
-        removedElement.element.remove();
+        removedItem.element.remove();
         break;
+
+      case "style":
+        undoElementStyle(removedItem);
+        break;
+
+      default:
+        const _check: never = removedItem.type;
     }
 
-    availableRedo.push(removedElement);
+    availableRedo.push(removedItem);
   }
 
   sendMessageToParent({
@@ -67,18 +80,26 @@ export function undo() {
 }
 
 export function redo() {
-  const removedElement = availableRedo.pop();
-  if (removedElement !== undefined) {
-    switch (removedElement.type) {
+  const removedItem = availableRedo.pop();
+  if (removedItem !== undefined) {
+    switch (removedItem.type) {
       case "insert":
         /**
          * Put this item back in the page where it was
          */
-        const { parent, index } = removedElement.target!;
-        parent.insertBefore(removedElement.element, parent.children[index]);
+        const { parent, index } = removedItem.target!;
+        parent.insertBefore(removedItem.element, parent.children[index]);
+        break;
+
+      case "style":
+        redoElementStyle(removedItem);
+        break;
+
+      default:
+        const _check: never = removedItem.type;
     }
 
-    availableUndo.push(removedElement);
+    availableUndo.push(removedItem);
   }
 
   sendMessageToParent({
