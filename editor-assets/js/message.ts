@@ -37,6 +37,7 @@ function receiveMessageData(event: MessageEvent<CanvasMessageData>) {
   }
 
   if (type === "style") {
+    if (!styleData) return;
     updateElementStyles(styleData);
     return;
   }
