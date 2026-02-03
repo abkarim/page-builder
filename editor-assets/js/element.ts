@@ -196,6 +196,7 @@ function selectElement(e: Event) {
   target = {
     parent: element.parentElement,
     reference: element,
+    position: "after",
   };
 
   /**
@@ -205,7 +206,7 @@ function selectElement(e: Event) {
   if (element === document.body) {
     target = {
       parent: element,
-      reference: insertElement,
+      reference: insertElement as HTMLElement,
       position: "before",
     };
   }
