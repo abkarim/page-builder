@@ -22,7 +22,6 @@ import {
   TextInitialIcon,
   XIcon,
 } from "lucide-react";
-import { useEffect, useState } from "react";
 
 export interface TextData {
   textAlign: string;
@@ -36,28 +35,9 @@ export default function Text({
   updateStyle,
 }: {
   data: TextData;
-  updateStyle: (data: TextData) => void;
+  updateStyle: (data: Partial<TextData>) => void;
 }): React.JSX.Element {
-  const {
-    textAlign,
-    textTransform,
-    color: textColor,
-    fontFamily: family,
-  } = data;
-
-  const [align, setAlign] = useState(textAlign);
-  const [transform, setTransform] = useState(textTransform);
-  const [color, setColor] = useState(textColor);
-  const [fontFamily, setFontFamily] = useState(family);
-
-  useEffect(() => {
-    updateStyle({
-      textAlign: align,
-      color: color,
-      fontFamily,
-      textTransform: transform,
-    });
-  }, [align, transform, color, fontFamily]);
+  const { textAlign, textTransform, color, fontFamily } = data;
 
   return (
     <div className="space-y-1">
@@ -67,8 +47,12 @@ export default function Text({
         <ToggleGroup
           type="single"
           className="bg-background border"
-          defaultValue={align}
-          onValueChange={(value) => setAlign(value)}
+          defaultValue={textAlign}
+          onValueChange={(value) =>
+            updateStyle({
+              textAlign: value,
+            })
+          }
         >
           <ToggleGroupItem value="left">
             <TextAlignStartIcon />
@@ -88,7 +72,7 @@ export default function Text({
         <Label className="text-sm">Color</Label>
         <ColorPickerComponent
           defaultValue={color}
-          onValueChange={(value) => setColor(value)}
+          onValueChange={(value) => updateStyle({ color: value })}
         />
       </div>
       <div className="space-y-1">
@@ -96,8 +80,8 @@ export default function Text({
         <ToggleGroup
           type="single"
           className="bg-background border"
-          value={transform}
-          onValueChange={(value) => setTransform(value)}
+          value={textTransform}
+          onValueChange={(value) => updateStyle({ textTransform: value })}
         >
           <ToggleGroupItem value="none">
             <XIcon />
@@ -123,7 +107,7 @@ export default function Text({
         <Label className="text-sm">Font Family</Label>
         <Select
           value={fontFamily}
-          onValueChange={(value) => setFontFamily(value)}
+          onValueChange={(value) => updateStyle({ fontFamily: value })}
         >
           <SelectTrigger className="bg-background w-30">
             <SelectValue placeholder="Select a font" />

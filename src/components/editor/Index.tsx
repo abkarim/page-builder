@@ -17,7 +17,9 @@ export interface ElementStylesEditorProps {
   };
   update: (
     type: keyof ElementStylesEditorProps["data"],
-    styles: ElementStylesEditorProps["data"][keyof ElementStylesEditorProps["data"]],
+    styles: Partial<
+      ElementStylesEditorProps["data"][keyof ElementStylesEditorProps["data"]]
+    >,
   ) => void;
 }
 
