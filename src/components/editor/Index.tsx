@@ -15,12 +15,17 @@ export interface ElementStylesEditorProps {
     text: TextData;
     spacing: SpacingData;
   };
+  update: (
+    type: keyof ElementStylesEditorProps["data"],
+    styles: ElementStylesEditorProps["data"][keyof ElementStylesEditorProps["data"]],
+  ) => void;
 }
 
 export default function ElementStylesEditor({
   show,
   component,
   data,
+  update,
 }: ElementStylesEditorProps): React.JSX.Element {
   if (!show) return <></>;
 
@@ -28,7 +33,7 @@ export default function ElementStylesEditor({
     <section className="max-w-60 w-full bg-accent rounded p-2">
       <div className="space-y-2">
         {isEditorAvailableForComponent("text", component) && (
-          <Text data={data.text} />
+          <Text data={data.text} updateStyle={(data) => update("text", data)} />
         )}
         {isEditorAvailableForComponent("spacing", component) && <Spacing />}
         {isEditorAvailableForComponent("border", component) && <Border />}
