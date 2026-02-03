@@ -1,9 +1,15 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import CSSValueInput from "@/components/ui/CSSValueInput";
 import { Label } from "@/components/ui/label";
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 
-export default function CombinedDetachedInput() {
+export default function CombinedDetachedInput({
+  value,
+  onUpdate,
+}: {
+  value: string;
+  onUpdate: (value: string) => void;
+}) {
   const [combined, setCombined] = useState(true);
   const [data, setData] = useState({
     top: "",
@@ -23,6 +29,13 @@ export default function CombinedDetachedInput() {
       return { ...prev, [position]: `${size}${unit}` };
     });
   }
+
+  useEffect(() => {
+    if (combined) {
+      onUpdate(data.combined);
+      return;
+    }
+  }, [data, combined]);
 
   return (
     <div>

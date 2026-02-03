@@ -37,7 +37,12 @@ export default function ElementStylesEditor({
         {isEditorAvailableForComponent("text", component) && (
           <Text data={data.text} updateStyle={(data) => update("text", data)} />
         )}
-        {isEditorAvailableForComponent("spacing", component) && <Spacing />}
+        {isEditorAvailableForComponent("spacing", component) && (
+          <Spacing
+            data={data.spacing}
+            updateStyle={(data) => update("spacing", data)}
+          />
+        )}
         {isEditorAvailableForComponent("border", component) && <Border />}
         {isEditorAvailableForComponent("color", component) && <Color />}
         {isEditorAvailableForComponent("size", component) && <Size />}
