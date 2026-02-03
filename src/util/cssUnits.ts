@@ -38,7 +38,10 @@ export const CSS_UNITS = {
   ...OTHER_UNITS,
 };
 
-export function getSizeUnitFromCSSValue(value: string): {
+export function getSizeUnitFromCSSValue(
+  value: string,
+  defaultUnit: string = "px",
+): {
   size: number;
   unit: string;
 } {
@@ -48,8 +51,11 @@ export function getSizeUnitFromCSSValue(value: string): {
     return { size: 0, unit: "" };
   }
 
+  let unit = match[2];
+  if (unit === "undefined") unit = defaultUnit;
+
   return {
     size: parseFloat(match[1]),
-    unit: match[2].trim(), // .trim() handles cases like "10 px"
+    unit: unit.trim(), // .trim() handles cases like "10 px"
   };
 }
