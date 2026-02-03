@@ -179,8 +179,6 @@ export default function Editor() {
     }
   }
 
-  console.log({ selectedElementInfo });
-
   return (
     <section className="h-full">
       <div className="flex justify-between items-center">
@@ -259,6 +257,15 @@ export default function Editor() {
             show={showStylesEditor}
             component={selectedElementInfo.tagName.toLowerCase()}
             data={selectedElementInfo.stylesData}
+            update={(type, styles) =>
+              sendMessageToCanvas({
+                type: "style",
+                styleData: {
+                  type,
+                  data: styles,
+                },
+              })
+            }
           />
         )}
       </section>
