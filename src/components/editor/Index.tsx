@@ -32,7 +32,10 @@ export default function ElementStylesEditor({
   if (!show) return <></>;
 
   return (
-    <section className="max-w-60 w-full bg-accent rounded p-2">
+    <section
+      key={JSON.stringify(data)}
+      className="max-w-60 w-full bg-accent rounded p-2"
+    >
       <div className="space-y-2">
         {isEditorAvailableForComponent("text", component) && (
           <Text data={data.text} updateStyle={(data) => update("text", data)} />
