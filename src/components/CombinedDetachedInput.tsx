@@ -3,6 +3,7 @@ import CSSValueInput from "@/components/ui/CSSValueInput";
 import { Label } from "@/components/ui/label";
 import { getBoxSides, stringifyBoxSides } from "@/util/cssUnits";
 import { useEffect, useId, useState } from "react";
+import { useIsFirstRender } from "@uidotdev/usehooks";
 
 export default function CombinedDetachedInput({
   value,
@@ -11,15 +12,16 @@ export default function CombinedDetachedInput({
   value: string;
   onUpdate: (value: string) => void;
 }) {
+  const isFirstRender = useIsFirstRender();
   const { top, bottom, left, right } = getBoxSides(value);
-  const [combined, setCombined] = useState(false);
+  const [combined, setCombined] = useState(value.split(" ").length === 1);
   const [data, setData] = useState({
-    top: "",
-    bottom: "",
-    left: "",
-    right: "",
-    combined: "",
-    init: false,
+    top,
+    bottom,
+    left,
+    right,
+    combined: value.split(" ")[0],
+    changes: false,
   });
   const id = useId();
 
@@ -29,7 +31,7 @@ export default function CombinedDetachedInput({
     position: keyof typeof data,
   ) {
     setData((prev) => {
-      return { ...prev, [position]: `${size}${unit}` };
+      return { ...prev, changes: true, [position]: `${size}${unit}` };
     });
   }
 
@@ -37,7 +39,7 @@ export default function CombinedDetachedInput({
     /**
      * Ignore on first render
      */
-    if (data.init === false) return;
+    if (isFirstRender || data.changes === false) return;
 
     if (combined) {
       onUpdate(data.combined);
@@ -52,19 +54,7 @@ export default function CombinedDetachedInput({
         right: data.right,
       }),
     );
-  }, [data, combined]);
-
-  useEffect(() => {
-    setCombined(value.split(" ").length === 1);
-    setData({
-      top,
-      bottom,
-      left,
-      right,
-      combined: value.split(" ")[0],
-      init: true,
-    });
-  }, [top, bottom, left, right]);
+  }, [data, combined, isFirstRender]);
 
   return (
     <div>
