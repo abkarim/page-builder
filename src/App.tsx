@@ -79,7 +79,7 @@ export default function App(): React.JSX.Element {
       <section className="px-2 w-full">
         <header className="flex items-center justify-start gap-2">
           <Tooltip>
-            <TooltipTrigger>
+            <TooltipTrigger asChild>
               <SidebarTrigger />
             </TooltipTrigger>
             <TooltipContent>

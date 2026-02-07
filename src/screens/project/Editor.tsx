@@ -195,7 +195,7 @@ export default function Editor() {
         </Button>
         <div className="flex items-center gap-2">
           <Tooltip>
-            <TooltipTrigger>
+            <TooltipTrigger asChild>
               <Button
                 variant={"secondary"}
                 onClick={() => sendMessageToCanvas({ type: "undo" })}
@@ -209,7 +209,7 @@ export default function Editor() {
             </TooltipContent>
           </Tooltip>
           <Tooltip>
-            <TooltipTrigger>
+            <TooltipTrigger asChild>
               <Button
                 variant={"secondary"}
                 disabled={availableRedo === 0}
