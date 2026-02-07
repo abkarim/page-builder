@@ -67,20 +67,8 @@ type SideValues = {
   left: string;
 };
 
-export function getBoxSides(
-  value: string,
-  defaultUnit: string = "px",
-): SideValues {
-  const parts = value.trim().split(/\s+/);
-
-  // Reuse your logic to get {size, unit} then combine them
-  const parse = (p: string) => {
-    const res = getSizeUnitFromCSSValue(p, defaultUnit);
-    // Optimization: if size is 0, CSS convention is often just "0"
-    return res.size === 0 ? "0" : `${res.size}${res.unit}`;
-  };
-
-  const parsed = parts.map(parse);
+export function getBoxSides(value: string): SideValues {
+  const parsed = value.trim().split(/\s+/);
   let t, r, b, l;
 
   switch (parsed.length) {
@@ -99,7 +87,8 @@ export function getBoxSides(
       break;
   }
 
-  return { top: t, right: r, bottom: b, left: l };
+  const data = { top: t, right: r, bottom: b, left: l };
+  return data;
 }
 
 export function stringifyBoxSides(sides: SideValues): string {
