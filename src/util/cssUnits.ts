@@ -52,10 +52,62 @@ export function getSizeUnitFromCSSValue(
   }
 
   let unit = match[2];
-  if (unit === "undefined") unit = defaultUnit;
+  if (unit === "undefined" || !unit) unit = defaultUnit;
 
   return {
     size: parseFloat(match[1]),
     unit: unit.trim(), // .trim() handles cases like "10 px"
   };
+}
+
+type SideValues = {
+  top: string;
+  right: string;
+  bottom: string;
+  left: string;
+};
+
+export function getBoxSides(
+  value: string,
+  defaultUnit: string = "px",
+): SideValues {
+  const parts = value.trim().split(/\s+/);
+
+  // Reuse your logic to get {size, unit} then combine them
+  const parse = (p: string) => {
+    const res = getSizeUnitFromCSSValue(p, defaultUnit);
+    // Optimization: if size is 0, CSS convention is often just "0"
+    return res.size === 0 ? "0" : `${res.size}${res.unit}`;
+  };
+
+  const parsed = parts.map(parse);
+  let t, r, b, l;
+
+  switch (parsed.length) {
+    case 1:
+      [t, r, b, l] = [parsed[0], parsed[0], parsed[0], parsed[0]];
+      break;
+    case 2:
+      [t, r, b, l] = [parsed[0], parsed[1], parsed[0], parsed[1]];
+      break;
+    case 3:
+      [t, r, b, l] = [parsed[0], parsed[1], parsed[2], parsed[1]];
+      break;
+    case 4:
+    default:
+      [t, r, b, l] = [parsed[0], parsed[1], parsed[2], parsed[3]];
+      break;
+  }
+
+  return { top: t, right: r, bottom: b, left: l };
+}
+
+export function stringifyBoxSides(sides: SideValues): string {
+  const { top: t, right: r, bottom: b, left: l } = sides;
+
+  if (t === r && r === b && b === l) return t;
+  if (t === b && r === l) return `${t} ${r}`;
+  if (r === l) return `${t} ${r} ${b}`;
+
+  return `${t} ${r} ${b} ${l}`;
 }
