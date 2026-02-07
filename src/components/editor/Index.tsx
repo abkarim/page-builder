@@ -1,6 +1,6 @@
 import { isEditorAvailableForComponent } from "@/util/EditorAndComponentConnection";
 import Border, { BorderData } from "./stylesEditor/Border";
-import Color from "./stylesEditor/Color";
+import Color, { ColorData } from "./stylesEditor/Color";
 import CustomCSS from "./stylesEditor/CustomCSS";
 import Layout from "./stylesEditor/Layout";
 import Position from "./stylesEditor/Position";
@@ -15,6 +15,7 @@ export interface ElementStylesEditorProps {
     text: TextData;
     spacing: SpacingData;
     border: BorderData;
+    color: ColorData;
   };
   update: (
     type: keyof ElementStylesEditorProps["data"],
@@ -53,7 +54,12 @@ export default function ElementStylesEditor({
             updateStyle={(data) => update("border", data)}
           />
         )}
-        {isEditorAvailableForComponent("color", component) && <Color />}
+        {isEditorAvailableForComponent("color", component) && (
+          <Color
+            data={data.color}
+            updateStyle={(data) => update("color", data)}
+          />
+        )}
         {isEditorAvailableForComponent("size", component) && <Size />}
         {isEditorAvailableForComponent("layout", component) && <Layout />}
         {isEditorAvailableForComponent("position", component) && <Position />}

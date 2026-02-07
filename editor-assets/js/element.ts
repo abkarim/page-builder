@@ -222,6 +222,7 @@ function selectElement(e: Event) {
     borderRadius,
     borderWidth,
     borderStyle,
+    background,
   } = element.style;
 
   const stylesData: ElementStylesEditorProps["data"] = {
@@ -240,6 +241,9 @@ function selectElement(e: Event) {
       borderWidth,
       borderStyle,
       borderRadius,
+    },
+    color: {
+      background,
     },
   };
 
