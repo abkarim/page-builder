@@ -104,7 +104,7 @@ export default function App(): React.JSX.Element {
                 }
 
                 return (
-                  <>
+                  <span key={index} className="flex items-center">
                     <BreadcrumbItem>
                       <BreadcrumbLink
                         className="cursor-pointer"
@@ -114,7 +114,7 @@ export default function App(): React.JSX.Element {
                       </BreadcrumbLink>
                     </BreadcrumbItem>
                     {breadcrumbs.length - 1 > index && <BreadcrumbSeparator />}
-                  </>
+                  </span>
                 );
               })}
             </BreadcrumbList>
