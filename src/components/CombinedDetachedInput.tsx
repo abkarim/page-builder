@@ -1,6 +1,7 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import CSSValueInput from "@/components/ui/CSSValueInput";
 import { Label } from "@/components/ui/label";
+import { getBoxSides, stringifyBoxSides } from "@/util/cssUnits";
 import { useEffect, useId, useState } from "react";
 
 export default function CombinedDetachedInput({
@@ -10,13 +11,15 @@ export default function CombinedDetachedInput({
   value: string;
   onUpdate: (value: string) => void;
 }) {
-  const [combined, setCombined] = useState(true);
+  const { top, bottom, left, right } = getBoxSides(value);
+  const [combined, setCombined] = useState(false);
   const [data, setData] = useState({
     top: "",
     bottom: "",
     left: "",
     right: "",
     combined: "",
+    init: false,
   });
   const id = useId();
 
@@ -31,11 +34,37 @@ export default function CombinedDetachedInput({
   }
 
   useEffect(() => {
+    /**
+     * Ignore on first render
+     */
+    if (data.init === false) return;
+
     if (combined) {
       onUpdate(data.combined);
       return;
     }
+
+    onUpdate(
+      stringifyBoxSides({
+        top: data.top,
+        bottom: data.bottom,
+        left: data.left,
+        right: data.right,
+      }),
+    );
   }, [data, combined]);
+
+  useEffect(() => {
+    setCombined(value.split(" ").length === 1);
+    setData({
+      top,
+      bottom,
+      left,
+      right,
+      combined: value.split(" ")[0],
+      init: true,
+    });
+  }, [top, bottom, left, right]);
 
   return (
     <div>
