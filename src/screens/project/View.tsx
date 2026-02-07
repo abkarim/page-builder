@@ -101,7 +101,7 @@ export default function (): React.JSX.Element {
       </div>
       <div className="mt-2 flex flex-wrap gap-5">
         {designs.map((name) => (
-          <ContextMenu>
+          <ContextMenu key={name}>
             <ContextMenuTrigger
               onClick={() => {
                 navigate(`/project/${project?.id}/${name}`);
