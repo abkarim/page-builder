@@ -10,6 +10,7 @@ import {
   ColorPickerSwatch,
   ColorPickerTrigger,
 } from "@/components/ui/color-picker";
+import { useIsFirstRender } from "@uidotdev/usehooks";
 import { useEffect, useState } from "react";
 
 interface Props {
@@ -23,12 +24,13 @@ export default function ColorPickerComponent({
   value,
   onValueChange,
 }: Props): React.JSX.Element {
+  const isFirstRender = useIsFirstRender();
   const [color, setColor] = useState(value || defaultValue);
 
   useEffect(() => {
-    if (!onValueChange || !color) return;
+    if (!onValueChange || !color || isFirstRender) return;
     onValueChange(color);
-  }, [color]);
+  }, [color, isFirstRender]);
 
   return (
     <div>
