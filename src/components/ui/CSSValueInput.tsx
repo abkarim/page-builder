@@ -15,34 +15,50 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./select";
+import { useEffect, useRef, useState } from "react";
+import { useIsFirstRender } from "@uidotdev/usehooks";
 
 interface Props {
-  size?: number | string;
-  unit?: string;
   value?: string;
   onChange: (size: number, unit: string) => void;
 }
 
-export default function CSSValueInput({ value, unit, size, onChange }: Props) {
-  let cunit = unit;
-  let csize = size;
-  if (value) {
-    const data = getSizeUnitFromCSSValue(value);
-    cunit = data.unit;
-    csize = data.size;
-  }
+export default function CSSValueInput({ value, onChange }: Props) {
+  const isFirstRender = useIsFirstRender();
+  const data = getSizeUnitFromCSSValue(value || "");
+  const [size, setSize] = useState(value ? data.size.toString() : "");
+  const [unit, setUnit] = useState(data.unit);
+  const tracker = useRef(false);
+
+  useEffect(() => {
+    if (isFirstRender || tracker.current === false) return;
+    const val = parseInt(size);
+    /**
+     * If size is empty
+     * don't do anything
+     */
+    if (Number.isNaN(val)) return;
+
+    onChange(val, unit);
+    tracker.current = false;
+  }, [size, unit, isFirstRender]);
 
   return (
     <InputGroup>
       <InputGroupInput
         type="number"
-        value={csize}
-        onChange={(e) => onChange(parseFloat(e.currentTarget.value), cunit!)}
+        value={size}
+        onChange={(e) => {
+          tracker.current = true;
+          setSize(e.currentTarget.value);
+        }}
       />
       <Select
-        value={cunit}
-        defaultValue="px"
-        onValueChange={(value) => onChange(csize as number, value)}
+        value={unit}
+        onValueChange={(unit) => {
+          tracker.current = true;
+          setUnit(unit);
+        }}
       >
         <SelectTrigger className="w-30 text-ellipsis">
           <SelectValue placeholder="unit" />
