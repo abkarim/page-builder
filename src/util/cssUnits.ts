@@ -48,7 +48,7 @@ export function getSizeUnitFromCSSValue(
   const match = value.match(/^(-?\d*\.?\d+)(.*)$/);
 
   if (!match) {
-    return { size: 0, unit: "" };
+    return { size: 0, unit: defaultUnit };
   }
 
   let unit = match[2];
