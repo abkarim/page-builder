@@ -21,7 +21,6 @@ export function updateElementStyles(
    * target is insert element
    */
   if (targetElement === insertElement) return;
-  console.log({ data });
 
   for (const [key, value] of Object.entries(data.data)) {
     // @ts-expect-error
