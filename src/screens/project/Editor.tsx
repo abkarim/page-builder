@@ -33,6 +33,7 @@ export default function Editor() {
   const [selectedElementInfo, setSelectedElementInfo] = useState<{
     tagName: string;
     stylesData: ElementStylesEditorProps["data"];
+    xPath: string;
   } | null>(null);
   const editorRef = useRef<HTMLIFrameElement>(null);
 
@@ -101,6 +102,7 @@ export default function Editor() {
           setSelectedElementInfo({
             tagName: payload.tagName as string,
             stylesData: payload.stylesData as ElementStylesEditorProps["data"],
+            xPath: payload.xpath as string,
           });
         }
         return;
@@ -254,6 +256,7 @@ export default function Editor() {
         </div>
         {selectedElementInfo && (
           <ElementStylesEditor
+            key={selectedElementInfo.xPath}
             show={showStylesEditor}
             component={selectedElementInfo.tagName.toLowerCase()}
             data={selectedElementInfo.stylesData}

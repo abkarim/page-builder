@@ -3,7 +3,7 @@ import { type Block } from "../../src/components/editor/block";
 import { type ElementStylesEditorProps } from "../../src/components/editor/Index";
 import { sendMessageToParent } from "./message";
 import { addToHistory, History } from "./history";
-import { throttle } from "./util";
+import { getXPath, throttle } from "./util";
 
 const defaultTarget = {
   parent: null,
@@ -24,7 +24,7 @@ const pageBuilderData = {
 /**
  * Get insert Element
  */
-const insertElement = document.querySelector(
+export const insertElement = document.querySelector(
   `button.insert-${pageBuilderData.className}`,
 );
 
@@ -223,6 +223,12 @@ function selectElement(e: Event) {
     borderWidth,
     borderStyle,
     background,
+    width,
+    minWidth,
+    maxWidth,
+    height,
+    minHeight,
+    maxHeight,
   } = element.style;
 
   const stylesData: ElementStylesEditorProps["data"] = {
@@ -245,6 +251,14 @@ function selectElement(e: Event) {
     color: {
       background,
     },
+    size: {
+      width,
+      minWidth,
+      maxWidth,
+      height,
+      minHeight,
+      maxHeight,
+    },
   };
 
   sendMessageToParent({
@@ -252,6 +266,7 @@ function selectElement(e: Event) {
     payload: {
       tagName: element.tagName,
       stylesData,
+      xpath: getXPath(element),
     },
   });
 }

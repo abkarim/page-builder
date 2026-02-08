@@ -4,7 +4,7 @@ import Color, { ColorData } from "./stylesEditor/Color";
 import CustomCSS from "./stylesEditor/CustomCSS";
 import Layout from "./stylesEditor/Layout";
 import Position from "./stylesEditor/Position";
-import Size from "./stylesEditor/Size";
+import Size, { SizeData } from "./stylesEditor/Size";
 import Text, { TextData } from "./stylesEditor/Text";
 import Spacing, { SpacingData } from "./stylesEditor/Spacing";
 
@@ -16,6 +16,7 @@ export interface ElementStylesEditorProps {
     spacing: SpacingData;
     border: BorderData;
     color: ColorData;
+    size: SizeData;
   };
   update: (
     type: keyof ElementStylesEditorProps["data"],
@@ -34,10 +35,7 @@ export default function ElementStylesEditor({
   if (!show) return <></>;
 
   return (
-    <section
-      key={JSON.stringify(data)}
-      className="max-w-60 w-full bg-accent rounded p-2"
-    >
+    <section className="max-w-60 w-full bg-accent rounded p-2">
       <div className="space-y-2">
         {isEditorAvailableForComponent("text", component) && (
           <Text data={data.text} updateStyle={(data) => update("text", data)} />
@@ -60,7 +58,9 @@ export default function ElementStylesEditor({
             updateStyle={(data) => update("color", data)}
           />
         )}
-        {isEditorAvailableForComponent("size", component) && <Size />}
+        {isEditorAvailableForComponent("size", component) && (
+          <Size data={data.size} updateStyle={(data) => update("size", data)} />
+        )}
         {isEditorAvailableForComponent("layout", component) && <Layout />}
         {isEditorAvailableForComponent("position", component) && <Position />}
         {isEditorAvailableForComponent("customCSS", component) && <CustomCSS />}
