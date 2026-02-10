@@ -33,7 +33,7 @@ const connections: {
   },
   {
     editorName: "customCSS",
-    availableFor: ["body"],
+    availableFor: "*",
   },
 ];
 
