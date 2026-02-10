@@ -3,7 +3,7 @@ import Border, { BorderData } from "./stylesEditor/Border";
 import Color, { ColorData } from "./stylesEditor/Color";
 import CustomCSS from "./stylesEditor/CustomCSS";
 import Layout from "./stylesEditor/Layout";
-import Position from "./stylesEditor/Position";
+import Position, { PositionData } from "./stylesEditor/Position";
 import Size, { SizeData } from "./stylesEditor/Size";
 import Text, { TextData } from "./stylesEditor/Text";
 import Spacing, { SpacingData } from "./stylesEditor/Spacing";
@@ -17,6 +17,7 @@ export interface ElementStylesEditorProps {
     border: BorderData;
     color: ColorData;
     size: SizeData;
+    position: PositionData;
   };
   update: (
     type: keyof ElementStylesEditorProps["data"],
@@ -61,8 +62,13 @@ export default function ElementStylesEditor({
         {isEditorAvailableForComponent("size", component) && (
           <Size data={data.size} updateStyle={(data) => update("size", data)} />
         )}
+        {isEditorAvailableForComponent("position", component) && (
+          <Position
+            data={data.position}
+            updateStyle={(data) => update("position", data)}
+          />
+        )}
         {isEditorAvailableForComponent("layout", component) && <Layout />}
-        {isEditorAvailableForComponent("position", component) && <Position />}
         {isEditorAvailableForComponent("customCSS", component) && <CustomCSS />}
       </div>
     </section>

@@ -229,6 +229,9 @@ function selectElement(e: Event) {
     height,
     minHeight,
     maxHeight,
+    position,
+    inset,
+    zIndex,
   } = element.style;
 
   const stylesData: ElementStylesEditorProps["data"] = {
@@ -258,6 +261,11 @@ function selectElement(e: Event) {
       height,
       minHeight,
       maxHeight,
+    },
+    position: {
+      position,
+      inset,
+      zIndex,
     },
   };
 

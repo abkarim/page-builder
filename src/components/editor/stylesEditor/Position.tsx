@@ -9,13 +9,34 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 
-export default function Position(): React.JSX.Element {
+export interface PositionData {
+  position: string;
+  inset: string;
+  zIndex: string;
+}
+
+interface Props {
+  data: PositionData;
+  updateStyle: (data: Partial<PositionData>) => void;
+}
+
+export default function Position({
+  data,
+  updateStyle,
+}: Props): React.JSX.Element {
   return (
     <div className="space-y-1">
       <h6 className="text-sm">Position</h6>
       <div className="flex items-center justify-between">
         <Label className="text-sm">Type</Label>
-        <Select>
+        <Select
+          defaultValue={data.position}
+          onValueChange={(value) =>
+            updateStyle({
+              position: value,
+            })
+          }
+        >
           <SelectTrigger className="bg-background">
             <SelectValue placeholder="select position" />
           </SelectTrigger>
@@ -30,11 +51,27 @@ export default function Position(): React.JSX.Element {
       </div>
       <div>
         <Label className="text-sm">Value</Label>
-        <CombinedDetachedInput value="" onUpdate={() => {}} />
+        <CombinedDetachedInput
+          value={data.inset}
+          onUpdate={(value) =>
+            updateStyle({
+              inset: value,
+            })
+          }
+        />
       </div>
       <div className="flex items-center justify-between">
         <Label className="text-sm">Z-Index</Label>
-        <Input type="number" className="w-30" />
+        <Input
+          type="number"
+          defaultValue={data.zIndex}
+          onChange={(e) =>
+            updateStyle({
+              zIndex: e.currentTarget.value,
+            })
+          }
+          className="w-30"
+        />
       </div>
     </div>
   );
