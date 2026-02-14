@@ -61,15 +61,19 @@ const editorConnections: {
   notAvailableFor?: string[];
 }[] = [
   {
-    editorName: "text",
+    editorName: "classname",
+    availableFor: "*",
+  },
+  {
+    editorName: "html",
+    availableFor: ["html"],
+  },
+  {
+    editorName: "content",
     availableFor: ["p", "h1", "h2", "h3", "h5", "h6"],
   },
   {
-    editorName: "heading",
-    availableFor: ["h1", "h2", "h3", "h4", "h5", "h6"],
-  },
-  {
-    editorName: "image",
+    editorName: "asset",
     availableFor: ["img"],
   },
   {
@@ -78,7 +82,17 @@ const editorConnections: {
   },
   {
     editorName: "tag",
-    availableFor: ["div", "section", "column"],
+    availableFor: [
+      "div",
+      "section",
+      "column",
+      "h1",
+      "h2",
+      "h3",
+      "h4",
+      "h5",
+      "h6",
+    ],
   },
 ];
 

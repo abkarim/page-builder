@@ -21,6 +21,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ElementEditor from "@/components/editor/elementsEditor/Index";
 
 export default function Editor() {
   const { id, name } = useParams();
@@ -255,7 +256,7 @@ export default function Editor() {
             className="w-full h-full outline"
           />
         </div>
-        {selectedElementInfo && (
+        {selectedElementInfo && showStylesEditor && (
           <Tabs
             defaultValue="styles"
             key={selectedElementInfo.xPath}
@@ -267,7 +268,6 @@ export default function Editor() {
             </TabsList>
             <TabsContent value="styles">
               <ElementStylesEditor
-                show={showStylesEditor}
                 component={selectedElementInfo.tagName.toLowerCase()}
                 data={selectedElementInfo.stylesData}
                 update={(type, styles) =>
@@ -279,6 +279,11 @@ export default function Editor() {
                     },
                   })
                 }
+              />
+            </TabsContent>
+            <TabsContent value="element">
+              <ElementEditor
+                component={selectedElementInfo.tagName.toLowerCase()}
               />
             </TabsContent>
           </Tabs>
