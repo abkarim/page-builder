@@ -20,6 +20,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function Editor() {
   const { id, name } = useParams();
@@ -255,21 +256,32 @@ export default function Editor() {
           />
         </div>
         {selectedElementInfo && (
-          <ElementStylesEditor
+          <Tabs
+            defaultValue="styles"
             key={selectedElementInfo.xPath}
-            show={showStylesEditor}
-            component={selectedElementInfo.tagName.toLowerCase()}
-            data={selectedElementInfo.stylesData}
-            update={(type, styles) =>
-              sendMessageToCanvas({
-                type: "style",
-                styleData: {
-                  type,
-                  data: styles,
-                },
-              })
-            }
-          />
+            className="max-w-60 w-full bg-accent rounded p-2"
+          >
+            <TabsList className="border bg-background">
+              <TabsTrigger value="styles">Styles</TabsTrigger>
+              <TabsTrigger value="element">Element</TabsTrigger>
+            </TabsList>
+            <TabsContent value="styles">
+              <ElementStylesEditor
+                show={showStylesEditor}
+                component={selectedElementInfo.tagName.toLowerCase()}
+                data={selectedElementInfo.stylesData}
+                update={(type, styles) =>
+                  sendMessageToCanvas({
+                    type: "style",
+                    styleData: {
+                      type,
+                      data: styles,
+                    },
+                  })
+                }
+              />
+            </TabsContent>
+          </Tabs>
         )}
       </section>
     </section>
