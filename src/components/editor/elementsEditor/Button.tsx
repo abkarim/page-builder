@@ -1,9 +1,18 @@
 import { Label } from "@/components/ui/label";
 
-export default function ButtonEditor(): React.JSX.Element {
-  return (
-    <div>
-      <Label>Button</Label>
-    </div>
-  );
+export interface ButtonData {
+    type: string;
+}
+
+interface Props {
+    data: ButtonData;
+    update: (data: Partial<ButtonData>) => void;
+}
+
+export default function ButtonEditor({ data }: Props): React.JSX.Element {
+    return (
+        <div>
+            <Label>Button</Label>
+        </div>
+    );
 }
