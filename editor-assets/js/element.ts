@@ -278,7 +278,7 @@ function selectElement(e: Event) {
 
     const elementData: ElementEditorProps["data"] = {
         tagData: {
-            tagName: element.tagName,
+            tagName: element.tagName.toLowerCase(),
         },
         contentData: {
             content: element.textContent,
