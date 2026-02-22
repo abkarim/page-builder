@@ -299,6 +299,15 @@ export default function Editor() {
                             <ElementEditor
                                 component={selectedElementInfo.tagName.toLowerCase()}
                                 data={selectedElementInfo.elementData}
+                                update={(type, edits) =>
+                                    sendMessageToCanvas({
+                                        type: "element_edits",
+                                        elementEditsData: {
+                                            type,
+                                            data: edits,
+                                        },
+                                    })
+                                }
                             />
                         </TabsContent>
                     </Tabs>
