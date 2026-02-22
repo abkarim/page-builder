@@ -9,7 +9,6 @@ import Text, { TextData } from "./stylesEditor/Text";
 import Spacing, { SpacingData } from "./stylesEditor/Spacing";
 
 export interface ElementStylesEditorProps {
-  show: boolean;
   component: string;
   data: {
     text: TextData;
@@ -28,15 +27,12 @@ export interface ElementStylesEditorProps {
 }
 
 export default function ElementStylesEditor({
-  show,
   component,
   data,
   update,
 }: ElementStylesEditorProps): React.JSX.Element {
-  if (!show) return <></>;
-
   return (
-    <section className="max-w-60 w-full bg-accent rounded p-2">
+    <section>
       <div className="space-y-2">
         {isEditorAvailableForComponent("text", component) && (
           <Text data={data.text} updateStyle={(data) => update("text", data)} />
