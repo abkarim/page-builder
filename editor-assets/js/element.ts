@@ -19,7 +19,7 @@ export let target: {
 
 const pageBuilderData = {
     className: "page-builder-element",
-    placeholderElementClassName: "page-buider-element-placeholder",
+    placeholderElementClassName: "page-builder-element-placeholder",
 };
 
 /**
@@ -35,7 +35,21 @@ export const insertElement = document.querySelector(
 export function createElementFromBlock(data: Block): HTMLElement {
     const element = document.createElement(data.tag);
     if (data.content) {
-        element.innerHTML = data.content;
+        /**
+         * Replace placeholder content
+         * with actual content
+         */
+        let content = data.content;
+
+        // Replace insert element placeholder
+        if (insertElement) {
+            content = content.replaceAll(
+                /\$INSERT_ELEMENT\$/gi,
+                insertElement.outerHTML,
+            );
+        }
+
+        element.innerHTML = content;
     }
 
     if (data.attributes) {

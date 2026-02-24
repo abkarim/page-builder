@@ -2,6 +2,10 @@
   "id": 2,
   "name": "Column",
   "tag": "div",
-  "attributes": [{ "class": "columnLayout" }],
-  "content": "<div replaceable='true' class='jfkghkjdhgfh'>+</div><div replaceable='true' class='jkghgdsattd'>+</div>"
+  "attributes": [
+    {
+      "class": "page-builder-column-layout"
+    }
+  ],
+  "content": "$INSERT_ELEMENT$ $INSERT_ELEMENT$"
 }
