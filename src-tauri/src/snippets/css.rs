@@ -76,12 +76,22 @@ pub fn generate_css_snippet() -> String {
 
         /* Safe focus outline reset */
         :focus {
-        outline: 2px solid #00000022;
-        outline-offset: 2px;
+            outline: 2px solid #00000022;
+            outline-offset: 2px;
         }
 
         button {
             pointer-events: cursor;
+        }
+
+        /* Components css */
+        /* Column */
+        .page-builder-column-layout {
+            display: flex;
+        }
+
+        .page-builder-column-layout > div {
+            width: 100%;
         }
 
     "#

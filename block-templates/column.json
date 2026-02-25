@@ -7,5 +7,5 @@
       "class": "page-builder-column-layout"
     }
   ],
-  "content": "$INSERT_ELEMENT$ $INSERT_ELEMENT$"
+  "content": "<div>$INSERT_ELEMENT$</div> <div>$INSERT_ELEMENT$</div>"
 }
