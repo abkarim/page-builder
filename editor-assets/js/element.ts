@@ -20,6 +20,7 @@ export let target: {
 const pageBuilderData = {
     className: "page-builder-element",
     placeholderElementClassName: "page-builder-element-placeholder",
+    componentNameAttribute: "page-builder-component-identifier",
 };
 
 /**
@@ -59,6 +60,14 @@ export function createElementFromBlock(data: Block): HTMLElement {
             });
         });
     }
+
+    /**
+     * Set component name
+     */
+    element.setAttribute(
+        pageBuilderData.componentNameAttribute,
+        data.name.toLowerCase(),
+    );
 
     return element;
 }
@@ -315,6 +324,9 @@ function selectElement(e: Event) {
         type: "styleEditor",
         payload: {
             tagName: element.tagName,
+            componentName: element.getAttribute(
+                pageBuilderData.componentNameAttribute,
+            ),
             stylesData,
             elementData,
             xpath: getXPath(element),
