@@ -36,7 +36,9 @@ export default function ButtonEditor({
                 </SelectTrigger>
                 <SelectContent>
                     {["button", "submit", "reset"].map((t) => (
-                        <SelectItem value={t}>{t}</SelectItem>
+                        <SelectItem key={t} value={t}>
+                            {t}
+                        </SelectItem>
                     ))}
                 </SelectContent>
             </Select>

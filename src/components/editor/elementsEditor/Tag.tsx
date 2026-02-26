@@ -35,10 +35,14 @@ export default function TagEditor({ data, update }: Props): React.JSX.Element {
                 <SelectContent>
                     {isHeaderElement(data.tagName)
                         ? HTML_HEADERS_LIST.map((val) => (
-                              <SelectItem value={val}>{val}</SelectItem>
+                              <SelectItem key={val} value={val}>
+                                  {val}
+                              </SelectItem>
                           ))
                         : ["section", "div"].map((val) => (
-                              <SelectItem value={val}>{val}</SelectItem>
+                              <SelectItem key={val} value={val}>
+                                  {val}
+                              </SelectItem>
                           ))}
                 </SelectContent>
             </Select>

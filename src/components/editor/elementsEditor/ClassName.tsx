@@ -54,7 +54,11 @@ export default function ClassNameEditor({
             <Label className="text-sm">Class Name</Label>
             <div className="flex gap-2 flex-wrap">
                 {classNames.map((cl, i) => (
-                    <Badge variant="outline" className="bg-background text-sm">
+                    <Badge
+                        key={i}
+                        variant="outline"
+                        className="bg-background text-sm"
+                    >
                         {cl}
                         <Button
                             variant="destructive"
