@@ -20,6 +20,8 @@ export function updateElementEdits(
             break;
 
         case "htmlData":
+            prevData = { srcdoc: targetElement.getAttribute("srcdoc") };
+            data.srcdoc = editsData.data.content;
             break;
 
         case "contentData":

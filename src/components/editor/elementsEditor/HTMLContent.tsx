@@ -10,7 +10,7 @@ interface Props {
     update: (data: Partial<HTMLContentData>) => void;
 }
 
-export default function HTMLContent({ data }: Props) {
+export default function HTMLContent({ data, update }: Props) {
     return (
         <div className="space-y-2">
             <h4>HTML</h4>
@@ -19,6 +19,7 @@ export default function HTMLContent({ data }: Props) {
                 <Editor
                     height="200px"
                     language="html"
+                    onChange={(value) => update({ content: value })}
                     defaultValue={data.content}
                 />
             </div>
