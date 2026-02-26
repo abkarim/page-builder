@@ -5,7 +5,8 @@ import {
 } from "../../src/screens/project/EditorTypes";
 import { createElementFromBlock, insertElementToPage } from "./element";
 import { addToHistory, redo, undo } from "./history";
-import { updateElementEdits, updateElementStyles } from "./styles";
+import { updateElementStyles } from "./editor/styles";
+import { updateElementEdits } from "./editor/element";
 
 const origin = "*";
 

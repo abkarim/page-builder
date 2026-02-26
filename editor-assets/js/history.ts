@@ -1,9 +1,5 @@
-import {
-    redoElementEdit,
-    redoElementStyle,
-    undoElementEdit,
-    undoElementStyle,
-} from "./styles";
+import { redoElementEdit, undoElementEdit } from "./editor/element";
+import { redoElementStyle, undoElementStyle } from "./editor/styles";
 import { sendMessageToParent } from "./message";
 
 /**
