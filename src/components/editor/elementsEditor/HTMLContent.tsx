@@ -16,7 +16,11 @@ export default function HTMLContent({ data }: Props) {
             <h4>HTML</h4>
             <div className="space-y-1">
                 <Label className="text-sm">Content</Label>
-                <Editor language="html" defaultValue={data.content} />
+                <Editor
+                    height="200px"
+                    language="html"
+                    defaultValue={data.content}
+                />
             </div>
         </div>
     );

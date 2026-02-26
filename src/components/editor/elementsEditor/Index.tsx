@@ -8,6 +8,7 @@ import AssetEditor, { type AssetData } from "./Asset";
 
 export interface ElementEditorProps {
     component: string;
+    tagName: string;
     data: {
         tagData: TagData;
         htmlData: HTMLContentData;
@@ -26,6 +27,7 @@ export interface ElementEditorProps {
 
 export default function ElementEditor({
     component,
+    tagName,
     update,
     data,
 }: ElementEditorProps): React.JSX.Element {
@@ -37,31 +39,31 @@ export default function ElementEditor({
                     update={(d) => update("htmlData", d)}
                 />
             )}
-            {isElementEditorAvailableForComponent("button", component) && (
+            {isElementEditorAvailableForComponent("button", tagName) && (
                 <ButtonEditor
                     data={data.buttonData}
                     update={(d) => update("buttonData", d)}
                 />
             )}
-            {isElementEditorAvailableForComponent("tag", component) && (
+            {isElementEditorAvailableForComponent("tag", tagName) && (
                 <TagEditor
                     data={data.tagData}
                     update={(d) => update("tagData", d)}
                 />
             )}
-            {isElementEditorAvailableForComponent("asset", component) && (
+            {isElementEditorAvailableForComponent("asset", tagName) && (
                 <AssetEditor
                     data={data.assetData}
                     update={(d) => update("assetData", d)}
                 />
             )}
-            {isElementEditorAvailableForComponent("content", component) && (
+            {isElementEditorAvailableForComponent("content", tagName) && (
                 <ContentEditor
                     data={data.contentData}
                     update={(d) => update("contentData", d)}
                 />
             )}
-            {isElementEditorAvailableForComponent("classname", component) && (
+            {isElementEditorAvailableForComponent("classname", tagName) && (
                 <ClassNameEditor
                     data={data.classNameData}
                     update={(d) => update("classNameData", d)}

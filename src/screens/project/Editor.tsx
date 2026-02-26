@@ -36,6 +36,7 @@ export default function Editor() {
     const [showStylesEditor, setShowStylesEditor] = useState(true);
     const [selectedElementInfo, setSelectedElementInfo] = useState<{
         tagName: string;
+        componentName: string;
         stylesData: ElementStylesEditorProps["data"];
         elementData: ElementEditorProps["data"];
         xPath: string;
@@ -106,6 +107,7 @@ export default function Editor() {
                 if (payload?.tagName !== undefined) {
                     setSelectedElementInfo({
                         tagName: payload.tagName as string,
+                        componentName: payload.componentName as string,
                         stylesData:
                             payload.stylesData as ElementStylesEditorProps["data"],
                         elementData:
@@ -297,7 +299,8 @@ export default function Editor() {
                         </TabsContent>
                         <TabsContent value="element">
                             <ElementEditor
-                                component={selectedElementInfo.tagName.toLowerCase()}
+                                component={selectedElementInfo.componentName}
+                                tagName={selectedElementInfo.tagName.toLowerCase()}
                                 data={selectedElementInfo.elementData}
                                 update={(type, edits) =>
                                     sendMessageToCanvas({
