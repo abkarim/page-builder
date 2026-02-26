@@ -27,7 +27,7 @@ const pageBuilderData = {
  * Get insert Element
  */
 export const insertElement = document.querySelector(
-    `button.insert-${pageBuilderData.className}`,
+    `body > button.insert-${pageBuilderData.className}`,
 );
 
 /**
