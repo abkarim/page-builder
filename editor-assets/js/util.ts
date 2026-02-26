@@ -46,6 +46,15 @@ export function throttle(func: Function, limit: number) {
 }
 
 export function changeTagName(element: HTMLElement, targetTag: string) {
-    const clonedElement = element.cloneNode(true);
-    console.log({ clonedElement });
+    const newElement = document.createElement(targetTag);
+
+    for (const attr of element.attributes) {
+        newElement.setAttribute(attr.name, attr.value);
+    }
+
+    while (element.firstChild) {
+        newElement.appendChild(element.firstChild);
+    }
+
+    element.parentNode?.replaceChild(newElement, element);
 }
