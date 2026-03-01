@@ -35,6 +35,7 @@ export const insertElement = document.querySelector(
  */
 export function createElementFromBlock(data: Block): HTMLElement {
     const element = document.createElement(data.tag);
+
     if (data.content) {
         /**
          * Replace placeholder content
@@ -42,13 +43,29 @@ export function createElementFromBlock(data: Block): HTMLElement {
          */
         let content = data.content;
 
-        // Replace insert element placeholder
-        if (insertElement) {
-            content = content.replaceAll(
-                /\$INSERT_ELEMENT\$/gi,
-                insertElement.outerHTML,
+        const matches = new Set(content.match(/(\$[A-Z_]+\$)/g));
+        matches.forEach((match) => {
+            console.log(match);
+            // Replace insert element placeholder
+            if (match === "$INSERT_ELEMENT$" && insertElement) {
+                content = content.replaceAll(match, insertElement.outerHTML);
+                return;
+            }
+
+            const blockName = match.replaceAll("$", "").toLowerCase();
+
+            /**
+             * Is this block included with data
+             */
+            const targetBlock = data.included?.find(
+                (b) => b.name.toLowerCase() === blockName,
             );
-        }
+
+            if (targetBlock) {
+                const element = createElementFromBlock(targetBlock);
+                content = content.replaceAll(match, element.outerHTML);
+            }
+        });
 
         element.innerHTML = content;
     }
