@@ -1,0 +1,11 @@
+{
+  "id": 2,
+  "name": "Columns",
+  "tag": "div",
+  "attributes": [
+    {
+      "class": "page-builder-columns"
+    }
+  ],
+  "content": "$CONTAINER$ $CONTAINER$"
+}
