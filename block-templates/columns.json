@@ -4,8 +4,11 @@
   "tag": "div",
   "attributes": [
     {
-      "class": "page-builder-columns"
+      "class": "page-builder-column-layout"
     }
   ],
-  "content": "$CONTAINER$ $CONTAINER$"
+  "content": "$CONTAINER$ $CONTAINER$",
+  "include": [
+    200001
+  ]
 }
