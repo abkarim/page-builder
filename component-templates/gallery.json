@@ -1,0 +1,6 @@
+{
+    "id": 1,
+    "name": "Gallery",
+    "tag": "section",
+    "content": "$IMAGE$"
+}
