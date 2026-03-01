@@ -1,0 +1,11 @@
+{
+    "id": 200001,
+    "name": "Container",
+    "tag": "div",
+    "attributes": [
+        {
+            "class": "page-builder-container"
+        }
+    ],
+    "content": "$INSERT_ELEMENT$"
+}
