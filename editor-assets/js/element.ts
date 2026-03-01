@@ -206,12 +206,28 @@ function selectElement(e: Event) {
      * We want everything except
      * the insert element
      */
-    if (element === insertElement) {
-        target = {
-            parent: document.body,
-            reference: insertElement as HTMLElement,
-            position: "before",
-        };
+    if (element.className === insertElement?.className) {
+        /**
+         * If this insert element has a parent component
+         * set target accordingly
+         */
+        const closetParentComponent = element.closest(
+            `[${pageBuilderData.componentNameAttribute}]`,
+        );
+
+        if (closetParentComponent) {
+            target = {
+                parent: closetParentComponent as HTMLElement,
+                reference: element as HTMLElement,
+                position: "before",
+            };
+        } else {
+            target = {
+                parent: document.body,
+                reference: insertElement as HTMLElement,
+                position: "before",
+            };
+        }
 
         sendMessageToParent({
             type: "insert",
