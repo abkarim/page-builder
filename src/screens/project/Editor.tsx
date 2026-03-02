@@ -24,6 +24,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ElementEditor, {
     ElementEditorProps,
 } from "@/components/editor/elementsEditor/Index";
+import {
+    getActiveScreenSize,
+    ScreenSizeName,
+    ScreenSizeSwitcher,
+} from "@/components/editor/ScreenSizeSwitcher";
 
 export default function Editor() {
     const { id, name } = useParams();
@@ -42,6 +47,10 @@ export default function Editor() {
         xPath: string;
     } | null>(null);
     const editorRef = useRef<HTMLIFrameElement>(null);
+    const [activeSizeName, setActiveSizeName] =
+        useState<ScreenSizeName>("Desktop");
+
+    const activeConfig = getActiveScreenSize(activeSizeName);
 
     async function getContent() {
         if (!id || !name) {
@@ -197,124 +206,150 @@ export default function Editor() {
                 <p>Editing: {name}</p>
                 <Button onClick={saveChanges}>Save</Button>
             </div>
-            <div className="flex justify-between items-center mt-1">
-                <Button
-                    variant="secondary"
-                    onClick={() => setShowElements((prev) => !prev)}
-                >
-                    {!showElements ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-                    Elements
-                </Button>
-                <div className="flex items-center gap-2">
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button
-                                variant={"secondary"}
-                                onClick={() =>
-                                    sendMessageToCanvas({ type: "undo" })
-                                }
-                                disabled={availableUndo === 0}
-                            >
-                                <UndoIcon />
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>Undo</p>
-                        </TooltipContent>
-                    </Tooltip>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button
-                                variant={"secondary"}
-                                disabled={availableRedo === 0}
-                                onClick={() =>
-                                    sendMessageToCanvas({ type: "redo" })
-                                }
-                            >
-                                <RedoIcon />
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>Redo</p>
-                        </TooltipContent>
-                    </Tooltip>
-                </div>
-                <Button
-                    variant="secondary"
-                    onClick={() => setShowStylesEditor((prev) => !prev)}
-                >
-                    Editor
-                    {showStylesEditor ? (
-                        <ChevronRightIcon />
-                    ) : (
-                        <ChevronLeftIcon />
-                    )}
-                </Button>
-            </div>
 
-            <section className="flex items-stretch gap-2 my-1 h-full">
-                <Elements
-                    show={showElements}
-                    onElementClick={(elementType, data) => {
-                        sendMessageToCanvas({
-                            type: elementType,
-                            payload: {
-                                type: "insert",
-                                data,
-                            },
-                        });
-                    }}
-                />
-                <div className="w-full">
-                    <iframe
-                        ref={editorRef}
-                        srcDoc={content}
-                        className="w-full h-full outline"
-                    />
-                </div>
-                {selectedElementInfo && showStylesEditor && (
-                    <Tabs
-                        defaultValue="styles"
-                        key={selectedElementInfo.xPath}
-                        className="max-w-60 w-full bg-accent rounded p-2"
+            <section className="h-screen pt-2.5 sticky top-0 pb-15">
+                <div className="flex justify-between items-center">
+                    <Button
+                        variant="secondary"
+                        onClick={() => setShowElements((prev) => !prev)}
                     >
-                        <TabsList className="border bg-background">
-                            <TabsTrigger value="styles">Styles</TabsTrigger>
-                            <TabsTrigger value="element">Element</TabsTrigger>
-                        </TabsList>
-                        <TabsContent value="styles">
-                            <ElementStylesEditor
-                                component={selectedElementInfo.tagName.toLowerCase()}
-                                data={selectedElementInfo.stylesData}
-                                update={(type, styles) =>
-                                    sendMessageToCanvas({
-                                        type: "style",
-                                        styleData: {
-                                            type,
-                                            data: styles,
-                                        },
-                                    })
-                                }
-                            />
-                        </TabsContent>
-                        <TabsContent value="element">
-                            <ElementEditor
-                                component={selectedElementInfo.componentName}
-                                tagName={selectedElementInfo.tagName.toLowerCase()}
-                                data={selectedElementInfo.elementData}
-                                update={(type, edits) =>
-                                    sendMessageToCanvas({
-                                        type: "element_edits",
-                                        elementEditsData: {
-                                            type,
-                                            data: edits,
-                                        },
-                                    })
-                                }
-                            />
-                        </TabsContent>
-                    </Tabs>
-                )}
+                        {!showElements ? (
+                            <ChevronRightIcon />
+                        ) : (
+                            <ChevronLeftIcon />
+                        )}
+                        Elements
+                    </Button>
+                    <div className="flex items-center gap-2 ml-auto">
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    variant={"secondary"}
+                                    onClick={() =>
+                                        sendMessageToCanvas({ type: "undo" })
+                                    }
+                                    disabled={availableUndo === 0}
+                                    className="border"
+                                >
+                                    <UndoIcon />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Undo</p>
+                            </TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    variant={"secondary"}
+                                    disabled={availableRedo === 0}
+                                    onClick={() =>
+                                        sendMessageToCanvas({ type: "redo" })
+                                    }
+                                    className="border"
+                                >
+                                    <RedoIcon />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Redo</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </div>
+                    <div className="mr-auto ml-10">
+                        <ScreenSizeSwitcher
+                            activeSize={activeSizeName}
+                            setActiveSize={setActiveSizeName}
+                        />
+                    </div>
+                    <Button
+                        variant="secondary"
+                        onClick={() => setShowStylesEditor((prev) => !prev)}
+                    >
+                        Editor
+                        {showStylesEditor ? (
+                            <ChevronRightIcon />
+                        ) : (
+                            <ChevronLeftIcon />
+                        )}
+                    </Button>
+                </div>
+                <section className="flex gap-2 my-1 h-full w-full @container">
+                    <Elements
+                        show={showElements}
+                        onElementClick={(elementType, data) => {
+                            sendMessageToCanvas({
+                                type: elementType,
+                                payload: {
+                                    type: "insert",
+                                    data,
+                                },
+                            });
+                        }}
+                    />
+                    <div
+                        className="w-full ml-auto mr-auto"
+                        style={{
+                            width: activeConfig.size,
+                            height: "100%",
+                            // If parent is smaller than 767px, scale it down to fit
+                            transform: `scale(min(1, calc(100cqw / ${activeConfig.size})))`,
+                        }}
+                    >
+                        <iframe
+                            ref={editorRef}
+                            srcDoc={content}
+                            className="w-full h-full outline"
+                        />
+                    </div>
+                    {selectedElementInfo && showStylesEditor && (
+                        <Tabs
+                            defaultValue="styles"
+                            key={selectedElementInfo.xPath}
+                            className="max-w-60 w-full bg-accent rounded p-2 overflow-scroll"
+                        >
+                            <TabsList className="border bg-background">
+                                <TabsTrigger value="styles">Styles</TabsTrigger>
+                                <TabsTrigger value="element">
+                                    Element
+                                </TabsTrigger>
+                            </TabsList>
+                            <TabsContent value="styles">
+                                <ElementStylesEditor
+                                    component={selectedElementInfo.tagName.toLowerCase()}
+                                    data={selectedElementInfo.stylesData}
+                                    update={(type, styles) =>
+                                        sendMessageToCanvas({
+                                            type: "style",
+                                            styleData: {
+                                                type,
+                                                data: styles,
+                                            },
+                                        })
+                                    }
+                                />
+                            </TabsContent>
+                            <TabsContent value="element">
+                                <ElementEditor
+                                    component={
+                                        selectedElementInfo.componentName
+                                    }
+                                    tagName={selectedElementInfo.tagName.toLowerCase()}
+                                    data={selectedElementInfo.elementData}
+                                    update={(type, edits) =>
+                                        sendMessageToCanvas({
+                                            type: "element_edits",
+                                            elementEditsData: {
+                                                type,
+                                                data: edits,
+                                            },
+                                        })
+                                    }
+                                />
+                            </TabsContent>
+                        </Tabs>
+                    )}
+                </section>
             </section>
         </section>
     );
