@@ -2208,6 +2208,7 @@ dependencies = [
  "tauri-plugin-fs",
  "ts-rs",
  "uuid",
+ "walkdir",
  "zip",
 ]
 
