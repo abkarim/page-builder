@@ -37,6 +37,7 @@ pub fn run() {
             projects::remove_project,
             projects::get_projects,
             projects::get_project,
+            projects::export_project,
             projects::create_new_design,
             projects::get_designs,
             projects::get_project_file_content,
