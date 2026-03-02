@@ -1,5 +1,6 @@
 export type Block = {
     id: number;
+    icon: string;
     name: string;
     tag: string;
     content?: string;
