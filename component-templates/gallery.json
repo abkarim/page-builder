@@ -1,5 +1,6 @@
 {
     "id": 1,
+    "icon": "images",
     "name": "Gallery",
     "tag": "section",
     "content": "$IMAGE$"
