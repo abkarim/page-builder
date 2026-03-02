@@ -5,6 +5,7 @@ import { Block } from "./block";
 import { Button } from "../ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Component } from "./components";
+import DynamicIcon from "../DynamicIcon";
 
 interface Props {
     show: boolean;
@@ -93,8 +94,17 @@ export default function Components({
                                             JSON.stringify(block),
                                         );
                                     }}
+                                    className="h-auto [&_svg]:size-5!"
+                                    variant="outline"
                                 >
-                                    {block.name}
+                                    <div className="flex flex-col items-center p-1">
+                                        <div>
+                                            <DynamicIcon name={block.icon} />
+                                        </div>
+                                        <p className="text-xs mt-2">
+                                            {block.name}
+                                        </p>
+                                    </div>
                                 </Button>
                             ))}
                             {blocks.length === 0 && <p>No results</p>}
