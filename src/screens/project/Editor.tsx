@@ -293,7 +293,7 @@ export default function Editor() {
                             width: activeConfig.size,
                             height: "100%",
                             // If parent is smaller than 767px, scale it down to fit
-                            transform: `scale(min(1, calc(100cqw / ${activeConfig.size})))`,
+                            transform: `scale(min(1, calc(100cqw / ${parseInt(activeConfig.size)})))`,
                         }}
                     >
                         <iframe
