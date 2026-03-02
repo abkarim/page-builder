@@ -1,7 +1,15 @@
 {
   "id": 1,
+  "icon": "mouse-pointer-click",
   "name": "Button",
   "tag": "button",
   "content": "Click me",
-  "attributes": [{ "type": "button" }, { "role": "button" }]
+  "attributes": [
+    {
+      "type": "button"
+    },
+    {
+      "role": "button"
+    }
+  ]
 }

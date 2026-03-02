@@ -1,5 +1,6 @@
 {
   "id": 2,
+  "icon": "columns-2",
   "name": "Columns",
   "tag": "div",
   "attributes": [

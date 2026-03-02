@@ -1,5 +1,6 @@
 {
   "id": 4,
+  "icon": "minus",
   "name": "Separator",
   "tag": "hr"
 }

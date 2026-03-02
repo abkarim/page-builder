@@ -1,5 +1,6 @@
 {
   "id": 3,
+  "icon": "heading",
   "name": "Heading",
   "tag": "h2",
   "content": "Heading Title here",

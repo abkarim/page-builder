@@ -1,5 +1,6 @@
 {
     "id": 200001,
+    "icon": "container",
     "name": "Container",
     "tag": "div",
     "attributes": [
