@@ -9,6 +9,7 @@ use uuid::Uuid;
 use crate::db;
 use crate::fs::{self, create_file, get_design_files};
 use crate::snippets::{self, css, html::get_updated_contents, js};
+use crate::zip;
 use crate::APP_VERSION;
 
 #[derive(Serialize, Debug, TS)]
@@ -125,6 +126,21 @@ pub fn get_project(uuid: String, fix_if_required: Option<bool>) -> Result<Projec
         path: project_path,
         updated_at: row.get("updated_at").cloned().ok_or("missing updated_at")?,
     })
+}
+
+/**
+* Export project
+*/
+#[tauri::command]
+pub fn export_project(uuid: String) -> Result<String, String> {
+    let project = get_project(uuid.clone(), None)?;
+
+    let src_path = Path::new(&project.path);
+    let dst_path = src_path.join("export.zip");
+
+    zip::perform_zip(&src_path, &dst_path).map_err(|e| format!("Zip err: {}", e))?;
+
+    return Ok(format!("project exported successfully..."));
 }
 
 /**
