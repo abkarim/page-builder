@@ -3,6 +3,7 @@ mod db;
 mod fs;
 mod protocol;
 mod snippets;
+mod zip;
 
 use commands::{projects, templates};
 use std::sync::Mutex;
