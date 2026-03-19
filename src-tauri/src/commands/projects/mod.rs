@@ -140,7 +140,10 @@ pub fn export_project(uuid: String) -> Result<String, String> {
 
     zip::perform_zip(&src_path, &dst_path).map_err(|e| format!("Zip err: {}", e))?;
 
-    return Ok(format!("project exported successfully..."));
+    return Ok(format!(
+        "project exported to {} successfully...",
+        dst_path.to_string_lossy()
+    ));
 }
 
 /**
