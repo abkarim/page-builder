@@ -138,7 +138,7 @@ pub fn export_project(uuid: String) -> Result<String, String> {
     let src_path = Path::new(&project.path);
     let dst_path = src_path.join("export.zip");
 
-    zip::perform_zip(&src_path, &dst_path).map_err(|e| format!("Zip err: {}", e))?;
+    zip::perform_zip(&src_path, &dst_path, true).map_err(|e| format!("Zip err: {}", e))?;
 
     return Ok(format!(
         "project exported to {} successfully...",
