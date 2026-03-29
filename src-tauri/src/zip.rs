@@ -1,6 +1,6 @@
 use minify_html::{minify, Cfg};
 use std::fs::File;
-use std::io::{Read, Write};
+use std::io::Write;
 use std::path::Path;
 use walkdir::WalkDir;
 use zip::write::SimpleFileOptions;

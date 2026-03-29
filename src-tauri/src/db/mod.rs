@@ -1,10 +1,29 @@
-use rusqlite::{params_from_iter, Connection, Result};
-use std::collections::HashMap;
+use anyhow::{anyhow, Context, Result};
+use rusqlite::{params_from_iter, Connection};
+use std::{collections::HashMap, path::PathBuf};
 
 pub const PROJECTS_TABLE: &str = "projects";
 
 pub fn init_db() -> Result<Connection> {
-    let conn = Connection::open("./../app.db")?;
+    let db_path = if cfg!(debug_assertions) {
+        PathBuf::from("./../app.db")
+    } else {
+        let mut path =
+            dirs::data_local_dir().ok_or_else(|| anyhow!("Could not find local data directory"))?;
+
+        path.push(env!("CARGO_PKG_NAME"));
+
+        if !path.exists() {
+            std::fs::create_dir_all(&path)
+                .with_context(|| format!("Failed to create directory at {:?}", path))?;
+        }
+
+        path.push("app.db");
+        path
+    };
+
+    let conn = Connection::open(&db_path)
+        .with_context(|| format!("Failed to open db at :{:?}", db_path))?;
     conn.execute(
         &format!(
             "CREATE TABLE IF NOT EXISTS {} (
