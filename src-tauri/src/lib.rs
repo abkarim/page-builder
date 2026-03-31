@@ -6,10 +6,14 @@ mod snippets;
 mod zip;
 
 use commands::{projects, templates};
-use std::sync::Mutex;
+use std::{
+    path::PathBuf,
+    sync::{Mutex, OnceLock},
+};
 use tauri::{path::BaseDirectory, Manager};
 
 pub const APP_VERSION: &str = env!("CARGO_PKG_VERSION");
+pub static RESOURCES_DIRECTORY: OnceLock<PathBuf> = OnceLock::new();
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -39,13 +43,13 @@ pub fn run() {
                     .expect("failed to resolve resources directory")
             };
 
+            RESOURCES_DIRECTORY
+                .set(resources_path.clone())
+                .expect("failed to set resources path");
+
             projects::PROJECT_ROOT
                 .set(Mutex::new(None))
                 .expect("Failed to initialize PROJECT_ROOT status variable");
-
-            projects::EDITOR_ASSETS_PATH
-                .set(resources_path.join("editor-assets"))
-                .expect("failed to set editor assets path");
 
             Ok(())
         })

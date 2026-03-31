@@ -2,15 +2,15 @@ use chrono::Utc;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
-use std::sync::{Mutex, OnceLock};
+use std::sync::{LazyLock, Mutex, OnceLock};
 use ts_rs::TS;
 use uuid::Uuid;
 
-use crate::db;
 use crate::fs::{self, create_file, get_design_files};
 use crate::snippets::{self, css, html::get_updated_contents, js};
 use crate::zip;
 use crate::APP_VERSION;
+use crate::{db, RESOURCES_DIRECTORY};
 
 #[derive(Serialize, Debug, TS)]
 #[ts(export)]
@@ -40,7 +40,12 @@ pub const PROJECT_JS_FILENAME: &str = "app.js";
 /**
  * Editor assets
  */
-pub static EDITOR_ASSETS_PATH: OnceLock<PathBuf> = OnceLock::new();
+pub static EDITOR_ASSETS_PATH: LazyLock<PathBuf> = LazyLock::new(|| {
+    RESOURCES_DIRECTORY
+        .get()
+        .expect("failed to get resources directory")
+        .join("editor-assets")
+});
 
 pub static PROJECT_ROOT: OnceLock<Mutex<Option<String>>> = OnceLock::new();
 
