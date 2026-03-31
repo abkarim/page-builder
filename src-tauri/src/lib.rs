@@ -27,7 +27,17 @@ pub fn run() {
             tauri::http::Response::from_parts(parts, body)
         })
         .setup(|app| {
-            let resources_path = app.path().resolve("/", BaseDirectory::Resource)?;
+            let resources_path = if cfg!(debug_assertions) {
+                std::env::current_dir()
+                    .expect("failed to get current directory")
+                    .parent()
+                    .expect("failed to get parent dir of current working dir")
+                    .join("resources")
+            } else {
+                app.path()
+                    .resolve("/", BaseDirectory::Resource)
+                    .expect("failed to resolve resources directory")
+            };
 
             projects::PROJECT_ROOT
                 .set(Mutex::new(None))

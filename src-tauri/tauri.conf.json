@@ -4,7 +4,7 @@
   "version": "./../package.json",
   "identifier": "com.karim.pagebuilder",
   "build": {
-    "beforeDevCommand": "npm run dev & npx esbuild ./src-tauri/editor-assets/js/editor.ts --outfile=./src-tauri/editor-assets/js/editor.js --bundle --watch --format=iife --target=esnext --minify",
+    "beforeDevCommand": "npm run dev & npx esbuild ./resources/editor-assets/js/editor.ts --outfile=./resources/editor-assets/js/editor.js --bundle --watch --format=iife --target=esnext --minify",
     "devUrl": "http://localhost:1420",
     "beforeBuildCommand": "npm run build",
     "frontendDist": "../dist"
@@ -30,7 +30,7 @@
     "resources": [
       "./../block-templates",
       "./../component-templates",
-      "./editor-assets/"
+      "./../resources/"
     ],
     "targets": "all",
     "icon": [
