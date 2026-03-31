@@ -7,6 +7,7 @@ mod zip;
 
 use commands::{projects, templates};
 use std::sync::Mutex;
+use tauri::{path::BaseDirectory, Manager};
 
 pub const APP_VERSION: &str = env!("CARGO_PKG_VERSION");
 
@@ -25,10 +26,17 @@ pub fn run() {
 
             tauri::http::Response::from_parts(parts, body)
         })
-        .setup(|_| {
+        .setup(|app| {
+            let resources_path = app.path().resolve("/", BaseDirectory::Resource)?;
+
             projects::PROJECT_ROOT
                 .set(Mutex::new(None))
                 .expect("Failed to initialize PROJECT_ROOT status variable");
+
+            projects::EDITOR_ASSETS_PATH
+                .set(resources_path.join("editor-assets"))
+                .expect("failed to set editor assets path");
+
             Ok(())
         })
         .plugin(tauri_plugin_fs::init())

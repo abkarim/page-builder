@@ -4,7 +4,7 @@
   "version": "./../package.json",
   "identifier": "com.karim.pagebuilder",
   "build": {
-    "beforeDevCommand": "npm run dev & npx esbuild ./editor-assets/js/editor.ts --outfile=./editor-assets/js/editor.js --bundle --watch --format=iife --target=esnext --minify",
+    "beforeDevCommand": "npm run dev & npx esbuild ./src-tauri/editor-assets/js/editor.ts --outfile=./src-tauri/editor-assets/js/editor.js --bundle --watch --format=iife --target=esnext --minify",
     "devUrl": "http://localhost:1420",
     "beforeBuildCommand": "npm run build",
     "frontendDist": "../dist"
@@ -27,7 +27,11 @@
     "category": "DeveloperTool",
     "shortDescription": "Drag and Drop page builder",
     "longDescription": "Create interactive page using drag and drop page builder",
-    "resources": ["./../block-templates", "./../component-templates"],
+    "resources": [
+      "./../block-templates",
+      "./../component-templates",
+      "./editor-assets/"
+    ],
     "targets": "all",
     "icon": [
       "icons/32x32.png",

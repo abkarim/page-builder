@@ -1,8 +1,8 @@
-import { type Block } from "../../src/components/editor/block";
+import { type Block } from "../../../src/components/editor/block";
 import {
     type CanvasMessageData,
     type EditorMessageData,
-} from "../../src/screens/project/EditorTypes";
+} from "../../../src/screens/project/EditorTypes";
 import { createElementFromBlock, insertElementToPage } from "./element";
 import { addToHistory, redo, undo } from "./history";
 import { updateElementStyles } from "./editor/styles";

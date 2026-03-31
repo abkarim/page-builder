@@ -58,7 +58,9 @@ pub fn register_custom_protocol(
     if decoded_uri.starts_with(&editor_assets_prefix) {
         let decoded_uri = decoded_uri.replace(&editor_assets_prefix, "");
 
-        let dir_path = Path::new(&EDITOR_ASSETS_PATH);
+        let dir_path = EDITOR_ASSETS_PATH
+            .get()
+            .expect("editor assets path not found");
         if !dir_path.exists() {
             *response.status_mut() = StatusCode::INTERNAL_SERVER_ERROR;
             *response.body_mut() = "editor assets not found".as_bytes().to_vec();

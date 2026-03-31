@@ -1,7 +1,7 @@
-import { isBlock } from "../../src/components/editor/blockUtil";
-import { type Block } from "../../src/components/editor/block";
-import { type ElementStylesEditorProps } from "../../src/components/editor/Index";
-import { type ElementEditorProps } from "../../src/components/editor/elementsEditor/Index";
+import { isBlock } from "../../../src/components/editor/blockUtil";
+import { type Block } from "../../../src/components/editor/block";
+import { type ElementStylesEditorProps } from "../../../src/components/editor/Index";
+import { type ElementEditorProps } from "../../../src/components/editor/elementsEditor/Index";
 import { sendMessageToParent } from "./message";
 import { addToHistory, History } from "./history";
 import { getXPath, throttle } from "./util";
@@ -168,6 +168,7 @@ const placeholderElement = createElementFromBlock({
             class: pageBuilderData.placeholderElementClassName,
         },
     ],
+    icon: "",
 });
 
 /**

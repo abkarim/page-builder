@@ -1,4 +1,4 @@
-import { CanvasMessageData } from "../../../src/screens/project/EditorTypes";
+import { CanvasMessageData } from "../../../../src/screens/project/EditorTypes";
 import { target } from "../element";
 import { addToHistory, History } from "../history";
 import { changeTagName } from "../util";
