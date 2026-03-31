@@ -13,7 +13,6 @@ export default function DynamicIcon({
     size,
 }: Props): React.JSX.Element {
     const iconName = toPascalCase(name) as keyof typeof Icons;
-    console.log({ iconName });
 
     const IconComponent = Icons[iconName] as React.ElementType;
 
