@@ -21,10 +21,33 @@ pub struct Project {
     pub updated_at: String,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Default, Debug, Serialize, Deserialize, TS)]
+struct Color {
+    name: String,
+    value: String,
+}
+#[derive(Default, Debug, Serialize, Deserialize, TS)]
+pub struct ProjectConfiguration {
+    color: Vec<Color>,
+}
+
+#[derive(Debug, Deserialize, Serialize, TS)]
+#[ts(export)]
+#[serde[default]]
 pub struct ProjectData {
     name: String,
     app_version: String,
+    configuration: ProjectConfiguration,
+}
+
+impl Default for ProjectData {
+    fn default() -> Self {
+        Self {
+            name: "Untitled Project".to_string(),
+            app_version: "".to_string(),
+            configuration: ProjectConfiguration::default(),
+        }
+    }
 }
 
 pub const PROJECT_FILE_NAME: &str = "project.json";
@@ -112,16 +135,11 @@ pub fn get_project(uuid: String, fix_if_required: Option<bool>) -> Result<Projec
 
     // Check if requested fixing
     if fix_if_required {
-        let path = Path::new(&project_path).join(PROJECT_FILE_NAME);
-        if path.exists() {
-            let contents = std::fs::read_to_string(path).unwrap();
+        let project_data = get_project_configuration()?;
 
-            let project_data: ProjectData = serde_json::from_str(&contents).unwrap();
-
-            // upgrade project if version in the file doesn't match to app version
-            if project_data.app_version != APP_VERSION {
-                upgrade_project(Path::new(&project_path), &uuid)?;
-            }
+        // upgrade project if version in the file doesn't match to app version
+        if project_data.app_version != APP_VERSION {
+            upgrade_project(Path::new(&project_path), &uuid)?;
         }
     }
 
@@ -131,6 +149,12 @@ pub fn get_project(uuid: String, fix_if_required: Option<bool>) -> Result<Projec
         path: project_path,
         updated_at: row.get("updated_at").cloned().ok_or("missing updated_at")?,
     })
+}
+
+#[tauri::command]
+pub fn get_project_configuration() -> Result<ProjectData, String> {
+    let path = get_project_root()?;
+    fs::get_project_root_file_content(&PathBuf::from(path).join(PROJECT_FILE_NAME))
 }
 
 /**
@@ -277,6 +301,7 @@ pub fn create_project(name: &str, directory: &str) -> Result<String, String> {
     let project_data = ProjectData {
         name: name.to_string(),
         app_version: APP_VERSION.to_string(),
+        configuration: ProjectConfiguration::default(),
     };
 
     // Add project.json
