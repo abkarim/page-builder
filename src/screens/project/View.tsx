@@ -1,3 +1,4 @@
+import ColorPickerComponent from "@/components/ColorPicker";
 import { Button } from "@/components/ui/button";
 import {
     ContextMenu,
@@ -9,6 +10,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
+import {
     Sheet,
     SheetClose,
     SheetContent,
@@ -19,22 +25,35 @@ import {
     SheetTrigger,
 } from "@/components/ui/sheet";
 import { Spinner } from "@/components/ui/spinner";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { invoke } from "@tauri-apps/api/core";
-import { DownloadIcon, PlusIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { DownloadIcon, PlusIcon, SettingsIcon } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { type Project } from "src-tauri/bindings/Project";
+import { type ProjectData } from "src-tauri/bindings/ProjectData";
+
+const CONFIGURATION_TOASTER_ID = "configuration-toast";
 
 export default function (): React.JSX.Element {
     const { id } = useParams();
-    const [project, setProject] = useState<Project>();
+    const [project, setProject] = useState<Project | null>(null);
+    const [projectData, setProjectData] = useState<ProjectData | null>(null);
+    const projectDataRef = useRef<ProjectData | null>(null);
     const [designs, setDesigns] = useState<string[]>([]);
     const [newDesignName, setNewDesignName] = useState("");
     const [newDesignSheetOpenState, setNewDesignSheetOpenState] =
         useState(false);
     const navigate = useNavigate();
     const [isExporting, setIsExporting] = useState(false);
+    const [isConfigOpen, setIsConfigOpen] = useState(true);
+    const [hasUnsavedConfiguration, setHasUnsavedConfiguration] =
+        useState(false);
 
     async function getDesigns() {
         try {
@@ -47,6 +66,16 @@ export default function (): React.JSX.Element {
         }
     }
 
+    async function getProjectData() {
+        try {
+            const data = await invoke<ProjectData>("get_project_configuration");
+            setProjectData(data);
+            projectDataRef.current = structuredClone(data);
+        } catch (err) {
+            toast.error(err as string);
+        }
+    }
+
     async function getProject() {
         try {
             const data = await invoke<Project>("get_project", {
@@ -54,6 +83,7 @@ export default function (): React.JSX.Element {
                 fixIfRequired: true,
             });
             setProject(data);
+            getProjectData();
         } catch (err) {
             toast.error(err as string);
         }
@@ -72,6 +102,17 @@ export default function (): React.JSX.Element {
 
         getDesigns();
     }, [project]);
+
+    useEffect(() => {
+        if (projectData === null || projectDataRef.current === null) return;
+
+        if (
+            JSON.stringify(projectData) !==
+            JSON.stringify(projectDataRef.current)
+        ) {
+            setHasUnsavedConfiguration(true);
+        }
+    }, [projectData]);
 
     async function createNewDesign() {
         /**
@@ -112,20 +153,103 @@ export default function (): React.JSX.Element {
         }
     }
 
+    function updateColor(
+        action: "add" | "update" | "remove",
+        index?: number,
+        data?: ProjectData["configuration"]["color"][number],
+    ) {
+        if (projectData === null) return;
+        setProjectData((prev) => {
+            if (!prev) return null;
+
+            const {
+                configuration: { color },
+            } = prev;
+
+            switch (action) {
+                case "add":
+                    color.push({
+                        name: "Untitled",
+                        value: "",
+                    });
+                    break;
+
+                case "update":
+                    if (index === undefined || data === undefined) break;
+                    color[index] = data;
+                    break;
+
+                case "remove":
+                    if (index === undefined) break;
+                    color.splice(index, 1);
+                    break;
+
+                default:
+                    action satisfies never;
+            }
+
+            return {
+                ...prev,
+                configuration: {
+                    ...prev.configuration,
+                    color: [...color],
+                },
+            };
+        });
+    }
+
+    function cancelConfigurationEdit() {
+        setProjectData(structuredClone(projectDataRef.current));
+
+        // Unsaved configuration state has been set to false
+        // in the button itself
+        setIsConfigOpen(false);
+    }
+
+    async function saveConfigurationEdit() {
+        if (projectData === null) return;
+
+        try {
+            const response = await invoke<string>(
+                "update_current_project_configuration",
+                {
+                    config: projectData.configuration,
+                },
+            );
+            toast.success(response);
+
+            projectDataRef.current = structuredClone(projectData);
+            setHasUnsavedConfiguration(false);
+            setIsConfigOpen(false);
+        } catch (err) {
+            toast.error(err as string);
+        }
+    }
+
+    if (project === null) {
+        return <h4>Loading...</h4>;
+    }
+
     return (
         <section>
             <section className="flex items-center justify-between">
                 <div className="flex gap-2 items-center">
                     <p>Project:</p>
-                    <h2>{project?.name}</h2>
+                    <h2>{project.name}</h2>
                 </div>
-                <div>
+                <div className="space-x-2">
                     <Button
                         onClick={exportProject}
                         disabled={isExporting}
                         className="[&_svg]:size-5!"
                     >
                         Export {isExporting ? <Spinner /> : <DownloadIcon />}
+                    </Button>
+                    <Button
+                        variant="secondary"
+                        onClick={() => setIsConfigOpen(true)}
+                    >
+                        Config <SettingsIcon />
                     </Button>
                 </div>
             </section>
@@ -202,6 +326,131 @@ export default function (): React.JSX.Element {
                             </Button>
                             <SheetClose asChild>
                                 <Button variant="outline">Close</Button>
+                            </SheetClose>
+                        </SheetFooter>
+                    </SheetContent>
+                </Sheet>
+            </div>
+            <div>
+                <Sheet
+                    open={isConfigOpen}
+                    onOpenChange={(state) => {
+                        if (state === false && hasUnsavedConfiguration) {
+                            toast.warning("you have unsaved configuration", {
+                                id: CONFIGURATION_TOASTER_ID,
+                            });
+                            return;
+                        }
+                        setIsConfigOpen(state);
+                    }}
+                >
+                    <SheetContent>
+                        <SheetHeader>
+                            <SheetTitle>Project Configurations</SheetTitle>
+                            <SheetDescription>
+                                Configure your project according to your needs
+                            </SheetDescription>
+                        </SheetHeader>
+                        <section className="px-4">
+                            <div className="space-y-2">
+                                <div className="flex items-center justify-between gap-2">
+                                    <Label>Colors</Label>
+                                    <Button
+                                        onClick={() => updateColor("add")}
+                                        size="sm"
+                                        variant="outline"
+                                    >
+                                        <PlusIcon />
+                                    </Button>
+                                </div>
+                                <div className="flex items-center justify-start gap-2">
+                                    {projectData?.configuration.color.map(
+                                        (color, index) => (
+                                            <Tooltip key={index}>
+                                                <TooltipTrigger asChild>
+                                                    <Popover>
+                                                        <PopoverTrigger asChild>
+                                                            <Button
+                                                                variant="outline"
+                                                                style={{
+                                                                    backgroundColor:
+                                                                        color.value,
+                                                                }}
+                                                            ></Button>
+                                                        </PopoverTrigger>
+                                                        <PopoverContent className="flex items-stretch justify-between gap-2">
+                                                            <div className="space-y-1">
+                                                                <Label>
+                                                                    Color Name
+                                                                </Label>
+                                                                <Input
+                                                                    defaultValue={
+                                                                        color.name
+                                                                    }
+                                                                    onInput={(
+                                                                        e,
+                                                                    ) =>
+                                                                        updateColor(
+                                                                            "update",
+                                                                            index,
+                                                                            {
+                                                                                value: color.value,
+                                                                                name: e
+                                                                                    .currentTarget
+                                                                                    .value,
+                                                                            },
+                                                                        )
+                                                                    }
+                                                                    placeholder="Color name"
+                                                                />
+                                                            </div>
+                                                            <div className="space-y-1">
+                                                                <Label className="text-nowrap">
+                                                                    Select Color
+                                                                </Label>
+                                                                <ColorPickerComponent
+                                                                    onValueChange={(
+                                                                        c,
+                                                                    ) =>
+                                                                        updateColor(
+                                                                            "update",
+                                                                            index,
+                                                                            {
+                                                                                name: color.name,
+                                                                                value: c,
+                                                                            },
+                                                                        )
+                                                                    }
+                                                                    defaultValue={
+                                                                        color.value
+                                                                    }
+                                                                />
+                                                            </div>
+                                                        </PopoverContent>
+                                                    </Popover>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    {color.name}
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        ),
+                                    )}
+                                </div>
+                            </div>
+                        </section>
+                        <SheetFooter>
+                            <Button onClick={saveConfigurationEdit}>
+                                Save Changes
+                            </Button>
+                            <SheetClose
+                                asChild
+                                onClick={() => {
+                                    setHasUnsavedConfiguration(false);
+                                    toast.dismiss(CONFIGURATION_TOASTER_ID);
+                                    cancelConfigurationEdit();
+                                }}
+                            >
+                                <Button variant="outline">Cancel</Button>
                             </SheetClose>
                         </SheetFooter>
                     </SheetContent>
