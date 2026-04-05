@@ -6,7 +6,10 @@ use std::sync::{LazyLock, Mutex, OnceLock};
 use ts_rs::TS;
 use uuid::Uuid;
 
-use crate::fs::{self, create_file, get_design_files};
+use crate::fs::{
+    self, create_file, get_design_files, get_project_root_file_content,
+    write_project_root_file_content,
+};
 use crate::snippets::{self, css, html::get_updated_contents, js};
 use crate::zip;
 use crate::APP_VERSION;
@@ -452,4 +455,20 @@ pub fn update_project_file_content(
     db::update(db::PROJECTS_TABLE, data_to_update, filter).map_err(|e| e.to_string())?;
 
     Ok("updated successfully".to_string())
+}
+
+#[tauri::command]
+pub fn update_current_project_configuration(
+    config: ProjectConfiguration,
+) -> Result<String, String> {
+    let project_root = get_project_root()?;
+    let project_file_path = PathBuf::from(project_root).join(PROJECT_FILE_NAME);
+
+    let mut project_data = get_project_root_file_content(&project_file_path)?;
+
+    project_data.configuration = config;
+
+    write_project_root_file_content(&project_file_path, &project_data)?;
+
+    Ok("Configuration updated Successfully".to_string())
 }
