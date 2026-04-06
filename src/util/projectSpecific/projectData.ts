@@ -4,9 +4,9 @@ import { ProjectData } from "src-tauri/bindings/ProjectData";
 let data: ProjectData | null = null;
 
 export async function getProjectDataConfiguration(
-    name: string,
+    name?: string,
 ): Promise<ProjectData> {
-    if (data === null || data.name !== name) {
+    if (data === null || (name !== undefined && data.name !== name)) {
         data = await invoke<ProjectData>("get_project_configuration");
     }
 
