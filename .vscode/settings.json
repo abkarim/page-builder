@@ -1,3 +1,10 @@
 {
-    "cSpell.words": ["pagebuilder", "rusqlite", "stylesheet", "TAURI"]
+    "cSpell.words": [
+        "pagebuilder",
+        "rusqlite",
+        "stylesheet",
+        "TAURI",
+        "uidotdev",
+        "usehooks"
+    ]
 }
