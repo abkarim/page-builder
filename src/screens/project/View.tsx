@@ -154,7 +154,7 @@ export default function (): React.JSX.Element {
     }
 
     function updateColor(
-        action: "add" | "update" | "remove",
+        action: "add" | "update" | "remove" | "duplicate",
         index?: number,
         data?: ProjectData["configuration"]["color"][number],
     ) {
@@ -182,6 +182,13 @@ export default function (): React.JSX.Element {
                 case "remove":
                     if (index === undefined) break;
                     color.splice(index, 1);
+                    break;
+
+                case "duplicate":
+                    if (index === undefined) break;
+                    const dataToDuplicate = structuredClone(color[index]);
+                    dataToDuplicate.name = `${dataToDuplicate.name} - Duplicate`;
+                    color.push(dataToDuplicate);
                     break;
 
                 default:
@@ -366,6 +373,9 @@ export default function (): React.JSX.Element {
                                                     <ContextMenuTrigger>
                                                         <PopoverTrigger asChild>
                                                             <Button
+                                                                title={
+                                                                    color.name
+                                                                }
                                                                 variant="outline"
                                                                 style={{
                                                                     backgroundColor:
@@ -403,6 +413,9 @@ export default function (): React.JSX.Element {
                                                                 Select Color
                                                             </Label>
                                                             <ColorPickerComponent
+                                                                showAvailableColors={
+                                                                    false
+                                                                }
                                                                 onValueChange={(
                                                                     c,
                                                                 ) =>
@@ -422,6 +435,17 @@ export default function (): React.JSX.Element {
                                                         </div>
                                                     </PopoverContent>
                                                     <ContextMenuContent>
+                                                        <ContextMenuItem
+                                                            onClick={() =>
+                                                                updateColor(
+                                                                    "duplicate",
+                                                                    index,
+                                                                )
+                                                            }
+                                                        >
+                                                            Duplicate
+                                                        </ContextMenuItem>
+                                                        <ContextMenuSeparator />
                                                         <ContextMenuItem
                                                             variant="destructive"
                                                             onClick={() =>
