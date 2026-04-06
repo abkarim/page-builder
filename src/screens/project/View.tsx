@@ -51,7 +51,7 @@ export default function (): React.JSX.Element {
         useState(false);
     const navigate = useNavigate();
     const [isExporting, setIsExporting] = useState(false);
-    const [isConfigOpen, setIsConfigOpen] = useState(true);
+    const [isConfigOpen, setIsConfigOpen] = useState(false);
     const [hasUnsavedConfiguration, setHasUnsavedConfiguration] =
         useState(false);
 
@@ -366,9 +366,9 @@ export default function (): React.JSX.Element {
                                 <div className="flex items-center justify-start gap-2">
                                     {projectData?.configuration.color.map(
                                         (color, index) => (
-                                            <Tooltip key={index}>
-                                                <TooltipTrigger asChild>
-                                                    <Popover>
+                                            <Popover key={index}>
+                                                <ContextMenu>
+                                                    <ContextMenuTrigger>
                                                         <PopoverTrigger asChild>
                                                             <Button
                                                                 variant="outline"
@@ -378,61 +378,69 @@ export default function (): React.JSX.Element {
                                                                 }}
                                                             ></Button>
                                                         </PopoverTrigger>
-                                                        <PopoverContent className="flex items-stretch justify-between gap-2">
-                                                            <div className="space-y-1">
-                                                                <Label>
-                                                                    Color Name
-                                                                </Label>
-                                                                <Input
-                                                                    defaultValue={
-                                                                        color.name
-                                                                    }
-                                                                    onInput={(
-                                                                        e,
-                                                                    ) =>
-                                                                        updateColor(
-                                                                            "update",
-                                                                            index,
-                                                                            {
-                                                                                value: color.value,
-                                                                                name: e
-                                                                                    .currentTarget
-                                                                                    .value,
-                                                                            },
-                                                                        )
-                                                                    }
-                                                                    placeholder="Color name"
-                                                                />
-                                                            </div>
-                                                            <div className="space-y-1">
-                                                                <Label className="text-nowrap">
-                                                                    Select Color
-                                                                </Label>
-                                                                <ColorPickerComponent
-                                                                    onValueChange={(
-                                                                        c,
-                                                                    ) =>
-                                                                        updateColor(
-                                                                            "update",
-                                                                            index,
-                                                                            {
-                                                                                name: color.name,
-                                                                                value: c,
-                                                                            },
-                                                                        )
-                                                                    }
-                                                                    defaultValue={
-                                                                        color.value
-                                                                    }
-                                                                />
-                                                            </div>
-                                                        </PopoverContent>
-                                                    </Popover>
-                                                </TooltipTrigger>
-                                                <TooltipContent>
-                                                    {color.name}
-                                                </TooltipContent>
-                                            </Tooltip>
+                                                    </ContextMenuTrigger>
+                                                    <PopoverContent className="flex items-stretch justify-between gap-2">
+                                                        <div className="space-y-1">
+                                                            <Label>
+                                                                Color Name
+                                                            </Label>
+                                                            <Input
+                                                                defaultValue={
+                                                                    color.name
+                                                                }
+                                                                onInput={(e) =>
+                                                                    updateColor(
+                                                                        "update",
+                                                                        index,
+                                                                        {
+                                                                            value: color.value,
+                                                                            name: e
+                                                                                .currentTarget
+                                                                                .value,
+                                                                        },
+                                                                    )
+                                                                }
+                                                                placeholder="Color name"
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-1">
+                                                            <Label className="text-nowrap">
+                                                                Select Color
+                                                            </Label>
+                                                            <ColorPickerComponent
+                                                                onValueChange={(
+                                                                    c,
+                                                                ) =>
+                                                                    updateColor(
+                                                                        "update",
+                                                                        index,
+                                                                        {
+                                                                            name: color.name,
+                                                                            value: c,
+                                                                        },
+                                                                    )
+                                                                }
+                                                                defaultValue={
+                                                                    color.value
+                                                                }
+                                                            />
+                                                        </div>
+                                                    </PopoverContent>
+                                                    <ContextMenuContent>
+                                                        <ContextMenuItem
+                                                            variant="destructive"
+                                                            onClick={() =>
+                                                                updateColor(
+                                                                    "remove",
+                                                                    index,
+                                                                )
+                                                            }
+                                                        >
+                                                            Delete
+                                                        </ContextMenuItem>
+                                                    </ContextMenuContent>
+                                                </ContextMenu>
+                                            </Popover>
                                         ),
                                     )}
                                 </div>
