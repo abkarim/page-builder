@@ -35,6 +35,7 @@ export default function ColorPickerComponent({
     const [availableColors, setAvailableColors] = useState<
         ProjectConfiguration["color"]
     >([]);
+    const [isOpen, setIsOpen] = useState(false);
 
     async function getAvailableColors() {
         const data = await getProjectDataConfiguration();
@@ -62,6 +63,8 @@ export default function ColorPickerComponent({
 
     return (
         <ColorPicker
+            onOpenChange={setIsOpen}
+            open={isOpen}
             defaultFormat="rgb"
             defaultValue={color}
             onValueChange={(color) => {
@@ -70,7 +73,7 @@ export default function ColorPickerComponent({
             }}
         >
             <ColorPickerTrigger asChild>
-                <ColorPickerSwatch color={color} />
+                <ColorPickerSwatch color={color} key={color} />
             </ColorPickerTrigger>
             <ColorPickerContent>
                 <ColorPickerArea />
@@ -97,6 +100,7 @@ export default function ColorPickerComponent({
                                     onClick={() => {
                                         tracker.current = true;
                                         setColor(color.value);
+                                        setIsOpen(false);
                                     }}
                                 />
                             ))}
