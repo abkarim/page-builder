@@ -26,10 +26,9 @@ import {
 } from "@/components/ui/sheet";
 import { Spinner } from "@/components/ui/spinner";
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger,
-} from "@/components/ui/tooltip";
+    getProjectDataConfiguration,
+    setProjectDataConfiguration,
+} from "@/util/projectSpecific/projectData";
 import { invoke } from "@tauri-apps/api/core";
 import { DownloadIcon, PlusIcon, SettingsIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -67,8 +66,9 @@ export default function (): React.JSX.Element {
     }
 
     async function getProjectData() {
+        if (project === null) return;
         try {
-            const data = await invoke<ProjectData>("get_project_configuration");
+            const data = await getProjectDataConfiguration(project!.name);
             setProjectData(data);
             projectDataRef.current = structuredClone(data);
         } catch (err) {
@@ -83,7 +83,6 @@ export default function (): React.JSX.Element {
                 fixIfRequired: true,
             });
             setProject(data);
-            getProjectData();
         } catch (err) {
             toast.error(err as string);
         }
@@ -101,6 +100,7 @@ export default function (): React.JSX.Element {
         if (!project?.id) return;
 
         getDesigns();
+        getProjectData();
     }, [project]);
 
     useEffect(() => {
@@ -210,12 +210,7 @@ export default function (): React.JSX.Element {
         if (projectData === null) return;
 
         try {
-            const response = await invoke<string>(
-                "update_current_project_configuration",
-                {
-                    config: projectData.configuration,
-                },
-            );
+            const response = await setProjectDataConfiguration(projectData);
             toast.success(response);
 
             projectDataRef.current = structuredClone(projectData);
