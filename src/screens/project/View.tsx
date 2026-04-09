@@ -1,3 +1,4 @@
+import Assets from "@/components/Assets";
 import ColorPickerComponent from "@/components/ColorPicker";
 import { Button } from "@/components/ui/button";
 import {
@@ -255,84 +256,91 @@ export default function (): React.JSX.Element {
                     </Button>
                 </div>
             </section>
-            <div className="mt-2 flex flex-wrap gap-5">
-                {designs.map((name) => (
-                    <ContextMenu key={name}>
-                        <ContextMenuTrigger
-                            onClick={() => {
-                                navigate(`/project/${project?.id}/${name}`);
-                            }}
-                        >
-                            <button
-                                key={name}
-                                className="p-2 rounded-sm bg-muted h-full"
-                            >
-                                <p className="min-w-12">{name}</p>
-                            </button>
-                        </ContextMenuTrigger>
-                        <ContextMenuContent>
-                            <ContextMenuItem
+            <section className="mt-5 space-y-2">
+                <Label>Design Files</Label>
+                <div className=" flex flex-wrap gap-5">
+                    {designs.map((name) => (
+                        <ContextMenu key={name}>
+                            <ContextMenuTrigger
                                 onClick={() => {
                                     navigate(`/project/${project?.id}/${name}`);
                                 }}
                             >
-                                Edit
-                            </ContextMenuItem>
-                            <ContextMenuSeparator />
-                            <ContextMenuItem
-                                onClick={() => {}}
-                                className="text-red-600 hover:bg-red-600! hover:text-white! "
-                            >
-                                Delete
-                            </ContextMenuItem>
-                        </ContextMenuContent>
-                    </ContextMenu>
-                ))}
-                <Sheet
-                    open={newDesignSheetOpenState}
-                    onOpenChange={setNewDesignSheetOpenState}
-                >
-                    <SheetTrigger asChild>
-                        <Button
-                            onClick={() => {}}
-                            className="[&_svg]:size-7! h-full flex flex-col gap-2 justify-center items-center p-2 py-5 rounded-sm text-(--color-primary-foreground) bg-foreground"
-                        >
-                            <PlusIcon size={52} />
-                            <p className="text-xs">New design</p>
-                        </Button>
-                    </SheetTrigger>
-                    <SheetContent>
-                        <SheetHeader>
-                            <SheetTitle>Create new design file</SheetTitle>
-                            <SheetDescription>
-                                Create and configure your new design
-                            </SheetDescription>
-                        </SheetHeader>
-                        <div className="grid flex-1 auto-rows-min gap-6 px-4">
-                            <div className="grid gap-3">
-                                <Label htmlFor="sheet-demo-name">
-                                    Design name
-                                </Label>
-                                <Input
-                                    id="sheet-demo-name"
-                                    value={newDesignName}
-                                    onInput={(e) => {
-                                        setNewDesignName(e.currentTarget.value);
+                                <button
+                                    key={name}
+                                    className="p-2 rounded-sm bg-muted h-full"
+                                >
+                                    <p className="min-w-12">{name}</p>
+                                </button>
+                            </ContextMenuTrigger>
+                            <ContextMenuContent>
+                                <ContextMenuItem
+                                    onClick={() => {
+                                        navigate(
+                                            `/project/${project?.id}/${name}`,
+                                        );
                                     }}
-                                />
-                            </div>
-                        </div>
-                        <SheetFooter>
-                            <Button type="submit" onClick={createNewDesign}>
-                                Save changes
+                                >
+                                    Edit
+                                </ContextMenuItem>
+                                <ContextMenuSeparator />
+                                <ContextMenuItem
+                                    onClick={() => {}}
+                                    className="text-red-600 hover:bg-red-600! hover:text-white! "
+                                >
+                                    Delete
+                                </ContextMenuItem>
+                            </ContextMenuContent>
+                        </ContextMenu>
+                    ))}
+                    <Sheet
+                        open={newDesignSheetOpenState}
+                        onOpenChange={setNewDesignSheetOpenState}
+                    >
+                        <SheetTrigger asChild>
+                            <Button className="[&_svg]:size-7! h-full flex flex-col gap-2 justify-center items-center p-2 py-5 rounded-sm text-(--color-primary-foreground) bg-foreground">
+                                <PlusIcon size={52} />
+                                <p className="text-xs">New design</p>
                             </Button>
-                            <SheetClose asChild>
-                                <Button variant="outline">Close</Button>
-                            </SheetClose>
-                        </SheetFooter>
-                    </SheetContent>
-                </Sheet>
-            </div>
+                        </SheetTrigger>
+                        <SheetContent>
+                            <SheetHeader>
+                                <SheetTitle>Create new design file</SheetTitle>
+                                <SheetDescription>
+                                    Create and configure your new design
+                                </SheetDescription>
+                            </SheetHeader>
+                            <div className="grid flex-1 auto-rows-min gap-6 px-4">
+                                <div className="grid gap-3">
+                                    <Label htmlFor="sheet-demo-name">
+                                        Design name
+                                    </Label>
+                                    <Input
+                                        id="sheet-demo-name"
+                                        value={newDesignName}
+                                        onInput={(e) => {
+                                            setNewDesignName(
+                                                e.currentTarget.value,
+                                            );
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                            <SheetFooter>
+                                <Button type="submit" onClick={createNewDesign}>
+                                    Save changes
+                                </Button>
+                                <SheetClose asChild>
+                                    <Button variant="outline">Close</Button>
+                                </SheetClose>
+                            </SheetFooter>
+                        </SheetContent>
+                    </Sheet>
+                </div>
+            </section>
+
+            <Assets />
+
             <div>
                 <Sheet
                     open={isConfigOpen}
