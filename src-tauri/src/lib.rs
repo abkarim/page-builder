@@ -65,6 +65,7 @@ pub fn run() {
             projects::get_designs,
             projects::get_project_file_content,
             projects::get_project_configuration,
+            projects::get_project_assets,
             projects::update_current_project_configuration,
             projects::update_project_file_content,
             templates::blocks::get_blocks,

@@ -55,9 +55,27 @@ impl Default for ProjectData {
 
 pub const PROJECT_FILE_NAME: &str = "project.json";
 
+#[derive(TS, Clone, Copy, Serialize, Deserialize)]
+#[ts(export)]
+pub enum ProjectAssetType {
+    Img,
+    Video,
+    CSS,
+    JS,
+}
+
+#[derive(TS, Serialize, Deserialize)]
+#[ts(export)]
+pub struct ProjectAsset {
+    pub file_type: ProjectAssetType,
+    pub filename: String,
+}
+
 /**
  * assets path
  */
+pub const PROJECT_ASSETS_IMG_PATH: &str = "assets/img/";
+pub const PROJECT_ASSETS_VIDEOS_PATH: &str = "assets/videos/";
 pub const PROJECT_ASSETS_CSS_PATH: &str = "assets/css/";
 pub const PROJECT_ASSETS_JS_PATH: &str = "assets/js/";
 pub const PROJECT_CSS_FILENAME: &str = "styles.css";
@@ -412,6 +430,15 @@ pub fn get_project_file_content(uuid: String, name: String) -> Result<String, St
         fs::get_project_file_content(&Path::new(&project.path), &format!("{}.html", name))?;
 
     Ok(content)
+}
+
+#[tauri::command]
+pub fn get_project_assets() -> Result<Vec<ProjectAsset>, String> {
+    let project_path = get_project_root()?;
+
+    let assets = fs::get_asset_files(&Path::new(&project_path))?;
+
+    Ok(assets)
 }
 
 /**

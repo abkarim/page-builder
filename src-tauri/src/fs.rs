@@ -2,7 +2,12 @@ use std::fs::{self};
 use std::io;
 use std::path::{Path, PathBuf};
 
-use crate::commands::projects::ProjectData;
+use walkdir::WalkDir;
+
+use crate::commands::projects::{
+    ProjectAsset, ProjectAssetType, ProjectData, PROJECT_ASSETS_CSS_PATH, PROJECT_ASSETS_IMG_PATH,
+    PROJECT_ASSETS_JS_PATH, PROJECT_ASSETS_VIDEOS_PATH,
+};
 
 pub fn is_directory_empty<P: AsRef<Path>>(directory_path: P) -> io::Result<bool> {
     let path = directory_path.as_ref();
@@ -120,6 +125,50 @@ pub fn get_design_files(path: &Path) -> io::Result<Vec<String>> {
     files.sort();
 
     Ok(files)
+}
+
+fn get_file_names(dir: &PathBuf) -> Result<Vec<String>, String> {
+    let mut file_names: Vec<String> = Vec::new();
+
+    if !dir.exists() {
+        return Ok(file_names);
+    }
+
+    for entry in WalkDir::new(dir)
+        .min_depth(1)
+        .into_iter()
+        .filter_map(|e| e.ok())
+    {
+        if entry.file_type().is_file() {
+            if let Some(name) = entry.file_name().to_str() {
+                file_names.push(name.to_string());
+            }
+        }
+    }
+
+    Ok(file_names)
+}
+
+pub fn get_asset_files(project_path: &Path) -> Result<Vec<ProjectAsset>, String> {
+    let mut assets: Vec<ProjectAsset> = Vec::new();
+
+    let categories = [
+        (PROJECT_ASSETS_IMG_PATH, ProjectAssetType::Img),
+        (PROJECT_ASSETS_VIDEOS_PATH, ProjectAssetType::Video),
+        (PROJECT_ASSETS_CSS_PATH, ProjectAssetType::CSS),
+        (PROJECT_ASSETS_JS_PATH, ProjectAssetType::JS),
+    ];
+
+    for (sub_path, asset_type) in categories {
+        let files = get_file_names(&project_path.join(sub_path))?;
+
+        assets.extend(files.into_iter().map(|filename| ProjectAsset {
+            file_type: asset_type,
+            filename,
+        }));
+    }
+
+    Ok(assets)
 }
 
 pub fn get_project_file_content(project_path: &Path, filename: &String) -> Result<String, String> {
