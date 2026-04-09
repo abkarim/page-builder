@@ -58,7 +58,7 @@ pub const PROJECT_FILE_NAME: &str = "project.json";
 #[derive(TS, Clone, Copy, Serialize, Deserialize)]
 #[ts(export)]
 pub enum ProjectAssetType {
-    Img,
+    Image,
     Video,
     CSS,
     JS,

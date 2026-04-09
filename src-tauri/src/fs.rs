@@ -153,7 +153,7 @@ pub fn get_asset_files(project_path: &Path) -> Result<Vec<ProjectAsset>, String>
     let mut assets: Vec<ProjectAsset> = Vec::new();
 
     let categories = [
-        (PROJECT_ASSETS_IMG_PATH, ProjectAssetType::Img),
+        (PROJECT_ASSETS_IMG_PATH, ProjectAssetType::Image),
         (PROJECT_ASSETS_VIDEOS_PATH, ProjectAssetType::Video),
         (PROJECT_ASSETS_CSS_PATH, ProjectAssetType::CSS),
         (PROJECT_ASSETS_JS_PATH, ProjectAssetType::JS),
