@@ -1,4 +1,9 @@
-import { ClapperboardIcon, ImagesIcon } from "lucide-react";
+import {
+    BracesIcon,
+    ClapperboardIcon,
+    FileIcon,
+    ImagesIcon,
+} from "lucide-react";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Sheet, SheetContent, SheetHeader } from "./ui/sheet";
@@ -9,6 +14,28 @@ import { invoke } from "@tauri-apps/api/core";
 import { type ProjectAsset } from "src-tauri/bindings/ProjectAsset";
 import { type ProjectAssetType } from "src-tauri/bindings/ProjectAssetType";
 import { open } from "@tauri-apps/plugin-dialog";
+
+const ASSETS_ARCHIVE: {
+    name: ProjectAssetType;
+    Icon: any;
+}[] = [
+    {
+        name: "Image",
+        Icon: ImagesIcon,
+    },
+    {
+        name: "Video",
+        Icon: ClapperboardIcon,
+    },
+    {
+        name: "JS",
+        Icon: FileIcon,
+    },
+    {
+        name: "CSS",
+        Icon: BracesIcon,
+    },
+];
 
 export default function Assets(): React.JSX.Element {
     const [isLoading, setIsLoading] = useState(false);
@@ -62,28 +89,21 @@ export default function Assets(): React.JSX.Element {
         <section className="mt-5 space-y-2">
             <Label>Assets ({assets.length.toString() || "0"})</Label>
             <div className=" flex flex-wrap gap-5">
-                <Button
-                    className="[&_svg]:size-15! flex-col h-full p-5 px-20"
-                    variant="secondary"
-                    onClick={() => setAssetType("Image")}
-                >
-                    <ImagesIcon size={50} />
-                    <Label>
-                        Images (
-                        {filteredAssets?.Image?.length.toString() || "0"})
-                    </Label>
-                </Button>
-                <Button
-                    className="[&_svg]:size-15! flex-col h-full p-5 px-20"
-                    variant="secondary"
-                    onClick={() => setAssetType("Video")}
-                >
-                    <ClapperboardIcon size={50} />
-                    <Label>
-                        Videos (
-                        {filteredAssets?.Video?.length.toString() || "0"})
-                    </Label>
-                </Button>
+                {ASSETS_ARCHIVE.map((asset) => (
+                    <Button
+                        className="[&_svg]:size-15! flex-col h-full p-5 px-20"
+                        variant="secondary"
+                        onClick={() => setAssetType(asset.name)}
+                    >
+                        <asset.Icon size={50} />
+                        <Label>
+                            {asset.name} (
+                            {filteredAssets?.[asset.name]?.length.toString() ||
+                                "0"}
+                            )
+                        </Label>
+                    </Button>
+                ))}
             </div>
             <Sheet
                 open={assetType !== null}
