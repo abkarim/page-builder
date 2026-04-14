@@ -5,6 +5,7 @@ use std::path::{Path, PathBuf};
 use std::sync::{LazyLock, Mutex, OnceLock};
 use ts_rs::TS;
 use uuid::Uuid;
+use walkdir::WalkDir;
 
 use crate::fs::{
     self, create_file, get_design_files, get_project_root_file_content,
@@ -55,13 +56,54 @@ impl Default for ProjectData {
 
 pub const PROJECT_FILE_NAME: &str = "project.json";
 
-#[derive(TS, Clone, Copy, Serialize, Deserialize)]
+#[derive(TS, Clone, Copy, Serialize, Deserialize, Debug)]
 #[ts(export)]
 pub enum ProjectAssetType {
     Image,
     Video,
     CSS,
     JS,
+}
+
+impl ProjectAssetType {
+    pub fn path(&self) -> &'static str {
+        match self {
+            ProjectAssetType::Image => PROJECT_ASSETS_IMG_PATH,
+            ProjectAssetType::Video => PROJECT_ASSETS_VIDEOS_PATH,
+            ProjectAssetType::CSS => PROJECT_ASSETS_CSS_PATH,
+            ProjectAssetType::JS => PROJECT_ASSETS_JS_PATH,
+        }
+    }
+
+    pub fn allowed_extensions(&self) -> &'static [&'static str] {
+        match self {
+            ProjectAssetType::Image => &["jpg", "jpeg", "png", "webp", "svg", "gif"],
+            ProjectAssetType::Video => &["mp4", "webm", "ogg", "mov"],
+            ProjectAssetType::CSS => &["css"],
+            ProjectAssetType::JS => &["js"],
+        }
+    }
+}
+
+#[tauri::command]
+pub fn get_asset_config() -> HashMap<String, Vec<&'static str>> {
+    let mut map = HashMap::new();
+
+    let variants = [
+        ProjectAssetType::Image,
+        ProjectAssetType::Video,
+        ProjectAssetType::CSS,
+        ProjectAssetType::JS,
+    ];
+
+    for variant in variants {
+        map.insert(
+            format!("{:?}", variant),
+            variant.allowed_extensions().to_vec(),
+        );
+    }
+
+    map
 }
 
 #[derive(TS, Serialize, Deserialize)]
@@ -439,6 +481,52 @@ pub fn get_project_assets() -> Result<Vec<ProjectAsset>, String> {
     let assets = fs::get_asset_files(&Path::new(&project_path))?;
 
     Ok(assets)
+}
+
+#[tauri::command]
+pub fn upload_current_project_assets(
+    asset_type: ProjectAssetType,
+    paths: Vec<String>,
+) -> Result<String, String> {
+    let project_path = get_project_root()?;
+    let relative_path = asset_type.path();
+    let asset_path = PathBuf::from(project_path).join(relative_path);
+
+    if !asset_path.exists() {
+        std::fs::create_dir_all(&asset_path).map_err(|e| e.to_string())?;
+    }
+
+    let allowed_exts = asset_type.allowed_extensions();
+
+    for path_str in paths {
+        let source_path = Path::new(&path_str);
+
+        if !source_path.exists() {
+            continue;
+        }
+
+        for entry in WalkDir::new(source_path).into_iter().filter_map(|e| e.ok())
+        // Ignore permission errors
+        {
+            let entry_path = entry.path();
+
+            if entry_path.is_file() {
+                let ext = entry_path
+                    .extension()
+                    .and_then(|s| s.to_str())
+                    .unwrap_or("");
+
+                if allowed_exts.contains(&ext.to_lowercase().as_str()) {
+                    let file_name = entry_path.file_name().ok_or("Invalid filename")?;
+                    let destination = asset_path.join(file_name);
+
+                    std::fs::copy(entry_path, destination).map_err(|e| e.to_string())?;
+                }
+            }
+        }
+    }
+
+    Ok("project assets uploaded successfully".to_string())
 }
 
 /**

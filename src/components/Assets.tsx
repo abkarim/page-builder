@@ -15,30 +15,39 @@ import { type ProjectAsset } from "src-tauri/bindings/ProjectAsset";
 import { type ProjectAssetType } from "src-tauri/bindings/ProjectAssetType";
 import { open } from "@tauri-apps/plugin-dialog";
 
+const assetConfig =
+    await invoke<Record<ProjectAssetType, string[]>>("get_asset_config");
+
 const ASSETS_ARCHIVE: {
     name: ProjectAssetType;
     Icon: any;
+    exts: string[];
 }[] = [
     {
         name: "Image",
         Icon: ImagesIcon,
+        exts: assetConfig.Image,
     },
     {
         name: "Video",
         Icon: ClapperboardIcon,
+        exts: assetConfig.Video,
     },
     {
         name: "JS",
         Icon: FileIcon,
+        exts: assetConfig.JS,
     },
     {
         name: "CSS",
         Icon: BracesIcon,
+        exts: assetConfig.CSS,
     },
 ];
 
 export default function Assets(): React.JSX.Element {
     const [isLoading, setIsLoading] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
     const [assets, setAssets] = useState<ProjectAsset[]>([]);
     const [filteredAssets, setFilteredAssets] = useState<
         Partial<Record<ProjectAssetType, ProjectAsset[]>>
@@ -63,22 +72,47 @@ export default function Assets(): React.JSX.Element {
     let selectedAssets = (assetType && filteredAssets?.[assetType]) ?? [];
 
     async function addNewAsset() {
+        setIsUploading(true);
+
         const filters: { name: string; extensions: string[] }[] = [];
 
-        if (assetType === "Image") {
-            filters.push({
-                name: "Images",
-                extensions: ["jpg", "jpeg", "webp", "gif"],
-            });
+        for (const asset of ASSETS_ARCHIVE) {
+            if (assetType === asset.name) {
+                filters.push({
+                    name: `Select ${asset.name}`,
+                    extensions: asset.exts,
+                });
+                break;
+            }
         }
 
         const selectedFiles = await open({
+            title: `Select ${assetType}`,
             multiple: true,
             directory: false,
+            canCreateDirectories: false,
             filters,
         });
 
-        console.log(selectedFiles);
+        if (!selectedFiles) return;
+
+        try {
+            const message = await invoke<string>(
+                "upload_current_project_assets",
+                {
+                    assetType,
+                    paths: selectedFiles,
+                },
+            );
+
+            toast.success(message);
+
+            getAssets();
+        } catch (err) {
+            toast.error(err as string);
+        } finally {
+            setIsUploading(false);
+        }
     }
 
     useEffect(() => {
@@ -113,7 +147,14 @@ export default function Assets(): React.JSX.Element {
             >
                 {assetType !== null && (
                     <SheetContent side="bottom">
-                        <SheetHeader>{assetType}</SheetHeader>
+                        <SheetHeader>
+                            <div className="flex items-center justify-between">
+                                <p>{assetType}</p>
+                                <Button onClick={addNewAsset}>
+                                    Add new asset
+                                </Button>
+                            </div>
+                        </SheetHeader>
                         <section className="px-4 pb-4">
                             {isLoading && (
                                 <section>
@@ -122,18 +163,16 @@ export default function Assets(): React.JSX.Element {
                             )}
                             {!isLoading && (
                                 <section className="space-y-2">
-                                    <div>
-                                        <Button onClick={addNewAsset}>
-                                            Add new asset
-                                        </Button>
-                                    </div>
-
                                     {selectedAssets.length === 0 && (
                                         <p>No assets found</p>
                                     )}
-                                    {selectedAssets.map((asset) => (
-                                        <div>{asset.filename}</div>
-                                    ))}
+                                    <section>
+                                        {selectedAssets.map((asset) => (
+                                            <div>{asset.filename}</div>
+                                        ))}
+
+                                        {isUploading && <div>Uploading...</div>}
+                                    </section>
                                 </section>
                             )}
                         </section>

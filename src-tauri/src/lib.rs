@@ -68,6 +68,8 @@ pub fn run() {
             projects::get_project_assets,
             projects::update_current_project_configuration,
             projects::update_project_file_content,
+            projects::get_asset_config,
+            projects::upload_current_project_assets,
             templates::blocks::get_blocks,
             templates::components::get_components
         ])
