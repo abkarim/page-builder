@@ -14,6 +14,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { type ProjectAsset } from "src-tauri/bindings/ProjectAsset";
 import { type ProjectAssetType } from "src-tauri/bindings/ProjectAssetType";
 import { open } from "@tauri-apps/plugin-dialog";
+import { toProjectUrl } from "@/util/projectSpecific/url";
 
 const assetConfig =
     await invoke<Record<ProjectAssetType, string[]>>("get_asset_config");
@@ -166,9 +167,16 @@ export default function Assets(): React.JSX.Element {
                                     {selectedAssets.length === 0 && (
                                         <p>No assets found</p>
                                     )}
-                                    <section>
+                                    <section className="flex items-start justify-start gap-4">
                                         {selectedAssets.map((asset) => (
-                                            <div>{asset.filename}</div>
+                                            <div>
+                                                <img
+                                                    src={toProjectUrl(
+                                                        asset.filepath,
+                                                    )}
+                                                />
+                                                {asset.filepath}
+                                            </div>
                                         ))}
 
                                         {isUploading && <div>Uploading...</div>}
