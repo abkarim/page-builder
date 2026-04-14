@@ -162,9 +162,15 @@ pub fn get_asset_files(project_path: &Path) -> Result<Vec<ProjectAsset>, String>
     for (sub_path, asset_type) in categories {
         let files = get_file_names(&project_path.join(sub_path))?;
 
-        assets.extend(files.into_iter().map(|filename| ProjectAsset {
-            file_type: asset_type,
-            filename,
+        assets.extend(files.into_iter().map(|filename| {
+            ProjectAsset {
+                file_type: asset_type,
+                filename: filename.clone(),
+                filepath: PathBuf::from(sub_path)
+                    .join(filename)
+                    .to_string_lossy()
+                    .into_owned(),
+            }
         }));
     }
 

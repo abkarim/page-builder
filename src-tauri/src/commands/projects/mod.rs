@@ -111,6 +111,7 @@ pub fn get_asset_config() -> HashMap<String, Vec<&'static str>> {
 pub struct ProjectAsset {
     pub file_type: ProjectAssetType,
     pub filename: String,
+    pub filepath: String,
 }
 
 /**
