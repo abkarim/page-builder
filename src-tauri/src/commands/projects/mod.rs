@@ -485,6 +485,21 @@ pub fn get_project_assets() -> Result<Vec<ProjectAsset>, String> {
 }
 
 #[tauri::command]
+pub fn delete_current_project_asset(path: String) -> Result<String, String> {
+    let project_path = get_project_root()?;
+    let p_path = PathBuf::from(project_path);
+    let file_to_delete = p_path.join(path);
+
+    if !file_to_delete.exists() {
+        return Err("asset not found".to_string());
+    }
+
+    std::fs::remove_file(file_to_delete).map_err(|e| format!("Error: {}", e))?;
+
+    Ok("asset deleted successfully".to_string())
+}
+
+#[tauri::command]
 pub fn upload_current_project_assets(
     asset_type: ProjectAssetType,
     paths: Vec<String>,

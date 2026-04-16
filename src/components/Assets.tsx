@@ -15,6 +15,14 @@ import { type ProjectAsset } from "src-tauri/bindings/ProjectAsset";
 import { type ProjectAssetType } from "src-tauri/bindings/ProjectAssetType";
 import { open } from "@tauri-apps/plugin-dialog";
 import AssetPreview from "./AssetPreview";
+import {
+    ContextMenu,
+    ContextMenuContent,
+    ContextMenuItem,
+    ContextMenuSeparator,
+    ContextMenuTrigger,
+} from "./ui/context-menu";
+import useConfirmDialog from "@/hooks/useConfirmDialog";
 
 const assetConfig =
     await invoke<Record<ProjectAssetType, string[]>>("get_asset_config");
@@ -54,6 +62,7 @@ export default function Assets(): React.JSX.Element {
         Partial<Record<ProjectAssetType, ProjectAsset[]>>
     >({});
     const [assetType, setAssetType] = useState<ProjectAssetType | null>(null);
+    const confirmDialog = useConfirmDialog();
 
     async function getAssets() {
         setIsLoading(true);
@@ -116,6 +125,26 @@ export default function Assets(): React.JSX.Element {
         }
     }
 
+    async function deleteAsset(path: string) {
+        const result = await confirmDialog({
+            title: "Are you sure?",
+            description: "This action can't be reversed!",
+        });
+
+        if (!result) return;
+
+        try {
+            const msg = await invoke<string>("delete_current_project_asset", {
+                path,
+            });
+            toast.success(msg);
+
+            getAssets();
+        } catch (err) {
+            toast.error(err as string);
+        }
+    }
+
     useEffect(() => {
         getAssets();
     }, []);
@@ -147,7 +176,7 @@ export default function Assets(): React.JSX.Element {
                 }
             >
                 {assetType !== null && (
-                    <SheetContent side="bottom">
+                    <SheetContent side="bottom" className="h-2/3">
                         <SheetHeader>
                             <div className="flex items-center justify-between">
                                 <p>{assetType}</p>
@@ -156,23 +185,45 @@ export default function Assets(): React.JSX.Element {
                                 </Button>
                             </div>
                         </SheetHeader>
-                        <section className="px-4 pb-4">
+                        <section className="px-4 pb-10 overflow-scroll">
                             {isLoading && (
                                 <section>
                                     <Spinner />
                                 </section>
                             )}
                             {!isLoading && (
-                                <section className="space-y-2">
+                                <section className="space-y-2 ">
                                     {selectedAssets.length === 0 && (
                                         <p>No assets found</p>
                                     )}
-                                    <section className="flex items-start justify-start gap-4">
+                                    <section className="flex flex-wrap items-start justify-start gap-4">
                                         {selectedAssets.map((asset) => (
-                                            <AssetPreview
-                                                key={asset.filepath}
-                                                asset={asset}
-                                            />
+                                            <ContextMenu>
+                                                <ContextMenuTrigger>
+                                                    <div className="h-full w-2xs">
+                                                        <AssetPreview
+                                                            key={asset.filepath}
+                                                            asset={asset}
+                                                        />
+                                                    </div>
+                                                </ContextMenuTrigger>
+                                                <ContextMenuContent>
+                                                    <ContextMenuItem>
+                                                        View
+                                                    </ContextMenuItem>
+                                                    <ContextMenuSeparator />
+                                                    <ContextMenuItem
+                                                        variant="destructive"
+                                                        onClick={() =>
+                                                            deleteAsset(
+                                                                asset.filepath,
+                                                            )
+                                                        }
+                                                    >
+                                                        Delete
+                                                    </ContextMenuItem>
+                                                </ContextMenuContent>
+                                            </ContextMenu>
                                         ))}
 
                                         {isUploading && <div>Uploading...</div>}
