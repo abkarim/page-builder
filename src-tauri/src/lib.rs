@@ -71,6 +71,7 @@ pub fn run() {
             projects::get_asset_config,
             projects::upload_current_project_assets,
             projects::delete_current_project_asset,
+            projects::rename_current_project_asset,
             templates::blocks::get_blocks,
             templates::components::get_components
         ])
