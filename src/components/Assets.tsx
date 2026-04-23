@@ -23,6 +23,11 @@ import {
     ContextMenuTrigger,
 } from "./ui/context-menu";
 import useConfirmDialog from "@/hooks/useConfirmDialog";
+import { Dialog, DialogTitle } from "./ui/dialog";
+import { DialogContent } from "@radix-ui/react-dialog";
+import { Popover, PopoverContent } from "./ui/popover";
+import { Drawer, DrawerContent, DrawerTitle } from "./ui/drawer";
+import { Input } from "./ui/input";
 
 const assetConfig =
     await invoke<Record<ProjectAssetType, string[]>>("get_asset_config");
@@ -62,6 +67,11 @@ export default function Assets(): React.JSX.Element {
         Partial<Record<ProjectAssetType, ProjectAsset[]>>
     >({});
     const [assetType, setAssetType] = useState<ProjectAssetType | null>(null);
+    const [assetToView, setAssetToView] = useState<ProjectAsset | null>(null);
+    const [assetToRename, setAssetToRename] = useState<ProjectAsset | null>(
+        null,
+    );
+    const [assetNewName, setAssetNewName] = useState("");
     const confirmDialog = useConfirmDialog();
 
     async function getAssets() {
@@ -145,6 +155,25 @@ export default function Assets(): React.JSX.Element {
         }
     }
 
+    async function renameAsset(path: string) {
+        if (assetNewName.trim().length === 0) {
+            toast.error("filename can't be empty");
+            return;
+        }
+
+        try {
+            const msg = await invoke<string>("rename_current_project_asset", {
+                path,
+                name: assetNewName,
+            });
+            toast.success(msg);
+            getAssets();
+            setAssetToRename(null);
+        } catch (err) {
+            toast.error(err as string);
+        }
+    }
+
     useEffect(() => {
         getAssets();
     }, []);
@@ -170,7 +199,7 @@ export default function Assets(): React.JSX.Element {
                 ))}
             </div>
             <Sheet
-                open={assetType !== null}
+                open={assetType !== null && assetToView === null}
                 onOpenChange={(state) =>
                     setAssetType((prev) => (!state ? null : prev))
                 }
@@ -196,20 +225,41 @@ export default function Assets(): React.JSX.Element {
                                     {selectedAssets.length === 0 && (
                                         <p>No assets found</p>
                                     )}
-                                    <section className="flex flex-wrap items-start justify-start gap-4">
+                                    <section className="flex flex-wrap items-start justify-stretch gap-4">
                                         {selectedAssets.map((asset) => (
-                                            <ContextMenu>
-                                                <ContextMenuTrigger>
-                                                    <div className="h-full w-2xs">
+                                            <ContextMenu key={asset.filepath}>
+                                                <ContextMenuTrigger
+                                                    key={asset.filepath}
+                                                >
+                                                    <div className="h-full bg-yellow-300! w-2xs">
                                                         <AssetPreview
-                                                            key={asset.filepath}
                                                             asset={asset}
                                                         />
                                                     </div>
                                                 </ContextMenuTrigger>
                                                 <ContextMenuContent>
-                                                    <ContextMenuItem>
+                                                    <ContextMenuItem
+                                                        onClick={() =>
+                                                            setAssetToView(
+                                                                asset,
+                                                            )
+                                                        }
+                                                    >
                                                         View
+                                                    </ContextMenuItem>
+                                                    <ContextMenuItem
+                                                        onClick={() => {
+                                                            setAssetToRename(
+                                                                asset,
+                                                            );
+                                                            setAssetNewName(
+                                                                asset.filename.split(
+                                                                    ".",
+                                                                )[0],
+                                                            );
+                                                        }}
+                                                    >
+                                                        Rename
                                                     </ContextMenuItem>
                                                     <ContextMenuSeparator />
                                                     <ContextMenuItem
@@ -234,6 +284,58 @@ export default function Assets(): React.JSX.Element {
                     </SheetContent>
                 )}
             </Sheet>
+            {assetToView !== null && (
+                <Drawer
+                    open={assetToView !== null}
+                    onOpenChange={(state) => {
+                        if (!state) setAssetToView(null);
+                    }}
+                >
+                    <DrawerContent className="h-[80vh]! w-screen overflow-scroll">
+                        <section className="max-h-[70vh]!">
+                            <AssetPreview asset={assetToView} />
+                        </section>
+                    </DrawerContent>
+                </Drawer>
+            )}
+            {assetToRename !== null && (
+                <Drawer
+                    open={assetToRename !== null}
+                    onOpenChange={(state) => {
+                        if (!state) setAssetToView(null);
+                    }}
+                >
+                    <DrawerContent className="h-[30vh]! w-screen overflow-scroll px-4 space-y-3">
+                        <DrawerTitle>Rename asset</DrawerTitle>
+                        <section className="max-h-[70vh]! space-y-1">
+                            <Label>Filename</Label>
+                            <Input
+                                placeholder="filename"
+                                value={assetNewName}
+                                onInput={(e) =>
+                                    setAssetNewName(e.currentTarget.value)
+                                }
+                            />
+                        </section>
+                        <section className="flex items-center justify-between gap-2">
+                            <Button
+                                className="ml-auto"
+                                variant="secondary"
+                                onClick={() => setAssetToRename(null)}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={() =>
+                                    renameAsset(assetToRename.filepath)
+                                }
+                            >
+                                Rename
+                            </Button>
+                        </section>
+                    </DrawerContent>
+                </Drawer>
+            )}
         </section>
     );
 }
