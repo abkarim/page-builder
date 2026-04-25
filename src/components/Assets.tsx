@@ -23,13 +23,10 @@ import {
     ContextMenuTrigger,
 } from "./ui/context-menu";
 import useConfirmDialog from "@/hooks/useConfirmDialog";
-import { Dialog, DialogTitle } from "./ui/dialog";
-import { DialogContent } from "@radix-ui/react-dialog";
-import { Popover, PopoverContent } from "./ui/popover";
 import { Drawer, DrawerContent, DrawerTitle } from "./ui/drawer";
 import { Input } from "./ui/input";
 
-const assetConfig =
+export const assetConfig =
     await invoke<Record<ProjectAssetType, string[]>>("get_asset_config");
 
 const ASSETS_ARCHIVE: {
@@ -225,13 +222,13 @@ export default function Assets(): React.JSX.Element {
                                     {selectedAssets.length === 0 && (
                                         <p>No assets found</p>
                                     )}
-                                    <section className="flex flex-wrap items-start justify-stretch gap-4">
+                                    <section className="flex flex-wrap gap-4">
                                         {selectedAssets.map((asset) => (
                                             <ContextMenu key={asset.filepath}>
                                                 <ContextMenuTrigger
                                                     key={asset.filepath}
                                                 >
-                                                    <div className="h-full bg-yellow-300! w-2xs">
+                                                    <div className="h-full w-2xs">
                                                         <AssetPreview
                                                             asset={asset}
                                                         />
@@ -291,8 +288,8 @@ export default function Assets(): React.JSX.Element {
                         if (!state) setAssetToView(null);
                     }}
                 >
-                    <DrawerContent className="h-[80vh]! w-screen overflow-scroll">
-                        <section className="max-h-[70vh]!">
+                    <DrawerContent className="h-[60vh]! w-screen overflow-scroll">
+                        <section>
                             <AssetPreview asset={assetToView} />
                         </section>
                     </DrawerContent>
@@ -302,12 +299,12 @@ export default function Assets(): React.JSX.Element {
                 <Drawer
                     open={assetToRename !== null}
                     onOpenChange={(state) => {
-                        if (!state) setAssetToView(null);
+                        if (!state) setAssetToRename(null);
                     }}
                 >
                     <DrawerContent className="h-[30vh]! w-screen overflow-scroll px-4 space-y-3">
                         <DrawerTitle>Rename asset</DrawerTitle>
-                        <section className="max-h-[70vh]! space-y-1">
+                        <section className="space-y-1">
                             <Label>Filename</Label>
                             <Input
                                 placeholder="filename"
