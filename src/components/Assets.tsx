@@ -25,6 +25,7 @@ import {
 import useConfirmDialog from "@/hooks/useConfirmDialog";
 import { Drawer, DrawerContent, DrawerTitle } from "./ui/drawer";
 import { Input } from "./ui/input";
+import { getProjectAssets } from "@/util/projectSpecific/projectData";
 
 export const assetConfig =
     await invoke<Record<ProjectAssetType, string[]>>("get_asset_config");
@@ -74,7 +75,7 @@ export default function Assets(): React.JSX.Element {
     async function getAssets() {
         setIsLoading(true);
         try {
-            const data = await invoke<ProjectAsset[]>("get_project_assets");
+            const data = await getProjectAssets(undefined, true);
             setAssets(data);
             setFilteredAssets(
                 Object.groupBy(data, ({ file_type }) => file_type),
