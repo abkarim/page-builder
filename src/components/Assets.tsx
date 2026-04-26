@@ -179,7 +179,7 @@ export default function Assets(): React.JSX.Element {
     return (
         <section className="mt-5 space-y-2">
             <Label>Assets ({assets.length.toString() || "0"})</Label>
-            <div className=" flex flex-wrap gap-5">
+            <div className="flex flex-wrap gap-5">
                 {ASSETS_ARCHIVE.map((asset) => (
                     <Button
                         className="[&_svg]:size-15! flex-col h-full p-5 px-20"

@@ -31,3 +31,30 @@ export default function AssetPreview({ asset }: Props): React.JSX.Element {
         </div>
     );
 }
+
+interface ArchiveProps {
+    data: ProjectAsset[];
+    onClick: (asset: ProjectAsset) => void;
+}
+
+export function AssetsPreviewArchive({
+    data,
+    onClick,
+}: ArchiveProps): React.JSX.Element {
+    return (
+        <section className="px-2 space-y-2">
+            <p>Total {data.length.toString()}</p>
+            <div className="grid grid-flow-col gap-2">
+                {data.map((asset) => (
+                    <div
+                        className="cursor-pointer"
+                        onClick={() => onClick(asset)}
+                        key={asset.filepath}
+                    >
+                        <AssetPreview asset={asset} />
+                    </div>
+                ))}
+            </div>
+        </section>
+    );
+}
