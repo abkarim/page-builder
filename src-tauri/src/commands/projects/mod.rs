@@ -485,6 +485,53 @@ pub fn get_project_assets() -> Result<Vec<ProjectAsset>, String> {
 }
 
 #[tauri::command]
+pub fn rename_current_project_asset(path: String, name: String) -> Result<String, String> {
+    let project_path = get_project_root()?;
+    let p_path = PathBuf::from(project_path);
+    let file_to_rename = p_path.join(path);
+
+    if !file_to_rename.exists() {
+        return Err("asset not found".to_string());
+    }
+
+    let extension = file_to_rename
+        .extension()
+        .and_then(|ext| ext.to_str())
+        .unwrap_or("");
+
+    let safe_name = if extension.is_empty() {
+        return Err("extension of current file is unknown".to_string());
+    } else {
+        format!("{}.{}", sanitize_filename::sanitize(&name), extension)
+    };
+
+    let new_path = &file_to_rename
+        .parent()
+        .ok_or_else(|| "could not find parent directory".to_string())?
+        .join(safe_name);
+
+    std::fs::rename(file_to_rename, new_path)
+        .map_err(|e| format!("Failed to rename asset {}", e))?;
+
+    Ok("asset renamed successfully".to_string())
+}
+
+#[tauri::command]
+pub fn delete_current_project_asset(path: String) -> Result<String, String> {
+    let project_path = get_project_root()?;
+    let p_path = PathBuf::from(project_path);
+    let file_to_delete = p_path.join(path);
+
+    if !file_to_delete.exists() {
+        return Err("asset not found".to_string());
+    }
+
+    std::fs::remove_file(file_to_delete).map_err(|e| format!("Error: {}", e))?;
+
+    Ok("asset deleted successfully".to_string())
+}
+
+#[tauri::command]
 pub fn upload_current_project_assets(
     asset_type: ProjectAssetType,
     paths: Vec<String>,
