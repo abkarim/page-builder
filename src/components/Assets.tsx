@@ -26,6 +26,7 @@ import useConfirmDialog from "@/hooks/useConfirmDialog";
 import { Drawer, DrawerContent, DrawerTitle } from "./ui/drawer";
 import { Input } from "./ui/input";
 import { getProjectAssets } from "@/util/projectSpecific/projectData";
+import { getBaseName } from "@/util/strings/file";
 
 export const assetConfig =
     await invoke<Record<ProjectAssetType, string[]>>("get_asset_config");
@@ -251,9 +252,9 @@ export default function Assets(): React.JSX.Element {
                                                                 asset,
                                                             );
                                                             setAssetNewName(
-                                                                asset.filename.split(
-                                                                    ".",
-                                                                )[0],
+                                                                getBaseName(
+                                                                    asset.filename,
+                                                                ),
                                                             );
                                                         }}
                                                     >
