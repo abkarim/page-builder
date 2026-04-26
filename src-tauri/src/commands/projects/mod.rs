@@ -507,7 +507,7 @@ pub fn rename_current_project_asset(path: String, name: String) -> Result<String
 
     let new_path = &file_to_rename
         .parent()
-        .ok_or_else(|| "could not found parent directory".to_string())?
+        .ok_or_else(|| "could not find parent directory".to_string())?
         .join(safe_name);
 
     std::fs::rename(file_to_rename, new_path)
