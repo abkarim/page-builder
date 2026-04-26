@@ -2946,7 +2946,7 @@ dependencies = [
 
 [[package]]
 name = "pagebuilder"
-version = "0.1.12"
+version = "0.1.13"
 dependencies = [
  "anyhow",
  "chrono",

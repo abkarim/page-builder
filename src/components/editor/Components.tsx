@@ -4,7 +4,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { Block } from "./block";
 import { Button } from "../ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { Component } from "./components";
+import { type Component } from "./components-types";
 import DynamicIcon from "../DynamicIcon";
 
 interface Props {
