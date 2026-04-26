@@ -91,7 +91,7 @@ export default function AssetEditor({
                 open={openAssetsArchive}
                 onOpenChange={setOpenAssetsArchive}
             >
-                <DrawerContent className="h-[80vw]! overflow-scroll">
+                <DrawerContent className="h-[80vh]! overflow-scroll">
                     {assets === null && <Spinner />}
                     {assets !== null && (
                         <AssetsPreviewArchive
