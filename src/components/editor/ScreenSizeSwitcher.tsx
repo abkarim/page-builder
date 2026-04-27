@@ -19,8 +19,13 @@ const AvailableScreenSize = [
         icon: "tablet",
     },
     {
-        name: "Desktop",
+        name: "Large",
         size: "1366px",
+        icon: "laptop",
+    },
+    {
+        name: "ExtraLarge",
+        size: "1920px",
         icon: "monitor",
     },
 ] as const;

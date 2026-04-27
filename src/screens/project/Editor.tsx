@@ -48,7 +48,7 @@ export default function Editor() {
     } | null>(null);
     const editorRef = useRef<HTMLIFrameElement>(null);
     const [activeSizeName, setActiveSizeName] =
-        useState<ScreenSizeName>("Desktop");
+        useState<ScreenSizeName>("Large");
     const [zoom, setZoom] = useState("");
 
     const activeConfig = getActiveScreenSize(activeSizeName);
