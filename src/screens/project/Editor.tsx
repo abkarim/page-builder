@@ -9,6 +9,7 @@ import {
     ChevronLeftIcon,
     ChevronRightIcon,
     RedoIcon,
+    SettingsIcon,
     UndoIcon,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -29,10 +30,12 @@ import {
     ScreenSizeName,
     ScreenSizeSwitcher,
 } from "@/components/editor/ScreenSizeSwitcher";
+import PageSettingsEditor from "@/components/editor/PageSettingsEditor";
 
 export default function Editor() {
     const { id, name } = useParams();
     const confirmDialog = useConfirmDialog();
+    const [showPageSettings, setShowPageSettings] = useState(false);
     const [content, setContent] = useState("");
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
     const [availableUndo, setAvailableUndo] = useState(0);
@@ -228,9 +231,17 @@ export default function Editor() {
 
     return (
         <section className="h-full">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center gap-2">
                 <p>Editing: {name}</p>
-                <Button onClick={saveChanges}>Save</Button>
+                <Button className="ml-auto" onClick={saveChanges}>
+                    Save
+                </Button>
+                <Button
+                    onClick={() => setShowPageSettings(true)}
+                    variant="secondary"
+                >
+                    <SettingsIcon /> Settings
+                </Button>
             </div>
 
             <section className="h-screen pt-2.5 sticky top-0 pb-15">
@@ -377,6 +388,11 @@ export default function Editor() {
                         </Tabs>
                     )}
                 </section>
+                {showPageSettings && (
+                    <PageSettingsEditor
+                        onOpenStateChange={setShowPageSettings}
+                    />
+                )}
             </section>
         </section>
     );
