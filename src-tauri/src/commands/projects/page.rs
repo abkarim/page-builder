@@ -6,17 +6,19 @@ use std::{
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
+use crate::commands::projects::get_project_root;
+
 #[derive(Debug, Serialize, Deserialize, TS, Default)]
 #[ts(export)]
 pub struct PageSettings {
     #[serde(default)]
-    title: String,
+    pub title: String,
 
     #[serde(default)]
-    css_links: Vec<String>,
+    pub css_links: Vec<String>,
 
     #[serde(default)]
-    js_links: Vec<String>,
+    pub js_links: Vec<String>,
 }
 
 pub static CURRENT_PAGE: OnceLock<Mutex<Option<String>>> = OnceLock::new();
@@ -55,23 +57,28 @@ pub fn set_current_page(path: String) -> Result<String, String> {
     Ok("setting current page success".to_string())
 }
 
-fn get_current_page_path() -> Result<PathBuf, String> {
-    let current_project = crate::projects::get_project_root()?;
-    let current_page = get_current_page()?;
+#[tauri::command]
+pub fn get_current_page_settings() -> Result<PageSettings, String> {
+    let project_root = get_project_root()?;
+    let current_page_name = get_current_page()?;
 
-    let page_path = PathBuf::from(current_project).join(current_page);
+    let html_content =
+        crate::fs::get_project_file_content(&PathBuf::from(project_root), &current_page_name)?;
 
-    if !page_path.exists() {
-        return Err("current page not found".to_string());
-    }
+    let settings = crate::snippets::html::get_configurations(html_content);
 
-    Ok(page_path)
+    Ok(settings)
 }
 
 #[tauri::command]
-pub fn get_current_page_settings() -> Result<PageSettings, String> {
-    let current_page_path = get_current_page_path()?;
-    let settings = PageSettings::default();
+pub fn save_current_page_settings(settings: PageSettings) -> Result<String, String> {
+    let project_root = get_project_root()?;
+    let current_page_name = get_current_page()?;
 
-    Ok(settings)
+    // let html_content =
+    //     crate::fs::get_project_file_content(&PathBuf::from(project_root), &current_page_name)?;
+
+    // let settings = crate::snippets::html::get_configurations(html_content);
+
+    Ok("settings saved successfully".to_string())
 }

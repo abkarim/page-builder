@@ -78,6 +78,7 @@ pub fn run() {
             projects::rename_current_project_asset,
             projects::page::set_current_page,
             projects::page::get_current_page_settings,
+            projects::page::save_current_page_settings,
             templates::blocks::get_blocks,
             templates::components::get_components
         ])
