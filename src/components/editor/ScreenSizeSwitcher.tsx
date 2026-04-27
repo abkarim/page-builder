@@ -23,11 +23,6 @@ const AvailableScreenSize = [
         size: "1366px",
         icon: "monitor",
     },
-    {
-        name: "Full",
-        size: "100%",
-        icon: "fullscreen",
-    },
 ] as const;
 
 export type ScreenSizeName = (typeof AvailableScreenSize)[number]["name"];
@@ -41,9 +36,11 @@ export function getActiveScreenSize(
 export function ScreenSizeSwitcher({
     activeSize,
     setActiveSize,
+    zoom,
 }: {
     activeSize: ScreenSizeName;
     setActiveSize: (val: ScreenSizeName) => void;
+    zoom: string;
 }) {
     return (
         <div className="flex items-center gap-1 bg-background border rounded-lg p-1">
@@ -72,6 +69,12 @@ export function ScreenSizeSwitcher({
                         </TooltipContent>
                     </Tooltip>
                 ))}
+                <Tooltip>
+                    <TooltipTrigger className="text-xs">{zoom}</TooltipTrigger>
+                    <TooltipContent>
+                        <p>Viewing at {zoom}</p>
+                    </TooltipContent>
+                </Tooltip>
             </TooltipProvider>
         </div>
     );

@@ -49,6 +49,7 @@ export default function Editor() {
     const editorRef = useRef<HTMLIFrameElement>(null);
     const [activeSizeName, setActiveSizeName] =
         useState<ScreenSizeName>("Desktop");
+    const [zoom, setZoom] = useState("");
 
     const activeConfig = getActiveScreenSize(activeSizeName);
 
@@ -160,6 +161,31 @@ export default function Editor() {
         return () => window.removeEventListener("message", handleMessage);
     }, []);
 
+    function calculateZoom() {
+        const width = editorRef.current!.getBoundingClientRect().width;
+
+        const targetWidth = parseInt(activeConfig.size);
+
+        if (targetWidth > 0) {
+            const zoomPercentage = Math.round((width / targetWidth) * 100);
+            setZoom(`${zoomPercentage}%`);
+        }
+    }
+
+    /**
+     * Calculate zoom
+     */
+    useEffect(() => {
+        const element = editorRef.current;
+        if (!element) return;
+
+        const observer = new ResizeObserver(calculateZoom);
+
+        observer.observe(element);
+
+        return () => observer.disconnect();
+    }, [editorRef, activeSizeName]);
+
     /**
      * Send message to Editor Iframe
      */
@@ -260,6 +286,7 @@ export default function Editor() {
                         <ScreenSizeSwitcher
                             activeSize={activeSizeName}
                             setActiveSize={setActiveSizeName}
+                            zoom={zoom}
                         />
                     </div>
                     <Button
