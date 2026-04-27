@@ -51,6 +51,10 @@ pub fn run() {
                 .set(Mutex::new(None))
                 .expect("Failed to initialize PROJECT_ROOT status variable");
 
+            projects::page::CURRENT_PAGE
+                .set(Mutex::new(None))
+                .expect("Failed to initialize CURRENT_PAGE mutex variable");
+
             Ok(())
         })
         .plugin(tauri_plugin_fs::init())
@@ -72,6 +76,8 @@ pub fn run() {
             projects::upload_current_project_assets,
             projects::delete_current_project_asset,
             projects::rename_current_project_asset,
+            projects::page::set_current_page,
+            projects::page::get_current_page_settings,
             templates::blocks::get_blocks,
             templates::components::get_components
         ])

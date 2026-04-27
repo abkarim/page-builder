@@ -7,6 +7,7 @@ use ts_rs::TS;
 use uuid::Uuid;
 use walkdir::WalkDir;
 
+use crate::commands::projects::page::set_current_page;
 use crate::fs::{
     self, create_file, get_design_files, get_project_root_file_content,
     write_project_root_file_content,
@@ -15,6 +16,8 @@ use crate::snippets::{self, css, html::get_updated_contents, js};
 use crate::zip;
 use crate::APP_VERSION;
 use crate::{db, RESOURCES_DIRECTORY};
+
+pub mod page;
 
 #[derive(Serialize, Debug, TS)]
 #[ts(export)]
@@ -469,8 +472,11 @@ pub fn get_project_file_content(uuid: String, name: String) -> Result<String, St
 
     let project = get_project(uuid, None)?;
 
-    let content =
-        fs::get_project_file_content(&Path::new(&project.path), &format!("{}.html", name))?;
+    let page_name = format!("{}.html", name);
+
+    set_current_page(page_name.clone())?;
+
+    let content = fs::get_project_file_content(&Path::new(&project.path), &page_name)?;
 
     Ok(content)
 }
