@@ -13,6 +13,7 @@ import { type PageSettings } from "src-tauri/bindings/PageSettings";
 import { toast } from "sonner";
 import { invoke } from "@tauri-apps/api/core";
 import { Button } from "../ui/button";
+import { v4 } from "uuid";
 
 interface Props {
     onOpenStateChange: (state: boolean) => void;
@@ -42,9 +43,16 @@ export default function PageSettingsEditor({
 
         // If index not found add a new link
         if (data.css_links.length < index) {
-            data.css_links.push(val);
+            data.css_links.push({
+                link: val,
+                identifier: v4(),
+                scope: "Page",
+            });
         } else {
-            data.css_links[index] = val;
+            data.css_links[index] = {
+                ...data.css_links[index],
+                link: val,
+            };
         }
 
         setPageSettings(data);
@@ -57,9 +65,16 @@ export default function PageSettingsEditor({
 
         // If index not found add a new link
         if (data.js_links.length < index) {
-            data.js_links.push(val);
+            data.js_links.push({
+                link: val,
+                identifier: v4(),
+                scope: "Page",
+            });
         } else {
-            data.js_links[index] = val;
+            data.js_links[index] = {
+                ...data.js_links[index],
+                link: val,
+            };
         }
 
         setPageSettings(data);
@@ -107,7 +122,7 @@ export default function PageSettingsEditor({
                                             (css, index) => (
                                                 <Input
                                                     key={index}
-                                                    value={css}
+                                                    value={css.link}
                                                     onInput={(e) =>
                                                         updateCSS(
                                                             e.currentTarget
@@ -139,7 +154,7 @@ export default function PageSettingsEditor({
                                             (js, index) => (
                                                 <Input
                                                     key={index}
-                                                    value={js}
+                                                    value={js.link}
                                                     onInput={(e) =>
                                                         updateJS(
                                                             e.currentTarget
