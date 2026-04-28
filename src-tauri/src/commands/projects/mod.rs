@@ -43,6 +43,7 @@ pub struct ProjectConfiguration {
 #[serde[default]]
 pub struct ProjectData {
     name: String,
+    uuid: String,
     app_version: String,
     configuration: ProjectConfiguration,
 }
@@ -51,6 +52,7 @@ impl Default for ProjectData {
     fn default() -> Self {
         Self {
             name: "Untitled Project".to_string(),
+            uuid: "".to_string(),
             app_version: "".to_string(),
             configuration: ProjectConfiguration::default(),
         }
@@ -357,6 +359,7 @@ pub fn update_project_details(uuid: &String, name: Option<String>) -> Result<(),
  */
 #[tauri::command]
 pub fn create_project(name: &str, directory: &str) -> Result<String, String> {
+    let id = Uuid::new_v4().to_string();
     let path = Path::new(directory).join(name);
 
     if path.exists() {
@@ -367,6 +370,7 @@ pub fn create_project(name: &str, directory: &str) -> Result<String, String> {
 
     let project_data = ProjectData {
         name: name.to_string(),
+        uuid: id.clone(),
         app_version: APP_VERSION.to_string(),
         configuration: ProjectConfiguration::default(),
     };
@@ -376,8 +380,6 @@ pub fn create_project(name: &str, directory: &str) -> Result<String, String> {
 
     // Insert to db
     let mut data_to_insert = HashMap::new();
-
-    let id = Uuid::new_v4().to_string();
 
     data_to_insert.insert("id", id.clone());
     data_to_insert.insert("name", name.to_string());

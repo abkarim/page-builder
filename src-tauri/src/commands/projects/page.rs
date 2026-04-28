@@ -1,13 +1,18 @@
 use std::{
+    collections::HashMap,
     path::PathBuf,
     sync::{Mutex, OnceLock},
 };
 
+use chrono::Utc;
 use serde::{Deserialize, Serialize};
 use strum::{AsRefStr, Display};
 use ts_rs::TS;
 
-use crate::commands::projects::{get_project_configuration, get_project_root};
+use crate::{
+    commands::projects::{get_project_configuration, get_project_root},
+    db,
+};
 
 #[derive(Debug, Serialize, Deserialize, TS, Default, Display, AsRefStr)]
 pub enum LinkScope {
@@ -87,14 +92,14 @@ pub fn update_current_page_content(new_content: String) -> Result<String, String
 
     crate::fs::write_project_file_content(&project_path, &current_page_name, new_content)?;
 
-    // // Set updated at in db
-    // let mut data_to_update = HashMap::new();
-    // data_to_update.insert("updated_at", Utc::now().to_rfc3339());
+    // Set updated at in db
+    let mut data_to_update = HashMap::new();
+    data_to_update.insert("updated_at", Utc::now().to_rfc3339());
 
-    // let mut filter = HashMap::new();
-    // filter.insert("id", uuid.clone());
+    let mut filter = HashMap::new();
+    filter.insert("id", project_configuration.uuid.clone());
 
-    // db::update(db::PROJECTS_TABLE, data_to_update, filter).map_err(|e| e.to_string())?;
+    db::update(db::PROJECTS_TABLE, data_to_update, filter).map_err(|e| e.to_string())?;
 
     Ok("updated successfully".to_string())
 }
