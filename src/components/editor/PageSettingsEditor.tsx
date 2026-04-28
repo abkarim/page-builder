@@ -36,6 +36,17 @@ export default function PageSettingsEditor({
         }
     }
 
+    function updateValue(
+        val: string,
+        hook: keyof Omit<PageSettings, "css_links" | "js_links">,
+    ) {
+        if (!pageSettings) return;
+        const data = structuredClone(pageSettings);
+        data[hook] = val;
+
+        setPageSettings(data);
+    }
+
     function updateCSS(val: string, index: number) {
         if (pageSettings === null) return;
 
@@ -113,7 +124,15 @@ export default function PageSettingsEditor({
                             <section className="space-y-3">
                                 <div className="space-y-1">
                                     <Label className="text-xs">Title</Label>
-                                    <Input value={pageSettings.title} />
+                                    <Input
+                                        value={pageSettings.title}
+                                        onInput={(e) =>
+                                            updateValue(
+                                                e.currentTarget.value,
+                                                "title",
+                                            )
+                                        }
+                                    />
                                 </div>
                                 <div className="space-y-1">
                                     <Label className="text-xs">CSS</Label>
