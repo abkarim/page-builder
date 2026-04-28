@@ -17,10 +17,12 @@ import { v4 } from "uuid";
 
 interface Props {
     onOpenStateChange: (state: boolean) => void;
+    onUpdate: () => void;
 }
 
 export default function PageSettingsEditor({
     onOpenStateChange,
+    onUpdate,
 }: Props): React.JSX.Element {
     const [pageSettings, setPageSettings] = useState<PageSettings | null>(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -98,6 +100,7 @@ export default function PageSettingsEditor({
                 settings: pageSettings,
             });
             toast.success(data);
+            onUpdate();
             onOpenStateChange(false);
         } catch (err) {
             toast.error(err as string);

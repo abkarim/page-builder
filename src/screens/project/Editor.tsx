@@ -406,6 +406,7 @@ export default function Editor() {
                 {showPageSettings && !hasUnsavedChanges && (
                     <PageSettingsEditor
                         onOpenStateChange={setShowPageSettings}
+                        onUpdate={getContent}
                     />
                 )}
             </section>
