@@ -236,12 +236,27 @@ export default function Editor() {
                 <Button className="ml-auto" onClick={saveChanges}>
                     Save
                 </Button>
-                <Button
-                    onClick={() => setShowPageSettings(true)}
-                    variant="secondary"
-                >
-                    <SettingsIcon /> Settings
-                </Button>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button
+                            onClick={() => {
+                                !hasUnsavedChanges && setShowPageSettings(true);
+                            }}
+                            variant="secondary"
+                        >
+                            <SettingsIcon /> Settings
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        {hasUnsavedChanges ? (
+                            <p>
+                                Please save your edits before modifying settings
+                            </p>
+                        ) : (
+                            <p>Page Settings</p>
+                        )}
+                    </TooltipContent>
+                </Tooltip>
             </div>
 
             <section className="h-screen pt-2.5 sticky top-0 pb-15">
@@ -388,7 +403,7 @@ export default function Editor() {
                         </Tabs>
                     )}
                 </section>
-                {showPageSettings && (
+                {showPageSettings && !hasUnsavedChanges && (
                     <PageSettingsEditor
                         onOpenStateChange={setShowPageSettings}
                     />
