@@ -9,6 +9,7 @@ import {
     ChevronLeftIcon,
     ChevronRightIcon,
     RedoIcon,
+    SettingsIcon,
     UndoIcon,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -29,10 +30,12 @@ import {
     ScreenSizeName,
     ScreenSizeSwitcher,
 } from "@/components/editor/ScreenSizeSwitcher";
+import PageSettingsEditor from "@/components/editor/PageSettingsEditor";
 
 export default function Editor() {
     const { id, name } = useParams();
     const confirmDialog = useConfirmDialog();
+    const [showPageSettings, setShowPageSettings] = useState(false);
     const [content, setContent] = useState("");
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
     const [availableUndo, setAvailableUndo] = useState(0);
@@ -48,7 +51,8 @@ export default function Editor() {
     } | null>(null);
     const editorRef = useRef<HTMLIFrameElement>(null);
     const [activeSizeName, setActiveSizeName] =
-        useState<ScreenSizeName>("Desktop");
+        useState<ScreenSizeName>("Large");
+    const [zoom, setZoom] = useState("");
 
     const activeConfig = getActiveScreenSize(activeSizeName);
 
@@ -160,6 +164,31 @@ export default function Editor() {
         return () => window.removeEventListener("message", handleMessage);
     }, []);
 
+    function calculateZoom() {
+        const width = editorRef.current!.getBoundingClientRect().width;
+
+        const targetWidth = parseInt(activeConfig.size);
+
+        if (targetWidth > 0) {
+            const zoomPercentage = Math.round((width / targetWidth) * 100);
+            setZoom(`${zoomPercentage}%`);
+        }
+    }
+
+    /**
+     * Calculate zoom
+     */
+    useEffect(() => {
+        const element = editorRef.current;
+        if (!element) return;
+
+        const observer = new ResizeObserver(calculateZoom);
+
+        observer.observe(element);
+
+        return () => observer.disconnect();
+    }, [editorRef, activeSizeName]);
+
     /**
      * Send message to Editor Iframe
      */
@@ -202,9 +231,32 @@ export default function Editor() {
 
     return (
         <section className="h-full">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center gap-2">
                 <p>Editing: {name}</p>
-                <Button onClick={saveChanges}>Save</Button>
+                <Button className="ml-auto" onClick={saveChanges}>
+                    Save
+                </Button>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button
+                            onClick={() => {
+                                !hasUnsavedChanges && setShowPageSettings(true);
+                            }}
+                            variant="secondary"
+                        >
+                            <SettingsIcon /> Settings
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        {hasUnsavedChanges ? (
+                            <p>
+                                Please save your edits before modifying settings
+                            </p>
+                        ) : (
+                            <p>Page Settings</p>
+                        )}
+                    </TooltipContent>
+                </Tooltip>
             </div>
 
             <section className="h-screen pt-2.5 sticky top-0 pb-15">
@@ -260,6 +312,7 @@ export default function Editor() {
                         <ScreenSizeSwitcher
                             activeSize={activeSizeName}
                             setActiveSize={setActiveSizeName}
+                            zoom={zoom}
                         />
                     </div>
                     <Button
@@ -350,6 +403,12 @@ export default function Editor() {
                         </Tabs>
                     )}
                 </section>
+                {showPageSettings && !hasUnsavedChanges && (
+                    <PageSettingsEditor
+                        onOpenStateChange={setShowPageSettings}
+                        onUpdate={getContent}
+                    />
+                )}
             </section>
         </section>
     );

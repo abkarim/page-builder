@@ -7,6 +7,7 @@ use ts_rs::TS;
 use uuid::Uuid;
 use walkdir::WalkDir;
 
+use crate::commands::projects::page::set_current_page;
 use crate::fs::{
     self, create_file, get_design_files, get_project_root_file_content,
     write_project_root_file_content,
@@ -15,6 +16,8 @@ use crate::snippets::{self, css, html::get_updated_contents, js};
 use crate::zip;
 use crate::APP_VERSION;
 use crate::{db, RESOURCES_DIRECTORY};
+
+pub mod page;
 
 #[derive(Serialize, Debug, TS)]
 #[ts(export)]
@@ -40,6 +43,7 @@ pub struct ProjectConfiguration {
 #[serde[default]]
 pub struct ProjectData {
     name: String,
+    uuid: String,
     app_version: String,
     configuration: ProjectConfiguration,
 }
@@ -48,6 +52,7 @@ impl Default for ProjectData {
     fn default() -> Self {
         Self {
             name: "Untitled Project".to_string(),
+            uuid: "".to_string(),
             app_version: "".to_string(),
             configuration: ProjectConfiguration::default(),
         }
@@ -354,6 +359,7 @@ pub fn update_project_details(uuid: &String, name: Option<String>) -> Result<(),
  */
 #[tauri::command]
 pub fn create_project(name: &str, directory: &str) -> Result<String, String> {
+    let id = Uuid::new_v4().to_string();
     let path = Path::new(directory).join(name);
 
     if path.exists() {
@@ -364,6 +370,7 @@ pub fn create_project(name: &str, directory: &str) -> Result<String, String> {
 
     let project_data = ProjectData {
         name: name.to_string(),
+        uuid: id.clone(),
         app_version: APP_VERSION.to_string(),
         configuration: ProjectConfiguration::default(),
     };
@@ -373,8 +380,6 @@ pub fn create_project(name: &str, directory: &str) -> Result<String, String> {
 
     // Insert to db
     let mut data_to_insert = HashMap::new();
-
-    let id = Uuid::new_v4().to_string();
 
     data_to_insert.insert("id", id.clone());
     data_to_insert.insert("name", name.to_string());
@@ -469,8 +474,11 @@ pub fn get_project_file_content(uuid: String, name: String) -> Result<String, St
 
     let project = get_project(uuid, None)?;
 
-    let content =
-        fs::get_project_file_content(&Path::new(&project.path), &format!("{}.html", name))?;
+    let page_name = format!("{}.html", name);
+
+    set_current_page(page_name.clone())?;
+
+    let content = fs::get_project_file_content(&Path::new(&project.path), &page_name)?;
 
     Ok(content)
 }

@@ -181,6 +181,17 @@ pub fn get_project_file_content(project_path: &Path, filename: &String) -> Resul
     fs::read_to_string(project_path.join(filename)).map_err(|e| e.to_string())
 }
 
+pub fn write_project_file_content(
+    project_path: &Path,
+    filename: &String,
+    content: String,
+) -> Result<String, String> {
+    match std::fs::write(project_path.join(filename), content) {
+        Ok(_) => Ok("success".to_string()),
+        Err(err) => Err(format!("Error: {}", err)),
+    }
+}
+
 /**
  * Write content to project file
  */
