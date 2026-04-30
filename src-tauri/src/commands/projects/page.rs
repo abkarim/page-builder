@@ -31,6 +31,13 @@ pub struct LinkSchema {
 }
 
 #[derive(Debug, Serialize, Deserialize, TS, Default)]
+pub struct CustomStyleScript {
+    pub value: String,
+    pub scope: LinkScope,
+    pub identifier: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, TS, Default)]
 #[ts(export)]
 pub struct PageSettings {
     #[serde(default)]
@@ -41,6 +48,12 @@ pub struct PageSettings {
 
     #[serde(default)]
     pub js_links: Vec<LinkSchema>,
+
+    #[serde(default)]
+    pub custom_css: CustomStyleScript,
+
+    #[serde(default)]
+    pub custom_js: CustomStyleScript,
 }
 
 pub static CURRENT_PAGE: OnceLock<Mutex<Option<String>>> = OnceLock::new();

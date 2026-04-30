@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { invoke } from "@tauri-apps/api/core";
 import { Button } from "../ui/button";
 import { v4 } from "uuid";
+import { Editor } from "@monaco-editor/react";
 
 interface Props {
     onOpenStateChange: (state: boolean) => void;
@@ -40,11 +41,27 @@ export default function PageSettingsEditor({
 
     function updateValue(
         val: string,
-        hook: keyof Omit<PageSettings, "css_links" | "js_links">,
+        hook: keyof Omit<
+            PageSettings,
+            "css_links" | "js_links" | "custom_css" | "custom_js"
+        >,
     ) {
         if (!pageSettings) return;
         const data = structuredClone(pageSettings);
         data[hook] = val;
+
+        setPageSettings(data);
+    }
+
+    function updateCustomStyleScript(
+        val: string,
+        name: "custom_css" | "custom_js",
+    ) {
+        if (!pageSettings) return;
+        const data = structuredClone(pageSettings);
+        data[name].value = val;
+
+        data[name].identifier = data[name].identifier || v4();
 
         setPageSettings(data);
     }
@@ -121,7 +138,7 @@ export default function PageSettingsEditor({
                         <SheetTitle>Page Settings</SheetTitle>
                     </SheetHeader>
 
-                    <section className="px-4 space-y-2">
+                    <section className="px-4 space-y-2 overflow-scroll">
                         {pageSettings === null && <Spinner />}
                         {pageSettings !== null && (
                             <section className="space-y-3">
@@ -200,6 +217,40 @@ export default function PageSettingsEditor({
                                             Add
                                         </Button>
                                     </div>
+                                </div>
+                                <div className="space-y-1">
+                                    <Label className="text-xs">
+                                        Custom CSS
+                                    </Label>
+                                    <Editor
+                                        height="200px"
+                                        language="css"
+                                        value={pageSettings.custom_css.value}
+                                        onChange={(val) =>
+                                            updateCustomStyleScript(
+                                                val || "",
+                                                "custom_css",
+                                            )
+                                        }
+                                        className="border rounded-sm py-1"
+                                    />
+                                </div>
+                                <div className="space-y-1">
+                                    <Label className="text-xs">
+                                        Custom JavaScript
+                                    </Label>
+                                    <Editor
+                                        height="200px"
+                                        language="javascript"
+                                        value={pageSettings.custom_js.value}
+                                        onChange={(val) =>
+                                            updateCustomStyleScript(
+                                                val || "",
+                                                "custom_js",
+                                            )
+                                        }
+                                        className="border rounded-sm py-1"
+                                    />
                                 </div>
                             </section>
                         )}

@@ -1,7 +1,7 @@
 use crate::{
     commands::projects::{
         self,
-        page::{LinkSchema, LinkScope, PageSettings},
+        page::{CustomStyleScript, LinkSchema, LinkScope, PageSettings},
     },
     protocol::{self, EDITOR_ASSETS_PREFIX},
 };
@@ -177,6 +177,36 @@ pub fn get_updated_contents(current_content: String) -> String {
     content
 }
 
+fn get_asset_scope(element: Selection<'_>) -> LinkScope {
+    let scope = element.attr(PAGE_BUILDER_ASSET_SCOPE);
+
+    let mut s = LinkScope::default();
+
+    if let Some(sc) = scope {
+        match sc.to_string().to_lowercase().as_str() {
+            "project" => {
+                s = LinkScope::Project;
+            }
+            "page" => {
+                s = LinkScope::Page;
+            }
+            _ => {}
+        };
+    }
+
+    s
+}
+
+fn get_element_identifier(element: Selection<'_>) -> String {
+    let mut identifier = "".to_string();
+
+    if let Some(id) = element.attr(PAGE_BUILDER_IDENTIFIER) {
+        identifier = id.to_string();
+    }
+
+    identifier
+}
+
 fn get_link_schema_attributes(element: Selection<'_>, link_attr_name: &str) -> LinkSchema {
     let mut link = LinkSchema::default();
 
@@ -184,19 +214,20 @@ fn get_link_schema_attributes(element: Selection<'_>, link_attr_name: &str) -> L
         link.link = val.to_string();
     }
 
-    if let Some(scope) = element.attr(PAGE_BUILDER_ASSET_SCOPE) {
-        link.scope = match scope.to_string().to_lowercase().as_str() {
-            "project" => LinkScope::Project,
-            "page" => LinkScope::Page,
-            _ => LinkScope::default(),
-        };
-    }
-
-    if let Some(id) = element.attr(PAGE_BUILDER_IDENTIFIER) {
-        link.identifier = id.to_string();
-    }
+    link.scope = get_asset_scope(element.clone());
+    link.identifier = get_element_identifier(element.clone());
 
     link
+}
+
+fn get_custom_styles_scripts(element: Selection<'_>) -> CustomStyleScript {
+    let mut script = CustomStyleScript::default();
+
+    script.scope = get_asset_scope(element.clone());
+    script.identifier = get_element_identifier(element.clone());
+    script.value = element.text().to_string();
+
+    script
 }
 
 pub fn get_asset_configurations(html_content: String) -> PageSettings {
@@ -232,6 +263,21 @@ pub fn get_asset_configurations(html_content: String) -> PageSettings {
         }
     }
 
+    let custom_css = document.select(&format!("style:not([{}])", PAGE_BUILDER_READONLY_ATTRIBUTE));
+    for c_css in custom_css.iter() {
+        let styles = get_custom_styles_scripts(c_css);
+        settings.custom_css = styles;
+    }
+
+    let custom_js = document.select(&format!(
+        "script:not([{}])",
+        PAGE_BUILDER_READONLY_ATTRIBUTE
+    ));
+    for c_js in custom_js.iter() {
+        let script = get_custom_styles_scripts(c_js);
+        settings.custom_js = script;
+    }
+
     settings
 }
 
@@ -240,6 +286,8 @@ pub fn update_asset_configurations(html_content: String, configurations: PageSet
         title,
         css_links,
         js_links,
+        custom_css,
+        custom_js,
     } = configurations;
     let document = Document::from(html_content);
 
@@ -318,6 +366,70 @@ pub fn update_asset_configurations(html_content: String, configurations: PageSet
 
         // update scope
         element.set_attr(PAGE_BUILDER_ASSET_SCOPE, scope.as_ref());
+    }
+
+    // update custom css
+    let custom_css_selector = format!(
+        "style[{}=\"{}\"]",
+        PAGE_BUILDER_IDENTIFIER, custom_css.identifier
+    );
+    let mut custom_css_element = document.select(&custom_css_selector);
+
+    if !custom_css.value.is_empty() {
+        if custom_css_element.is_empty() {
+            let mut attrs = Vec::new();
+            attrs.push(format!(
+                "{}=\"{}\"",
+                PAGE_BUILDER_IDENTIFIER, custom_css.identifier
+            ));
+
+            let html = format!("<style {}></style>", attrs.join(" "));
+
+            document.select("head").append_html(html);
+
+            custom_css_element = document.select(&custom_css_selector);
+        }
+
+        custom_css_element.set_attr(PAGE_BUILDER_ASSET_SCOPE, custom_css.scope.as_ref());
+        custom_css_element.set_text(&custom_css.value);
+    } else {
+        // Remove custom css element if
+        // content/value is empty
+        if !custom_css_element.is_empty() {
+            custom_css_element.remove();
+        }
+    }
+
+    // update custom js
+    let custom_js_selector = format!(
+        "script[{}=\"{}\"]",
+        PAGE_BUILDER_IDENTIFIER, custom_js.identifier
+    );
+    let mut custom_js_element = document.select(&custom_js_selector);
+
+    if !custom_js.value.is_empty() {
+        if custom_js_element.is_empty() {
+            let mut attrs = Vec::new();
+            attrs.push(format!(
+                "{}=\"{}\"",
+                PAGE_BUILDER_IDENTIFIER, custom_js.identifier
+            ));
+
+            let html = format!("<script type=\"module\" {}></script>", attrs.join(" "));
+
+            document.select("body").append_html(html);
+
+            custom_js_element = document.select(&custom_js_selector);
+        }
+
+        custom_js_element.set_attr(PAGE_BUILDER_ASSET_SCOPE, custom_js.scope.as_ref());
+        custom_js_element.set_text(&custom_js.value);
+    } else {
+        // Remove custom js element if
+        // content/value is empty
+        if !custom_js_element.is_empty() {
+            custom_js_element.remove();
+        }
     }
 
     document.html().to_string()
